@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MI.Core", "MI.Core\MI.Core.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MI.Data", "MI.Data\MI.Data.csproj", "{DF2FAF7B-EF0E-4E6B-9A53-4F37FB9CBB58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSOfficeSystem_New", "TSOfficeSystem_New\TSOfficeSystem_New.csproj", "{3F81D79C-C571-488B-9C22-68F5B9FEEBC8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MI.Web", "MI.Web\MI.Web.csproj", "{3F81D79C-C571-488B-9C22-68F5B9FEEBC8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MI.Application.Test", "MI.Application.Test\MI.Application.Test.csproj", "{8EDF4429-251A-416D-BB68-93F227191BCF}"
 EndProject

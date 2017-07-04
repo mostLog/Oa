@@ -76,7 +76,7 @@
       <Project>{df2faf7b-ef0e-4e6b-9a53-4f37fb9cbb58}</Project>
       <Name>MI.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TSOfficeSystem_New\TSOfficeSystem_New.csproj">
+    <ProjectReference Include="..\MI.Web\MI.Web.csproj">
       <Project>{3f81d79c-c571-488b-9c22-68f5b9feebc8}</Project>
       <Name>TSOfficeSystem_New</Name>
     </ProjectReference>

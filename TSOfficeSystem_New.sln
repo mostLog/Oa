@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MI.Application", "MI.Application\MI.Application.csproj", "{E7EBFCBE-C004-495B-BD12-1D4EB7A655D8}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MI.Application.Test", "MI.Application.Test\MI.Application.Test.csproj", "{8EDF4429-251A-416D-BB68-93F227191BCF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{CB77FA60-6593-421F-961C-2456E6478BC2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{BE429A32-7754-466B-A386-256A278A1C14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,28 +48,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{3F81D79C-C571-488B-9C22-68F5B9FEEBC8} = {BE429A32-7754-466B-A386-256A278A1C14}
 		{8EDF4429-251A-416D-BB68-93F227191BCF} = {CB77FA60-6593-421F-961C-2456E6478BC2}
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://119.81.201.155:8080/tfs/tfs_code
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = MI.Application\\MI.Application.csproj
-		SccProjectName1 = MI.Application
-		SccLocalPath1 = MI.Application
-		SccProjectUniqueName2 = MI.Core\\MI.Core.csproj
-		SccProjectName2 = MI.Core
-		SccLocalPath2 = MI.Core
-		SccProjectUniqueName3 = MI.Data\\MI.Data.csproj
-		SccProjectName3 = MI.Data
-		SccLocalPath3 = MI.Data
-		SccProjectUniqueName4 = TSOfficeSystem_New\\TSOfficeSystem_New.csproj
-		SccProjectName4 = TSOfficeSystem_New
-		SccLocalPath4 = TSOfficeSystem_New
-		SccProjectUniqueName5 = MI.Application.Test\\MI.Application.Test.csproj
-		SccProjectTopLevelParentUniqueName5 = TSOfficeSystem_New.sln
-		SccProjectName5 = MI.Application.Test
-		SccLocalPath5 = MI.Application.Test
 	EndGlobalSection
 EndGlobal

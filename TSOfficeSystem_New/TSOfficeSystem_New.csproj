@@ -215,7 +215,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ScriptsController.cs" />
-    <Compile Include="DormitoryView\Controllers\DormitoryController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -239,7 +238,6 @@
     <Content Include="Css\printCss.css" />
     <Content Include="Css\Responsive.css" />
     <Content Include="Css\Style.css" />
-    <Content Include="EmpAndFood\OrderingAndPersonalInfo\2017-06-27-13-45.txt" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

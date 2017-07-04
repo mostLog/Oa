@@ -72,7 +72,129 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\BaseService.cs" />
+    <Compile Include="Application\IBaseService.cs" />
+    <Compile Include="DataExport\Excel\EPPlusExcelExportBase.cs" />
+    <Compile Include="DIApplicationModule.cs" />
+    <Compile Include="Dto\ExcelDto.cs" />
+    <Compile Include="Dto\KeyValueDto.cs" />
+    <Compile Include="Dto\PagedInputDto.cs" />
+    <Compile Include="Dto\PageListDto.cs" />
+    <Compile Include="Mappers\ApplicationMapperConfiguraton.cs" />
+    <Compile Include="Mappers\IMapperConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BedLinen\BedLinenService.cs" />
+    <Compile Include="Services\BedLinen\Dto\BedLinenDto.cs" />
+    <Compile Include="Services\BedLinen\IBedLinenService.cs" />
+    <Compile Include="Services\CashRegister\CashRegisterService.cs" />
+    <Compile Include="Services\CashRegister\Dto\CashRegisterListDto.cs" />
+    <Compile Include="Services\CashRegister\Dto\CashRegisterPagedInputDto.cs" />
+    <Compile Include="Services\CashRegister\Dto\RateInputDto.cs" />
+    <Compile Include="Services\CashRegister\File\CashRegisterFileService.cs" />
+    <Compile Include="Services\CashRegister\File\ICashRegisterFileService.cs" />
+    <Compile Include="Services\CashRegister\ICashRegisterService.cs" />
+    <Compile Include="Services\Category\CategoryService.cs" />
+    <Compile Include="Services\Category\Dto\CarRegisterDto.cs" />
+    <Compile Include="Services\Category\ICategoryService.cs" />
+    <Compile Include="Services\CertAgency\CertAgencyService.cs" />
+    <Compile Include="Services\CertAgency\Dto\CertAgencyDto.cs" />
+    <Compile Include="Services\CertAgency\Dto\CertAgencyWhereDto.cs" />
+    <Compile Include="Services\CertAgency\ICertAgencyService.cs" />
+    <Compile Include="Services\ChangeRoom\ChangeRoomService.cs" />
+    <Compile Include="Services\ChangeRoom\Dto\t_ChangeRoomDto.cs" />
+    <Compile Include="Services\ChangeRoom\IChangeRoomService.cs" />
+    <Compile Include="Services\CompanyOfFood\CompanyOfFoodService.cs" />
+    <Compile Include="Services\CompanyOfFood\Dto\DorOrderListDto.cs" />
+    <Compile Include="Services\CompanyOfFood\Dto\DorOrderPagedInputDto.cs" />
+    <Compile Include="Services\CompanyOfFood\ICompanyOfFoodService.cs" />
+    <Compile Include="Services\Content\Dto\t_DormitoryDto.cs" />
+    <Compile Include="Services\Content\Dto\t_LatticeContentDto.cs" />
+    <Compile Include="Services\Content\ILatticeContentService.cs" />
+    <Compile Include="Services\Content\LatticeContentService.cs" />
+    <Compile Include="Services\DormitoryMaintenance\DormitoryMaintenanceService.cs" />
+    <Compile Include="Services\DormitoryMaintenance\Dto\DormitoryMaintenanceDto.cs" />
+    <Compile Include="Services\DormitoryMaintenance\IDormitoryMaintenanceService.cs" />
+    <Compile Include="Services\DormitorySummary\DormitorySummaryService.cs" />
+    <Compile Include="Services\DormitorySummary\IDormitorySummaryService.cs" />
+    <Compile Include="Services\Dormitory\DormitoryService.cs" />
+    <Compile Include="Services\Dormitory\IDormitoryService.cs" />
+    <Compile Include="Services\Employee\Dto\EmployeeDto.cs" />
+    <Compile Include="Services\Employee\Dto\LoginDto.cs" />
+    <Compile Include="Services\Employee\Dto\NewEmployeeDto.cs" />
+    <Compile Include="Services\Employee\Dto\TrafficStatisticsDto.cs" />
+    <Compile Include="Services\Employee\EmployeeService.cs" />
+    <Compile Include="Services\Employee\IEmployeeService.cs" />
+    <Compile Include="Services\Employee\Public.cs" />
+    <Compile Include="Services\EmpRent\Dto\AddOrEditEmpRentInputDto.cs" />
+    <Compile Include="Services\EmpRent\Dto\EmpRentDto.cs" />
+    <Compile Include="Services\EmpRent\Dto\EmpRentListDto.cs" />
+    <Compile Include="Services\EmpRent\Dto\EmpRentPagedInputDto.cs" />
+    <Compile Include="Services\EmpRent\EmpRentService.cs" />
+    <Compile Include="Services\EmpRent\File\EmpRentFileService.cs" />
+    <Compile Include="Services\EmpRent\File\IEmpRentFileService.cs" />
+    <Compile Include="Services\EmpRent\IEmpRentService.cs" />
+    <Compile Include="Services\FlightFee\Dto\FlightFeeDto.cs" />
+    <Compile Include="Services\FlightFee\Dto\FlightFeeListDto.cs" />
+    <Compile Include="Services\FlightFee\Dto\FlightFeePagedInputDto.cs" />
+    <Compile Include="Services\FlightFee\File\FlightFeeFileService.cs" />
+    <Compile Include="Services\FlightFee\File\IFlightFeeFileService.cs" />
+    <Compile Include="Services\FlightFee\FlightFeeService.cs" />
+    <Compile Include="Services\FlightFee\IFlightFeeService.cs" />
+    <Compile Include="Services\Grant\Dto\GrantDto.cs" />
+    <Compile Include="Services\Grant\Dto\GrantPagedInputDto.cs" />
+    <Compile Include="Services\Grant\File\GrantFileService.cs" />
+    <Compile Include="Services\Grant\File\IGrantFileService.cs" />
+    <Compile Include="Services\Grant\GrantService.cs" />
+    <Compile Include="Services\Grant\IGrantService.cs" />
+    <Compile Include="Services\HostelClean\Dto\HostelCleanDto.cs" />
+    <Compile Include="Services\HostelClean\HostelCleanService.cs" />
+    <Compile Include="Services\HostelClean\IHostelCleanService.cs" />
+    <Compile Include="Services\LaundryPwd\Dto\t_LaundryPwdDto.cs" />
+    <Compile Include="Services\LaundryPwd\ILaundryPwdService.cs" />
+    <Compile Include="Services\LaundryPwd\LaundryPwdService.cs" />
+    <Compile Include="Services\ModifyRecord\Dto\ModifyRecordDto.cs" />
+    <Compile Include="Services\ModifyRecord\IModifyRecordService.cs" />
+    <Compile Include="Services\ModifyRecord\ModifyRecordService.cs" />
+    <Compile Include="Services\NewOrderingEmployees\INewOrderingEmployeesService.cs" />
+    <Compile Include="Services\NewOrderingEmployees\NewOrderingEmployeesService.cs" />
+    <Compile Include="Services\Notice\INoticeService.cs" />
+    <Compile Include="Services\Notice\NoticeService.cs" />
+    <Compile Include="Services\OaSession\Dto\ModifyPwdModel.cs" />
+    <Compile Include="Services\OaSession\Dto\OAUser.cs" />
+    <Compile Include="Services\OaSession\ISession.cs" />
+    <Compile Include="Services\OaSession\Session.cs" />
+    <Compile Include="Services\OrderingEmployees\IOrderingEmployeesService.cs" />
+    <Compile Include="Services\OrderingEmployees\OrderingEmployeesService.cs" />
+    <Compile Include="Services\Outside\IOutsideService.cs" />
+    <Compile Include="Services\Outside\OutsideService.cs" />
+    <Compile Include="Services\RegistTip\IRegistTipService.cs" />
+    <Compile Include="Services\RegistTip\RegistTipService.cs" />
+    <Compile Include="Services\ReturnTicket\Dto\PickupChaDto.cs" />
+    <Compile Include="Services\ReturnTicket\Dto\PickupDto.cs" />
+    <Compile Include="Services\ReturnTicket\Dto\ReturnTicketDto.cs" />
+    <Compile Include="Services\ReturnTicket\Dto\SendCarDto.cs" />
+    <Compile Include="Services\ReturnTicket\Dto\TicketWhereDto.cs" />
+    <Compile Include="Services\ReturnTicket\IReturnTicketService.cs" />
+    <Compile Include="Services\ReturnTicket\ReturnTicketService.cs" />
+    <Compile Include="Services\SType\ISTypeService.cs" />
+    <Compile Include="Services\SType\ResultModel.cs" />
+    <Compile Include="Services\SType\sTypeEnum.cs" />
+    <Compile Include="Services\SType\STypeGetValue.cs" />
+    <Compile Include="Services\SType\STypeService.cs" />
+    <Compile Include="Services\Tariff\Dto\TariffDto.cs" />
+    <Compile Include="Services\Tariff\Dto\TariffListDto.cs" />
+    <Compile Include="Services\Tariff\Dto\TariffPagedInputDto.cs" />
+    <Compile Include="Services\Tariff\File\ITariffFileService.cs" />
+    <Compile Include="Services\Tariff\File\TariffFileService.cs" />
+    <Compile Include="Services\Tariff\ITariffService.cs" />
+    <Compile Include="Services\Tariff\TariffService.cs" />
+    <Compile Include="Services\WorkDistribution\Dto\ReturnHandoverDto.cs" />
+    <Compile Include="Services\WorkDistribution\Dto\ReturnHandoverItemDto.cs" />
+    <Compile Include="Services\WorkDistribution\Dto\WorkDistributionDto.cs" />
+    <Compile Include="Services\WorkDistribution\IReturnHandoverService.cs" />
+    <Compile Include="Services\WorkDistribution\IWorkDistributionService.cs" />
+    <Compile Include="Services\WorkDistribution\ReturnHandoverService.cs" />
+    <Compile Include="Services\WorkDistribution\WorkDistributionService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MI.Core\MI.Core.csproj">
@@ -84,6 +206,14 @@
       <Name>MI.Data</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Application\Dto\" />
+    <Folder Include="Services\Notice\Dto\" />
+    <Folder Include="Services\SType\Dto\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

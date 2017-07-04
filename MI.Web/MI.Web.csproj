@@ -168,14 +168,12 @@
     <Compile Include="App_Start\DataConnectionString.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ScriptsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Helper\PageHelper.cs" />
     <Compile Include="Infrastructure\Extension\Html\ResourceExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -272,6 +270,10 @@
     <ProjectReference Include="..\MI.Data\MI.Data.csproj">
       <Project>{df2faf7b-ef0e-4e6b-9a53-4f37fb9cbb58}</Project>
       <Name>MI.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MI.Web.Common\MI.Web.Common.csproj">
+      <Project>{8a94ea0f-632e-49dd-aa45-bfe0fcd2aceb}</Project>
+      <Name>MI.Web.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

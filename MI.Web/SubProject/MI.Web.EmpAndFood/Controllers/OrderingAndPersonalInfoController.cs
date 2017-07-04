@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using MI.Application.OASession;
-using MI.Web.Controllers;
-using MI.Application;
-using MI.Core.Domain;
-using MI.Core.Common;
+﻿using MI.Application;
 using MI.Application.Dto;
+using MI.Application.OASession;
+using MI.Core.Common;
+using MI.Core.Domain;
+using MI.Web.Common;
+using System;
+using System.Web.Mvc;
 
-namespace MI.Web.Areas.EmpAndFood.Controllers
+namespace MI.Web.EmpAndFood.Controllers
 {
     /// <summary>
     /// 个人资料

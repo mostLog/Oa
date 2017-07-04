@@ -4,18 +4,17 @@ using MI.Application.Dto;
 using MI.Application.OASession;
 using MI.Core.Common;
 using MI.Core.Domain;
+using MI.Web.Common;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
-using MI.Web.Controllers;
 
-
-namespace MI.Web.Areas.EmpAndFood.Controllers
+namespace MI.Web.EmpAndFood.Controllers
 {
-    public class employeeInfoController : BaseController
+    public class EmployeeInfoController : BaseController
     {
         /// <summary>
         /// 人事管理服务
@@ -25,7 +24,12 @@ namespace MI.Web.Areas.EmpAndFood.Controllers
         /// 宿舍管理服务
         /// </summary>
         public readonly IDormitoryService IDormitory;
-        public employeeInfoController(IEmployeeService ies,IDormitoryService ids,ISession session, IEmployeeService emoloyee) : base(session, emoloyee)
+        public EmployeeInfoController(
+            IEmployeeService ies,
+            IDormitoryService ids,
+            ISession session, 
+            IEmployeeService emoloyee
+            ) : base(session, emoloyee)
         {
             IEmololyee = ies;
             IDormitory = ids;

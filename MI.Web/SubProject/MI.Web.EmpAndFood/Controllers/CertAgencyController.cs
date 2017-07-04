@@ -3,15 +3,15 @@ using MI.Application.Dto;
 using MI.Application.OASession;
 using MI.Core.Common;
 using MI.Core.Domain;
+using MI.Web.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using MI.Web.Controllers;
 
-namespace MI.Web.Areas.EmpAndFood.Controllers
+namespace MI.Web.EmpAndFood.Controllers
 {
     public class CertAgencyController : BaseController
     {

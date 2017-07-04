@@ -1,13 +1,13 @@
 ﻿using MI.Application;
-using System.Web.Mvc;
-using MI.Core.Proxy;
-using MI.Web.Controllers;
-using MI.Application.OASession;
 using MI.Application.Dto;
-using System;
+using MI.Application.OASession;
 using MI.Core.Domain;
+using MI.Core.Proxy;
+using MI.Web.Common;
+using System;
+using System.Web.Mvc;
 
-namespace MI.Web.Areas.EmpAndFood.Controllers
+namespace MI.Web.EmpAndFood.Controllers
 {
     [AjaxFunc("/EmpAndFood")]
     public class CompanyOfFoodController : BaseController

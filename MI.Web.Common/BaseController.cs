@@ -7,7 +7,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Web.Mvc;
 
-namespace MI.Web.Controllers
+
+namespace MI.Web.Common
 {
     /// <summary>
     /// 基类控制器

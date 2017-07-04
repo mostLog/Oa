@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace MI.Web.Areas.EmpAndFood
+namespace MI.Web.EmpAndFood
 {
     public class EmpAndFoodAreaRegistration : AreaRegistration 
     {

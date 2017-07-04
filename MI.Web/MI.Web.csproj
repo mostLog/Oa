@@ -168,12 +168,6 @@
     <Compile Include="App_Start\DataConnectionString.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Areas\EmpAndFood\Controllers\CertAgencyController.cs" />
-    <Compile Include="Areas\EmpAndFood\Controllers\CompanyOfFoodController.cs" />
-    <Compile Include="Areas\EmpAndFood\Controllers\employeeInfoController.cs" />
-    <Compile Include="Areas\EmpAndFood\Controllers\OrderingAndPersonalInfoController.cs" />
-    <Compile Include="Areas\EmpAndFood\Controllers\StatisticsRideController.cs" />
-    <Compile Include="Areas\EmpAndFood\EmpAndFoodAreaRegistration.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
@@ -186,8 +180,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\EmpAndFood\Views\CompanyOfFood\DormitoryOrderingIndex.js" />
-    <Content Include="Areas\EmpAndFood\Views\CompanyOfFood\Index.js" />
     <Content Include="Css\Bootstrap3.3.5\css\bootstrap-theme.css" />
     <Content Include="Css\Bootstrap3.3.5\css\bootstrap-theme.min.css" />
     <Content Include="Css\Bootstrap3.3.5\css\bootstrap.css" />
@@ -206,6 +198,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\" />
     <Folder Include="Infrastructure\User\" />
     <Folder Include="SubProject\" />
     <Folder Include="Views\Base\" />
@@ -292,19 +285,6 @@
     <Content Include="Scripts\datetimepicker\jquery.datetimepicker.min.js" />
     <Content Include="Scripts\Drag\drag.js" />
     <Content Include="Scripts\editable\bootstrap-editable.js" />
-    <Content Include="Areas\EmpAndFood\Views\CertAgency\Index.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\CertAgency\Edit.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\CompanyOfFood\DormitoryOrderingIndex.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\CompanyOfFood\GetEmployeeOfFood.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\CompanyOfFood\Index.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\StatisticsRide\Index.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\StatisticsRide\Satistics.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\employeeInfo\NewEmpRemove.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\employeeInfo\NewIndexView.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\employeeInfo\PersonnelStatistics.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\OrderingAndPersonalInfo\Index.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\OrderingAndPersonalInfo\IndexView.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\OrderingAndPersonalInfo\ModifyPwd.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -468,13 +448,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web.config" />
-    <Content Include="Areas\EmpAndFood\Views\employeeInfo\Edit.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\employeeInfo\Index.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\employeeInfo\NewEmpPrintView.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\employeeInfo\NewIndex.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\Shared\emplotyeeInfoNavigation.cshtml" />
-    <Content Include="Areas\EmpAndFood\Views\web.config" />
-    <Content Include="Areas\EmpAndFood\Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\DormitoryNavTabs.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\Left.cshtml" />

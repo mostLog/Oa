@@ -1,0 +1,95 @@
+﻿@model List<MI.Core.Domain.ReturnTicket>
+@using MI.Application.Dto
+@{
+    ViewBag.Title = "登记查询";
+    int i = 1;
+    SendCarDto Rtw = ViewBag.Rtw;
+    List<MI.Core.Domain.SType> AirlineType = ViewBag.AirlineType;//所有航班
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+}
+
+
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">登记查询</a></li>
+        <li class="active">送机查询</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("FeeSearchNavMeuns", "送机查询")
+    </ul>
+    <div class="oacentbox">
+        <div class="panel panel-default">
+            <div class="panel-heading">【送機】派車   GO TO AIRPORT</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序號<br />No.</th>
+                            <th>姓名<br />Name</th>
+                            <th>社區<br />Community</th>
+                            <th>樓棟<br />Building</th>
+                            <th>房號<br />Room</th>
+                            <th>日期<br />Date</th>
+                            <th>航空<br />Flight</th>
+                            <th>航廈<br />Terminal</th>
+                            <th>班機時間<br />Time</th>
+                            <th>出發時間<br />Departure</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+
+                                <td>@i </td>
+                                <td>@(item.t_employeeInfo?.f_chineseName ?? "")</td>
+                                <td>@(item.t_employeeInfo?.t_Dormitory?.f_Community)</td>
+                                <td>@(item.t_employeeInfo?.t_Dormitory?.f_Building)</td>
+                                <td>@(item.t_employeeInfo?.t_Dormitory?.f_RoomNo)</td>
+                                <td>@(item.f_ToDate?.ToString("yyyy-MM-dd") ?? "")</td>
+                                <td>@(AirlineType.Where(u => u.f_tID == item.f_ToAirlineType_Id).FirstOrDefault()?.f_value ?? "")</td>
+                                <td>@(AirlineType.Where(u => u.f_tID == item.f_ToAirlineType_Id).FirstOrDefault()?.f_Remark ?? "")</td>
+                                <td>@item.f_ToFlight</td>
+                                <td>@item.f_ToDropOffTime</td>
+                            </tr>
+                            i++;
+                        }
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="10" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageListFor(iCurrentPage, iPageSize, iTotalCount, Rtw)
+            </ul>
+        </div><!-- /.fenyediv-->
+    </div><!-- /.oacentbox-->
+</div>
+
+<script type="text/javascript">
+    function changeState() {
+        $.ajax({
+            type: "post",
+            url: '@Url.Action("ChangeState")',
+            data: { tableName: "送机查询" },
+            success: function (data) {
+                //TODO
+            }
+        });
+    }
+
+    $(function() {
+        //  setTimeout(changeState, 1000);  //延迟加载了为了避免点登记查询时默认进入的员工租房的提示变化太快，页面看不到员工租房的提示
+        changeState();
+    });
+
+</script>

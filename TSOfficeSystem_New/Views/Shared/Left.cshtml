@@ -1,0 +1,341 @@
+﻿@{
+    IList<string> level = ViewBag.levelValue ?? new List<string>();
+}
+<nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
+    <header class="headerleft">
+        <div class="oalogo">
+            <a class="navbar-brand" href="~/Login/Index">
+                行政OA管理系统
+            </a>
+        </div><!--/.oalogo-->
+    </header><!-- /.header-->
+    <ul class="nav">
+        @if (level.Contains("Notice"))
+        {
+            <li>
+                <a class="btn btn-default btn-lg" href="/Integrated/Notice/Index" style="position: relative;">
+                    @{ string display = "none"; }
+                    @if (Session["notice"] != null)
+                {
+                    if (int.Parse(Session["notice"]?.ToString()) > 0)
+                    {
+                        display = "inline-block";
+                    }
+                }
+                    <div class="tipBtn" style="width: 30px; height: 30px; display: @Html.Raw(display); border-radius: 50%; background-color: #d43f3a; color: #fff; text-align: center; line-height: 30px; position: absolute; right: -10px; top: -8px; letter-spacing: -1px; font-size: 1">
+                        @(Session["notice"]?.ToString())
+                    </div>
+                    <span class="iconfont" aria-hidden="true">&#xe60f;</span> 公告管理
+                </a>
+            </li>
+                        }
+        @if (level.Contains("CarRegister") || level.Contains("Dormitory") || level.Contains("EmpRent") || level.Contains("CompanyOfFood"))
+        {
+            <li>
+                <a class="btn btn-default btn-lg" >
+                    <span class="iconfont" aria-hidden="true">&#xe603;</span> 行政管理
+                </a>
+                <div class="erjimenu" style="display:none;">
+                    <div style="position: relative;">
+                        <span class="dangqianArrowleft">
+                        </span>
+                        <div class="erjinav">
+                            @if (level.Contains("CarRegister"))
+                            {
+                                <a href="/Dormitory/CarRegister/Index"><span class="iconfont " aria-hidden="true">&#xe609;</span> 车辆管理</a>
+                            }
+                            @if (level.Contains("Dormitory"))
+                            {
+                                <a href="/Dormitory/Dormitory/Index"><span class="iconfont " aria-hidden="true">&#xe614;</span> 宿舍管理</a>
+                            }
+                            @if (level.Contains("EmpRent"))
+                            {
+                                <a href="/Dormitory/EmpRent"><span class="iconfont " aria-hidden="true">&#xe602;</span> 费用管理</a>
+                            }
+                            @if (level.Contains("CompanyOfFood"))
+                            {
+                                <a href="/EmpAndFood/CompanyOfFood"><span class="iconfont " aria-hidden="true">&#xe610;</span> 餐饮管理</a>
+                            }
+                            @if (level.Contains("CashRegister"))
+                            {
+                                <a href="/Integrated/CashRegister"><span class="iconfont " aria-hidden="true">&#xe608;</span> 现金登记</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </li>
+        }
+        @if (level.Contains("WorkDistribution") || level.Contains("employeeInfo"))
+        {
+            <li>
+                <a class="btn btn-default btn-lg" >
+                    <span class="iconfont" aria-hidden="true">&#xe615;</span> 人力资源
+                </a>
+                <div class="erjimenu" style="display:none;">
+                    <div style="position: relative;">
+                        <span class="dangqianArrowleft">
+                        </span>
+                        <div class="erjinav">
+                            @if (level.Contains("WorkDistribution"))
+                            {
+                                <a href="/Integrated/WorkDistribution/Index"><span class="iconfont " aria-hidden="true">&#xe60c;</span> 工作交接</a>
+                            } @if (level.Contains("employeeInfo"))
+                            {
+                                <a href="/EmpAndFood/employeeInfo/Index"><span class="iconfont " aria-hidden="true">&#xe611;</span> 员工管理</a>
+                            }
+                            @if (level.Contains("ReturnTicket"))
+                            {
+                                <a href="/Tickets/ReturnTicket/Index"><span class="iconfont " aria-hidden="true">&#xe613;</span> 机票登记</a>
+                            }
+                            @if (level.Contains("SendACar"))
+                            {
+                                <a href="/Tickets/SendACar/SendACarList"><span class="iconfont " aria-hidden="true">&#xe600;</span> 派车安排</a>
+                            }
+                            @if (level.Contains("CertAgency"))
+                            {
+                                <a href="/EmpAndFood/CertAgency/Index"><span class="iconfont " aria-hidden="true">&#xe604;</span> 证件办理</a>
+                            }
+                        </div>
+                    </div>
+                </div><!-- /.erjimenu-->
+            </li>
+        }
+        @if (level.Contains("ModifyRecord"))
+        {
+            <li>
+                <a class="btn btn-default btn-lg" href="/Dormitory/ModifyRecord/Index">
+                    <span class="iconfont" aria-hidden="true">&#xe60e;</span> 操作记录
+                </a>
+            </li>
+        }
+        @if (level.Contains("LatticeD"))
+        {
+            <li>
+                <a class="btn btn-default btn-lg"  href="~/Dormitory/LatticeD/Index">
+                    <span class="iconfont" aria-hidden="true">&#xe61f;</span> 宿舍视图
+                </a>
+            </li>
+        }
+        @if (level.Contains("FeeSearch"))
+        {
+            <li>
+                <a class="btn btn-default btn-lg" href="/Dormitory/FeeSearch/EmpRentListData">
+                    @{ string display = "none"; }
+                    @if (Session["RegistTips"] != null)
+                {
+                    if (int.Parse(Session["RegistTips"]?.ToString()) > 0)
+                    {
+                        display = "inline-block";
+                    }
+                }
+                    <div class="tipBtn" style="width: 30px; height: 30px; display: @Html.Raw(display); border-radius: 50%; background-color: #d43f3a; color: #fff; text-align: center; line-height: 30px; position: absolute; right: -10px; top: -8px; letter-spacing: -1px; font-size: 1">
+                        @(Session["RegistTips"]?.ToString())
+                    </div>
+                    <span class="iconfont " aria-hidden="true">&#xe620;</span> 登记查询
+                </a>
+            </li>
+
+                        }
+        @if (level.Contains("OrderingAndPersonalInfo"))
+        {
+            <li>
+                <a class="btn btn-default btn-lg" href="/EmpAndFood/OrderingAndPersonalInfo/Index">
+                    <span class="iconfont " aria-hidden="true">&#xe616;</span> 个人资料
+                </a>
+            </li>
+        }
+        @if (level.Contains("SType"))
+        {
+            <li>
+                <a class="btn btn-default btn-lg" href="/Integrated/SType/Index">
+                    <span class="iconfont" aria-hidden="true">&#xe605;</span> 类别和权限
+                </a>
+            </li>
+        }
+        @if (level.Contains("CheckTimeByManage") || level.Contains("StaffManage"))
+        {
+            <li>
+                <a class="btn btn-default btn-lg">
+                    <span class="iconfont" aria-hidden="true"><img src="/images/renyuanguanli.png" /></span> 人员管理
+                </a>
+            </li>
+        }
+        @if (level.Contains("RewardAndPunishment") || level.Contains("GeneralComment") || level.Contains("UploadGroup") || level.Contains("QueryGroup"))
+        {
+            <li>
+                <a class="btn btn-default btn-lg" href="#">
+                    <span class="iconfont" aria-hidden="true"><img src="/images/JlYuanGongKaoHe.png" /></span> 金流员工考核
+                </a>
+                <div class="erjimenu" style="display:none;">
+                    <div style="position: relative;">
+                        <span class="dangqianArrowleft">
+                        </span>
+                        <div class="erjinav">
+                            @if (level.Contains("RewardAndPunishment") || level.Contains("GeneralComment") || level.Contains("UploadGroup") || level.Contains("QueryGroup"))
+                            {
+                                <a href="/Accounting/GeneralComment/Index"><img src="/images/JLYuanGong.png" />金流员工考核</a>
+                            }
+                            @if ((level.Contains("RewardAndPunishment") || level.Contains("GeneralComment") || level.Contains("UploadGroup") || level.Contains("QueryGroup")) && !level.Contains("WhetherCadre"))
+                            {
+                                <a href="/Accounting/GeneralComment/Index?WhetherCadre=true"><img src="/images/JLGanBu.png" />金流干部考核</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </li>
+        }
+        @if (level.Contains("AssessmentForAllItem") || level.Contains("AssessmentDirect"))
+        {
+            <li>
+                <a class="btn btn-default btn-lg" href="javascript:">
+                    <span class="iconfont" aria-hidden="true"><img src="/images/KFYuanGongKaoHe.png" /></span> 客服员工考核
+                </a>
+                <div class="erjimenu" style="display:none;top:-150px;">
+                    <div style="position: relative;">
+                        <span class="dangqianArrowleft" style="top:150px;">
+                        </span>
+                        <div class="erjinav">
+                            <div class="sanjinav">
+                                <a href="javascript:">
+                                    <span class="iconfont" aria-hidden="true"></span><img src="/images/KFChangGuiYuanGong.png" />常规员工考核
+                                </a>
+                                <div class="erjimenu" style="display:none;top:-50px;">
+                                    <div style="position: relative;">
+                                        <span class="dangqianArrowleft" style="top:50px;">
+                                        </span>
+                                        <div class="erjinav">
+                                            @if (level.Contains("AssessmentForAllItem"))
+                                            {
+                                                <a href="/Assessment/AssessmentForAllItem/Index?isDirect=false&GroupNum=0&itemType=10"><span class="iconfont " aria-hidden="true"><img src="/images/JLYuanGong.png" /></span> 常规员工考核</a>
+                                            }
+                                            @if (level.Contains("AssessmentDirect"))
+                                            {
+                                                <a href="/Assessment/AssessmentForAllItem/Index?isDirect=true&GroupNum=0&itemType=10"><span class="iconfont " aria-hidden="true"><img src="/images/JLGanBu.png" /></span> 常规干部考核</a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div><!-- /.erjimenu-->
+                            </div>
+                            <div class="sanjinav">
+                                <a href="javascript:">
+                                    <span class="iconfont" aria-hidden="true"></span><img src="/images/KFFengKongYuanGong.png" />风控员工考核
+                                </a>
+                                <div class="erjimenu" style="display:none;top:0px;">
+                                    <div style="position: relative;">
+                                        <span class="dangqianArrowleft" style="top:50px;">
+                                        </span>
+                                        <div class="erjinav">
+                                            @if (level.Contains("AssessmentForAllItem"))
+                                            {
+                                                <a href="/Assessment/AssessmentForAllItem/Index?isDirect=false&GroupNum=1&itemType=10"><span class="iconfont " aria-hidden="true"><img src="/images/JLYuanGong.png" /></span> 风控员工考核</a>
+                                            }
+                                            @if (level.Contains("AssessmentDirect"))
+                                            {
+                                                <a href="/Assessment/AssessmentForAllItem/Index?isDirect=true&GroupNum=1&itemType=10"><span class="iconfont " aria-hidden="true"><img src="/images/JLGanBu.png" /></span> 风控干部考核</a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div><!-- /.erjimenu-->
+                            </div>
+
+                            <div class="sanjinav">
+                                <a href="javascript:">
+                                    <span class="iconfont" aria-hidden="true"></span><img src="/images/KFCheShiYuanGong.png" />测试员工考核
+                                </a>
+                                <div class="erjimenu" style="display:none;top:50px;">
+                                    <div style="position: relative;">
+                                        <span class="dangqianArrowleft" style="top:50px;">
+                                        </span>
+                                        <div class="erjinav">
+                                            @if (level.Contains("AssessmentForAllItem"))
+                                            {
+                                                <a href="/Assessment/AssessmentForAllItem/Index?isDirect=false&GroupNum=2&itemType=10"><span class="iconfont " aria-hidden="true"><img src="/images/JLYuanGong.png" /></span> 测试员工考核</a>
+                                            }
+                                            @if (level.Contains("AssessmentDirect"))
+                                            {
+                                                <a href="/Assessment/AssessmentForAllItem/Index?isDirect=true&GroupNum=2&itemType=10"><span class="iconfont " aria-hidden="true"><img src="/images/JLGanBu.png" /></span> 测试干部考核</a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div><!-- /.erjimenu-->
+                            </div>
+
+                            <div class="sanjinav">
+                                <a href="javascript:">
+                                    <span class="iconfont" aria-hidden="true"></span><img src="/images/KFXingXiaoYuanGong.png" />行销员工考核
+                                </a>
+                                <div class="erjimenu" style="display:none;top:100px;">
+                                    <div style="position: relative;">
+                                        <span class="dangqianArrowleft" style="top:50px;">
+                                        </span>
+                                        <div class="erjinav">
+                                            @if (level.Contains("AssessmentForAllItem"))
+                                            {
+                                                <a href="/Assessment/AssessmentForAllItem/Index?isDirect=false&GroupNum=3&itemType=10"><span class="iconfont " aria-hidden="true"><img src="/images/JLYuanGong.png" /></span> 行销员工考核</a>
+                                            }
+                                            @if (level.Contains("AssessmentDirect"))
+                                            {
+                                                <a href="/Assessment/AssessmentForAllItem/Index?isDirect=true&GroupNum=3&itemType=10"><span class="iconfont " aria-hidden="true"><img src="/images/JLGanBu.png" /></span> 行销干部考核</a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div><!-- /.erjimenu-->
+                            </div>
+
+                            <div class="sanjinav">
+                                <a href="javascript:">
+                                    <span class="iconfont" aria-hidden="true"></span><img src="/images/KFPeiXunYuanGong.png" />培训员工考核
+                                </a>
+                                <div class="erjimenu" style="display:none;top:150px;">
+                                    <div style="position: relative;">
+                                        <span class="dangqianArrowleft" style="top:50px;">
+                                        </span>
+                                        <div class="erjinav">
+                                            @if (level.Contains("AssessmentForAllItem"))
+                                            {
+                                                <a href="/Assessment/AssessmentForAllItem/Index?isDirect=false&GroupNum=4&itemType=10"><span class="iconfont " aria-hidden="true"><img src="/images/JLYuanGong.png" /></span> 培训员工考核</a>
+                                            }
+                                            @if (level.Contains("AssessmentDirect"))
+                                            {
+                                                <a href="/Assessment/AssessmentForAllItem/Index?isDirect=true&GroupNum=4&itemType=10"><span class="iconfont " aria-hidden="true"><img src="/images/JLGanBu.png" /></span> 培训干部考核</a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div><!-- /.erjimenu-->
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.erjimenu-->
+            </li>
+        }
+        @if (level.Contains("JLKFLevel"))
+        {
+            <li>
+                <a class="btn btn-default btn-lg" href=@Html.Raw(!level.Contains("JLKFLevel")?"/Home/Index":"/Accounting/JLKFLevel/Index")>
+                    <span class="iconfont" aria-hidden="true">&#xe61f;</span> 金流客服权限管理
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+<script type="text/javascript">
+    $(function () {
+        $(".nav li").hover(function () {
+            $(this).children("div").show();
+        }, function () {
+            $(this).children("div").hide();
+        });
+        $("erjinav a").hover(function () {
+            $(this).addClass("erjinavcurrent");
+            $(this).removeClass("erjinavcurrent");
+        });
+        $(".sanjinav").hover(function () {
+            $(this).children("div").show();
+        }, function () {
+            $(this).children("div").hide();
+        });
+    })
+
+
+
+</script>

@@ -1,0 +1,875 @@
+﻿@using MI.Core.Domain
+@model MI.Core.Domain.Employee
+@{
+    Layout = null; //重要
+    bool IsCreate = ViewBag.IsCreate ?? false;
+    string sAddorUpdateStr = IsCreate ? "添加" : "修改";
+    bool IsNew = ViewBag.IsNew;
+    string FileName = DateTime.Now.Ticks + "x";
+    Employee currentEmp = ViewBag.CurrentEmp;
+    string style1 = "style = \"background-image: url(' " + (ViewBag.TpassportURL ?? "~/images/photo1.png") + "');background-size:cover; \" ";  //护照缩略图
+    string style2 = "style = \"background-image: url(' " + (ViewBag.TentrystampURL ?? "~/images/photo1.png") + "');background-size:cover; \" ";//入境章的缩略图
+    string style3 = "style = \"background-image: url(' " + (ViewBag.TidCardURL ?? "~/images/photo1.png") + "');background-size:cover; \" ";//证件照的缩略图
+    
+    string[] level = ViewBag.levelValue ?? "";//权限
+}
+
+@Scripts.Render("~/bundles/jqueryRotate")
+@Styles.Render("~/Content/EmployeeinfoEdit")
+@Styles.Render("~/Content/datetimepicker")
+@Scripts.Render("~/bundles/datetimepicker")
+@Scripts.Render("~/bundles/drag")
+<script type="text/javascript">
+    var booIsCreate = "@IsCreate" == "True";
+    var iEid = "@(Model.f_eid)";
+    var xiazURL = "@Url.Action("DownloadFile", new { eid = Model.f_eid })";
+</script>
+@Scripts.Render("~/bundles/EmployeesEdit")
+@Scripts.Render("~/bundles/JavaScript")
+<button type="button" onclick="btnSumbit()" class="btn btn-primary closebtn" style="right:115px">@("确认" + sAddorUpdateStr)</button>
+<button type="button" id="btn-quxiao" onclick="closeADDwindow()" class="btn btn-danger closebtn">取消（X）</button>
+<div class="panel panel-default">
+    <div class="panel-heading">@(IsNew ? "新人管理" : "人事报表")-@sAddorUpdateStr</div>
+    <form id="employeeInfoform" action="@Url.Action(IsCreate ? "Create" : "Edit")" method="post" autocomplete="off" style="height:810px;overflow-y:auto;">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped">
+                <tr>
+                    <td><span style="color:#d43f3a">*</span>中文名:</td>
+                    <td>
+                        @Html.Hidden("EmployeeInfo.f_CreateDate", Model.f_CreateDate)
+                        @Html.Hidden("EmployeeInfo.f_AccountName", Model.f_AccountName)
+                        @Html.TextBox("EmployeeInfo.f_chineseName", Model.f_chineseName, new { @class = "form-control", @style = "width : 60%;float:left", placeholder = "请输入中文名", maxLength = 10 })
+                        @Html.Hidden("EmployeeInfo.f_PassportURL", Model.f_PassportURL)
+                        @Html.Hidden("EmployeeInfo.f_EntrystampURL", Model.f_EntrystampURL)
+                        @Html.Hidden("EmployeeInfo.f_IDCardURL", Model.f_IDCardURL)
+                        <div class="photo-staff" id="PassportImgDiv">
+                            <a class="photo-add" @Html.Raw(!IsCreate ? "style='display:none' " : "") onclick="showFile('p')"></a>
+                            <a class="photos hz" @Html.Raw(IsCreate ? "style = 'display:none'" : style1)><span class="zoominicon iconfont">&#xe61e;</span></a>
+                            <div id="box" class="photobig-staff">
+                                <img src="~/images/photo1.png" draggable="false" class="img-responsive img-rounded" id="PassportImg" />
+                                <a class="closephoto iconfont">&#xe612;</a>
+                                <a class="rephotobtn iconfont" onclick="showFile()" title="修改图片">&#xe60a;</a>
+                                <a class="downloadbtn iconfont" href="@Url.Action("DownloadFile", new { eid = Model.f_eid })" style="display:none" title="下载图片">&#xe60d;</a>
+                                <span class="glyphicon glyphicon-repeat" aria-hidden="true" id="repeat" title="旋转图片"> </span>
+                                <a id="coor" title="放大缩小"></a>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="width:25%;">
+                        <div class="photo-staff" id="EntrystampImgDiv" style="float:left">
+                            <a class="photo-add" @Html.Raw(!IsCreate ? "style='display:none' " : "") onclick="showFile('e')"></a>
+                            <a class="photos rjz" @Html.Raw(IsCreate ? "style = 'display:none'" : style2)><span class="zoominicon iconfont">&#xe61e;</span></a>
+                        </div>
+                        <div class="photo-staff" id="IDCardDiv" style="float:left">
+                            <a class="photo-add" @Html.Raw(!IsCreate ? "style='display:none' " : "") onclick="showFile('c')"></a>
+                            <a class="photos zjz" @Html.Raw(IsCreate ? "style = 'display:none'" : style3)><span class="zoominicon iconfont">&#xe61e;</span></a>
+                        </div>
+                        <span style="color:#d43f3a">*</span>性别:
+                    </td>
+                    <td>
+                        <div class="dropdown">
+                            @Html.Hidden("EmployeeInfo.f_sex", Model.f_sex, new { @correspond = "dropdownMenuSex" })
+                            <button class="btn btn-default dropdown-toggle" style="width:80px" type="button" id="dropdownMenuSex" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(Model.f_sex == 1 ? "男" : "女")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuSex">
+                                <li><a href="javaScript:" id="0">女    </a></li>
+                                <li><a href="javaScript:" id="1">男    </a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span style="color:#d43f3a">*</span> 部 门:</td>
+
+                    <td>
+                        @Html.Hidden("EmployeeInfo.f_eid", Model.f_eid)
+                        @Html.Hidden("IsnewEmployeeInfo", IsNew)
+                        @if (level.Contains("Sector1"))
+                        {
+                            <div class="dropdown">
+                                @Html.Hidden("EmployeeInfo.f_department_tID", Model.f_department_tID, new { @correspond = "dropdownMenuDep" })
+                                <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenuDep" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @(Model.t_sType?.f_value ?? "请选择")
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuDep">
+                                    @foreach (var item in (List<SType>)ViewBag.listTypeDepartment)
+                                    {
+                                        <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            if (IsCreate)
+                            {
+                                @Html.Hidden("EmployeeInfo.f_department_tID", currentEmp.f_department_tID)
+                                <span>@(((List<SType>)ViewBag.listTypeDepartment).Where(p => p.f_tID == currentEmp.f_department_tID).FirstOrDefault()?.f_value)</span>
+                            }
+                            else
+                            {
+                                @Html.Hidden("EmployeeInfo.f_department_tID", Model.f_department_tID)
+                                <span>@(Model.t_sType?.f_value)</span>
+                            }
+                        }
+                    </td>
+
+                    @if (!IsNew)
+                    {
+                        <td>班次:</td>
+                        <td>
+                            <div class="dropdown">
+                                @Html.Hidden("EmployeeInfo.f_periodType_tID", Model.f_periodType_tID, new { @correspond = "dropdownMenuPer" })
+                                <button class="btn btn-default dropdown-toggle" style="width:80px" type="button" id="dropdownMenuPer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @(Model.STypeDepartment?.f_value ?? "请选择")
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuPer">
+                                    @foreach (var item in (List<SType>)ViewBag.listTypePeriodType)
+                                    {
+                                        <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                    }
+                                </ul>
+                            </div>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>保关:</td>
+                        <td>
+                            <span class="input-group-addon">
+                                @Html.CheckBox("EmployeeInfo.t_newEmployeeInfo.f_isInform", Model.NewEmployee?.f_isInform ?? false)
+                                保关
+                            </span>
+                        </td>
+                    }
+                </tr>
+                <tr>
+                    <td><span style="color:#d43f3a">*</span>国 籍:</td>
+                    <td>
+                        <div class="dropdown">
+                            @Html.Hidden("EmployeeInfo.f_international", Model.f_international, new { @correspond = "dropdownMenuInt" })
+                            <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenuInt" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(Model.f_international ?? "请选择")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuInt">
+                                @foreach (var item in (List<SType>)ViewBag.GuoJi)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_value)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                    <td><span style="color:#d43f3a">*</span>是否为菲员工:</td>
+                    <td>
+                        <div style="width:75px;float:left; margin-top: 4px">
+                            <span class="input-group-addon">
+                                <input type="radio" name="PHStaff" onchange="Change()" value="0" id="PHStaff" @( Model.f_IsPHStaff ? "" : "checked='checked'" ) />否
+                                <input type="radio" name="PHStaff" onchange="Change()" value="1" id="PHStaff" @( Model.f_IsPHStaff ? "checked='checked'" : "" ) />是
+                            </span>
+                        </div>
+                        <div style="float:right;width:140px">
+                            @Html.TextBox("EmployeeInfo.f_Salary", (Model.f_Salary?.ToString("F2")), new { @class = "f_Salary form-control", @onkeyup = "check123(this)", @style = (Model.f_IsPHStaff ? "" : "display:none;"), placeholder = "请输入薪资" })
+                        </div>
+                        @Html.Hidden("EmployeeInfo.f_IsPHStaff", Model.f_IsPHStaff)
+
+                    </td>
+                </tr>
+                @if (!IsNew)
+                {
+                    <tr>
+                        <td>签证类型：</td>
+                        <td>
+                            <div class="dropdown">
+                                @Html.Hidden("EmployeeInfo.f_VisaType_tID", Model.f_VisaType_tID, new { @correspond = "dropdownMenuVis" })
+                                <button class="btn btn-default dropdown-toggle" style="width: 130px" type="button" id="dropdownMenuVis" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @( (ViewBag.listTypeVisa as List<SType>).FirstOrDefault(p => p.f_tID == Model.f_VisaType_tID)?.f_value ?? "请选择")
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuVis">
+                                    @foreach (var item in (List<SType>)ViewBag.listTypeVisa)
+                                    {
+                                        <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                    }
+                                </ul>
+                            </div>
+                        </td>
+                        <td>蓝卡到期日:</td>
+                        <td>
+                            @Html.TextBox("EmployeeInfo.f_passportDate", Model.f_passportDate?.ToString("yyyy-MM-dd") ?? "", new { @class = "form-control" })
+                            <script type="text/javascript">
+                                $(document).ready(function () {
+                                    $.datetimepicker.setLocale('zh');
+                                    // 设定时间格式
+                                    $("#EmployeeInfo_f_passportDate").datetimepicker({
+                                        lang: 'zh',
+                                        timepicker: false,
+                                        format: 'Y-m-d',
+                                        formatDate: 'Y-m-d'
+                                    });
+                                });
+                            </script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>I卡或I卡证明到期时间:</td>
+                        <td colspan="3">
+                            @Html.TextBox("EmployeeInfo.f_ICardDate", Model.f_ICardDate?.ToString("yyyy-MM-dd") ?? "", new { @class = "form-control" })
+                            <script type="text/javascript">
+                                $(document).ready(function () {
+                                    // 设定时间格式
+                                    $("#EmployeeInfo_f_ICardDate").datetimepicker({
+                                        lang: 'zh',
+                                        timepicker: false,
+                                        format: 'Y-m-d',
+                                        formatDate: 'Y-m-d'
+                                    });
+                                });
+                            </script>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td><span style="color:#d43f3a">*</span>护照英文名 :</td>
+                    <td>
+                        @Html.TextBox("EmployeeInfo.f_passportName", Model.f_passportName, new { @class = "form-control", @onkeyup = "checkABC(this)", placeholder = "请输入护照名", maxLength = 50 })
+                    </td>
+                    <td><span style="color:#d43f3a">*</span>护照ID:</td>
+                    <td>
+                        @Html.TextBox("EmployeeInfo.f_passportID", Model.f_passportID, new { @class = "form-control", @onkeyup = "checkABC123(this)", placeholder = "请输入护照ID", maxLength = 15 })
+                    </td>
+                </tr>
+                <tr>
+                    <td><span style="color:#d43f3a">*</span>昵称:</td>
+                    <td>
+                        @Html.TextBox("EmployeeInfo.f_nickname", Model.f_nickname, new { @class = "form-control", placeholder = "请输入昵称/QQ昵称", maxLength = 20 })
+                    </td>
+                    <td>QQ号码:</td>
+                    <td>
+                        @Html.TextBox("EmployeeInfo.f_QQNumber", Model.f_QQNumber, new { @class = "form-control", @onkeyup = "check123(this)", placeholder = "请输入QQ号码", maxLength = 15 })
+                    </td>
+                </tr>
+                @if (!IsNew)
+                {
+                    <tr>
+                        <td>入职日期:</td>
+                        <td>@Html.TextBox("EmployeeInfo.f_HireDate", Model.f_HireDate?.ToString("yyyy-MM-dd") ?? "", new { @class = "form-control", placeholder = "请输入入职日期" })</td>
+                        <td>出生日期:</td>
+                        <td>
+                            @Html.TextBox("EmployeeInfo.f_DateOfBirth", Model.f_DateOfBirth?.ToString("yyyy-MM-dd") ?? "", new { @class = "form-control", placeholder = "请输入出生日期" })
+                            <script type="text/javascript">
+                                $(document).ready(function () {
+                                    // 设定时间格式
+                                    $("#EmployeeInfo_f_HireDate,#EmployeeInfo_f_DateOfBirth").datetimepicker({
+                                        timepicker: false,
+                                        format: 'Y-m-d'
+                                    });
+                                });
+                            </script>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td>联系电话(菲):</td>
+                    <td @Html.Raw(IsNew ? "colspan='3'" : "")>
+                        @Html.TextBox("EmployeeInfo.f_TelNoPH", Model.f_TelNoPH, new { @class = "form-control", @onkeyup = "checknumber(this)", placeholder = "请输入电话号码(菲)", maxLength = 20, @style = "width:100%" })
+                    </td>
+                    @if (!IsNew)
+                    {
+                        <td>国内电话:</td>
+                        <td>
+                            @Html.TextBox("EmployeeInfo.f_TelNoCN", Model.f_TelNoCN, new { @class = "form-control", @onkeyup = "checknumber(this)", placeholder = "请输入国内的电话", maxLength = 20 })
+                        </td>
+                    }
+                </tr>
+                <tr>
+                    <td>(不选择表示无)住宿:</td>
+                    <td colspan="3">
+                        @Html.Hidden("EmployeeInfo.f_DormitoryId", Model.f_dormitoryId)
+                        <div class="dropdown" style="float:left">
+                            @Html.Hidden("onchangeCommunity", Model.t_Dormitory?.f_Community, new { @correspond = "dropdownMenuCom" })
+                            <button class="btn btn-default dropdown-toggle" style="width:auto;min-width:130px;" type="button" id="dropdownMenuCom" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(Model.t_Dormitory?.f_Community ?? "请选择社区")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuCom">
+                                <li><a href="javaScript:changeCommunity()" id="请选择社区">请选择社区 </a></li>
+                                @foreach (string item in (List<string>)ViewBag.listStrCommunity)
+                                {
+                                    <li><a href="javaScript:changeCommunity()" id="@(item)">@item </a></li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="dropdown" style="float:left;margin-left:8px">
+                            @Html.Hidden("onchangeBuilding", Model.t_Dormitory?.f_Building, new { @correspond = "dropdownMenuBui" })
+                            <button class="btn btn-default dropdown-toggle" style="width:auto;min-width:130px;" type="button" id="dropdownMenuBui" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(Model.t_Dormitory?.f_Building ?? "请先选择社区")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" id="DropdownBuilding" aria-labelledby="dropdownMenuBui">
+                                <li><a href="javaScript:" id="请先选择社区">请先选择社区</a></li>
+                                @if (!IsCreate)
+                                {
+                                    foreach (string item in (List<string>)ViewBag.listStrBuilding)
+                                    {
+                                        <li><a href="javaScript:changeBuilding()" id="@(item)">@item </a></li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                        <div class="dropdown" style="float:left;margin-left:8px">
+                            @Html.Hidden("onchangeRoomNo", Model.t_Dormitory?.f_RoomNo, new { @correspond = "dropdownMenuRoomNo" })
+                            <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenuRoomNo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(Model.t_Dormitory?.f_RoomNo ?? "请先选择楼栋")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" id="DropdownRoomNo" aria-labelledby="dropdownMenuRoomNo">
+                                <li><a href="javaScript:" id="请先选择楼栋">请先选择楼栋</a></li>
+                                @if (!IsCreate)
+                                {
+                                    foreach (string item in (List<string>)ViewBag.listStrRoom)
+                                    {
+                                        <li><a href="javaScript:changeRoomNo()" id="@(item)">@item </a></li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                @if (!IsNew)
+                {
+                    <tr>
+                        <td>搭车时间(上班):</td>
+                        <td>
+                            @Html.TextBox("EmployeeInfo.f_rideWorkTime", Model.f_rideWorkTime?.ToString("HH:mm") ?? "", new { @class = "form-control", @onkeyup = "checkDatetime(this)", placeholder = "请输入上班搭车的时间" })
+                        </td>
+                        <td>搭车时间(下班):</td>
+                        <td>
+                            @Html.TextBox("EmployeeInfo.f_rideOffWorkTime", Model.f_rideOffWorkTime?.ToString("HH:mm") ?? "", new { @class = "form-control", @onkeyup = "checkDatetime(this)", placeholder = "请输入下班搭车的时间" })
+                            <script type="text/javascript">
+                                $(document).ready(function () {
+                                    $("#EmployeeInfo_f_rideWorkTime").datetimepicker({
+                                        datepicker: false,
+                                        format: 'H:i',
+                                        allowTimes: ['01:00', '03:00', '05:00', '07:00', '09:00', '11:00', '13:00', '15:00', '17:00', '19:00', '21:00', '23:00']
+                                    });
+                                    $("#EmployeeInfo_f_rideOffWorkTime").datetimepicker({
+                                        datepicker: false,
+                                        format: 'H:i'
+                                    });
+                                });
+                            </script>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>航班起飞时间:</td>
+                        <td>
+                            @Html.TextBox("EmployeeInfo.t_newEmployeeInfo.f_flightDate", Model.NewEmployee?.f_flightDate == null ? "" : Model.NewEmployee?.f_flightDate.Value.ToString("yyyy-MM-dd HH:mm"), new { @class = "form-control", @onkeyup = "checkDatetime(this)", placeholder = "请输入航班起飞日期" })
+
+                        </td>
+                        <td>航班抵达时间:</td>
+                        <td>
+                            @Html.TextBox("EmployeeInfo.t_newEmployeeInfo.f_flightArrivalTime", Model.NewEmployee?.f_flightArrivalTime == null ? "" : Model.NewEmployee?.f_flightArrivalTime.Value.ToString("yyyy-MM-dd HH:mm"), new { @class = "form-control", @onkeyup = "checkDatetime(this)", placeholder = "请输入航班抵达时间" })
+                            @if (IsNew)
+                            {
+                                <script>
+                                    // 设定时间格式
+                                    $("#EmployeeInfo_t_newEmployeeInfo_f_flightArrivalTime").datetimepicker({
+                                        format: 'Y-m-d H:i',
+                                        step: 5,
+                                        onChangeDateTime: function () {
+                                            SetOrderingDate();
+                                        }
+                                    });
+                                </script>
+                            }
+                            else
+                            {
+                                <script>
+                                    // 设定时间格式
+                                    $("#EmployeeInfo_t_newEmployeeInfo_f_flightArrivalTime").datetimepicker({
+                                        format: 'Y-m-d H:i',
+                                        step: 5
+                                    });
+                                </script>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>航班类型:</td>
+                        <td>
+                            <div class="dropdown">
+                                @Html.Hidden("EmployeeInfo.t_newEmployeeInfo.f_flightTypt_tID", Model.NewEmployee?.f_flightTypt_tID, new { @correspond = "dropdownMenuFli" })
+                                <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenuFli" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @( (((List<SType>)ViewBag.listTypeFlight).FirstOrDefault(p => p.f_tID == (Model.NewEmployee?.f_flightTypt_tID))?.f_value) ?? "选择航班类型")
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuFli">
+                                    @foreach (var item in (List<SType>)ViewBag.listTypeFlight)
+                                    {
+                                        <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                    }
+                                </ul>
+                            </div>
+                        </td>
+                        <td>报到地点:</td>
+                        <td>
+                            <div class="dropup">
+                                @Html.Hidden("EmployeeInfo.f_workLocation_tID", Model.f_workLocation_tID, new { @correspond = "dropdownMenuWor" })
+                                <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenuWor" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @(Model.STypeWorkLocation?.f_value ?? "请选择")
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuWor">
+                                    @foreach (var item in (List<SType>)ViewBag.listTypeWorkLocation)
+                                    {
+                                        <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                    }
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>报到日期:</td>
+                        <td>
+                            @Html.TextBox("EmployeeInfo.f_rideWorkTime", Model.f_rideWorkTime?.ToString("yyyy-MM-dd") ?? "", new { @class = "form-control", @onkeyup = "checkDatetime(this)", @style = "float:left", placeholder = "请输入报到日期" })
+                        </td>
+                        <td>报到时间:</td>
+                        <td>
+                            @Html.TextBox("EmployeeInfo.f_rideOffWorkTime", Model.f_rideOffWorkTime?.ToString("HH:mm") ?? "", new { @class = "form-control", @onkeyup = "checkDatetime(this)", placeholder = "请输入报到时间" })
+                            <script type="text/javascript">
+                                    $(document).ready(function () {
+                                        $.datetimepicker.setLocale('zh');
+                                        // 设定时间格式
+                                        $("#EmployeeInfo_f_rideWorkTime").datetimepicker({
+                                            timepicker: false,
+                                            format: 'Y-m-d',
+                                            step: 5
+                                        });
+                                        $("#EmployeeInfo_f_rideOffWorkTime").datetimepicker({
+                                            datepicker: false,
+                                            format: 'H:i',
+                                            step: 60
+                                        });
+                                        $("#EmployeeInfo_t_newEmployeeInfo_f_flightDate").datetimepicker({
+                                            format: 'Y-m-d H:i',
+                                            step: 5,
+                                            onChangeDateTime: function () {
+                                                $("#EmployeeInfo_t_newEmployeeInfo_f_flightArrivalTime").val($("#EmployeeInfo_t_newEmployeeInfo_f_flightDate").val());
+                                                SetOrderingDate();
+                                            }
+                                        });
+                                    });
+                            </script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>借款金额(披索):</td>
+                        <td>
+                            @Html.TextBox("EmployeeInfo.t_newEmployeeInfo.f_LoanAmount", Model.NewEmployee?.f_LoanAmount, new { @class = "form-control", @onkeyup = "value=value.replace(/[^0-9]/g,'')", placeholder = "请输入正确的借款披索金额" })
+                        </td>
+                        <td>储值卡:</td>
+                        <td>
+                            @Html.TextBox("EmployeeInfo.t_newEmployeeInfo.f_GiftCard", Model.NewEmployee?.f_GiftCard, new { @class = "form-control", @onkeyup = "value=value.replace(/[^0-9]/g,'')", placeholder = "请输入正确的储值卡金额" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>电话卡:</td>
+                        <td>
+                            @Html.TextBox("EmployeeInfo.t_newEmployeeInfo.f_TelCatd", Model.NewEmployee?.f_TelCatd, new { @class = "form-control", @onkeyup = "value=value.replace(/[^0-9]/g,'')", placeholder = "请输入正确的电话卡金额" })
+                        </td>
+                        <td>是否确认:</td>
+                        <td>
+                            <span class="input-group-addon">
+                                @Html.CheckBox("EmployeeInfo.t_newEmployeeInfo.f_signature", Model.NewEmployee?.f_signature ?? false)
+                                是否确认以上借款及预付卡
+                            </span>
+                        </td>
+                    </tr>
+
+                    @Html.Hidden("EmployeeInfo.t_newEmployeeInfo.f_nID", Model.NewEmployee?.f_nID)
+                }
+
+                @if (!IsNew)
+                {
+                    <tr>
+                        <td><span style="color:#d43f3a">*</span>紧急联系人:</td>
+                        <td>
+                            @Html.TextBox("EmployeeInfo.f_emergencyContactPerson", Model.f_emergencyContactPerson, new { @class = "form-control", placeholder = "请输入紧急联系人", maxLength = 10 })
+                        </td>
+                        <td><span style="color:#d43f3a">*</span>紧急联系电话:</td>
+                        <td>
+                            @Html.TextBox("EmployeeInfo.f_emergencyContactNumber", Model.f_emergencyContactNumber, new { @class = "form-control", @onkeyup = "checknumber(this)", placeholder = "请输入紧急联系电话", maxLength = 20 })
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><span style="color: #d43f3a">*</span>上班地点:</td>
+                        <td>
+                            <div class="dropup">
+                                @Html.Hidden("EmployeeInfo.f_workLocation_tID", Model.f_workLocation_tID, new { @correspond = "dropdownMenuWorkL" })
+                                <button class="btn btn-default dropdown-toggle" style="width: 150px" type="button" id="dropdownMenuWorkL" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @(Model.STypeWorkLocation?.f_value ?? "请选择")
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuWorkL">
+                                    @foreach (var item in (List<SType>)ViewBag.listTypeWorkLocation)
+                                    {
+                                        <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                    }
+                                </ul>
+                            </div>
+                        </td>
+                        <td><span style="color: #d43f3a">*</span>在职状态:</td>
+                        <td>
+                            <div class="dropup">
+                                @Html.Hidden("EmployeeInfo.f_workStatus_tID", (Model.f_workStatus_tID ?? 0), new { @correspond = "dropdownMenuWorkS" })
+                                <button class="btn btn-default dropdown-toggle" style="width: 150px" type="button" id="dropdownMenuWorkS" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @(Model.STypeWorkStatus?.f_value ?? "请选择")
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuWorkS">
+                                    @foreach (var item in (List<SType>)ViewBag.listTypeWorkStatus)
+                                    {
+                                        <li><a href="javaScript:" onclick="UpperCase('@(item.f_value)')" id="@(item.f_tID)">@item.f_value </a></li>
+                                    }
+                                </ul>
+                            </div>
+                        </td>
+
+                    </tr>
+                    <tr class="workStatus_tID" style="@(((Model.STypeWorkStatus?.f_value ?? "请选择")=="离职"||(Model.STypeWorkStatus?.f_value ?? "请选择")=="離職")?"":"display:none")">
+                        <td><span style="color: #d43f3a">*</span>離職時間:</td>
+                        <td colspan="3">
+                            @Html.TextBox("EmployeeInfo.f_SeparationDate", Model.f_SeparationDate?.ToString("yyyy-MM-dd") ?? "", new { @class = "form-control" })
+                            <script type="text/javascript">
+                                    $(document).ready(function () {
+                                        // 设定时间格式
+                                        $("#EmployeeInfo_f_SeparationDate").datetimepicker({
+                                            lang: 'zh',
+                                            timepicker: false,
+                                            format: 'Y-m-d',
+                                            formatDate: 'Y-m-d'
+                                        });
+                                    });
+                            </script>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>
+                            备注:
+                        </td>
+                        <td colspan="3">
+                            @Html.TextBox("EmployeeInfo.t_newEmployeeInfo.f_Remark", Model.NewEmployee?.f_Remark, new { @class = "form-control", placeholder = "请输入备注", maxLength = 500 })
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td><span style="color:#d43f3a">*</span>等级:</td>
+                    <td>
+                        @if (level.Contains("Rights1"))
+                        {
+                            <div class="dropup">
+                                @Html.Hidden("EmployeeInfo.f_level_tID", Model.f_level_tID, new { @correspond = "dropdownMenuLevel" })
+                                <button class="btn btn-default dropdown-toggle" style="width:150px" type="button" id="dropdownMenuLevel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @(Model.STypeLevel?.f_value ?? "请选择")
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLevel">
+                                    @foreach (var item in (List<SType>)ViewBag.listTypeLevel)
+                                    {
+                                        <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            if (IsCreate)
+                            {
+                                @Html.Hidden("EmployeeInfo.f_level_tID", ((List<SType>)ViewBag.listTypeLevel).FirstOrDefault()?.f_tID)
+                                @(((List<SType>)ViewBag.listTypeLevel).FirstOrDefault()?.f_value ?? "请选择") 
+                            }
+                            else
+                            {
+                                @Html.Hidden("EmployeeInfo.f_level_tID", Model.f_level_tID)
+                                @(Model.STypeLevel?.f_value ?? "请选择") 
+                            }
+                        }
+                    </td>
+                    <td>是否订餐:</td>
+                    <td>
+                        @if (IsNew)
+                        {
+                            <span class="input-group-addon">
+                                <input id="IsOrderingEmployeesTrue" name="IsOrderingEmployees" value="true" onclick="chickIsOrderingEmployees(this)" @Html.Raw(Model.NewOrderingEmoloyees?.Count > 0 ? "checked='checked'" : "") type="radio" aria-label="...">是
+                            </span>
+                            <span class="input-group-addon">
+                                <input id="IsOrderingEmployees" name="IsOrderingEmployees" value="false" onclick="chickIsOrderingEmployees(this)" @Html.Raw(Model.NewOrderingEmoloyees?.Count == 0 ? "checked='checked'" : "") type="radio" aria-label="...">否
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="input-group-addon">
+                                <input id="IsOrderingEmployeesTrue" name="IsOrderingEmployees" value="true" onclick="chickIsOrderingEmployees(this)" @Html.Raw(Model.OrderingEmployees?.Count > 0 ? "checked='checked'" : "") type="radio" aria-label="...">是
+                            </span>
+                            <span class="input-group-addon">
+                                <input id="IsOrderingEmployees" name="IsOrderingEmployees" value="false" onclick="chickIsOrderingEmployees(this)" @Html.Raw(Model.OrderingEmployees?.Count == 0 ? "checked='checked'" : "") type="radio" aria-label="...">否
+                            </span>
+                        }
+
+                    </td>
+                </tr>
+                @if (IsNew)
+                {
+                    <tr class="trOrderingEmployees" @Html.Raw(Model.NewOrderingEmoloyees?.Count == 0 ? "style='display:none'" : "")>
+                        <td rowspan="2">新人餐</td>
+                        <td colspan="3" id="dateTd">
+                            @for (int i = 0; i < 3; i++)
+                            {
+                                var currentDate = IsCreate ? DateTime.Now.AddDays(i).ToString("yyyy-MM-dd") : Model.NewEmployee?.f_flightArrivalTime?.AddDays(i).ToString("yyyy-MM-dd");
+                                <span id="observationDate@(i)">@(currentDate)</span>
+                                foreach (var item in (List<SType>)ViewBag.listTypeLDM)
+                                {
+                                    bool bIsHasLDMtID = Model.NewOrderingEmoloyees == null ? false : Model.NewOrderingEmoloyees.Any(p => p.f_LDM_tID == item.f_tID && p.f_EffectiveDate != null && p.f_EffectiveDate.Value.ToString("yyyy-MM-dd") == currentDate);
+                                    <span class="input-group-addon" name="observationDateParent@(i)">
+                                        @if (bIsHasLDMtID)
+                                        {
+                                            <input type='hidden' value="@(Model.NewOrderingEmoloyees.FirstOrDefault(p => p.f_LDM_tID == item.f_tID && p.f_EffectiveDate != null && p.f_EffectiveDate.Value.ToString("yyyy-MM-dd") == currentDate)?.f_EffectiveDate?.ToString("yyy-MM-dd"))" name='observationDate' />
+                                        }
+                                        <input name="LDM_tID" index="@(i)" id="LDM_tID" type="checkbox" @Html.Raw(bIsHasLDMtID ? "checked='checked'" : "") value="@item.f_tID"> @item.f_value
+                                        <input class="btn btn-xs btn-info jiahaoBtn" type="button" value="+" @Html.Raw(!bIsHasLDMtID ? "disabled='disabled'" : "") />
+                                        <input type="text" name="LDM_Quantity" class="_Quantity" style="width:30px;text-align:center;" maxlength="2"
+                                               value="@(bIsHasLDMtID ? Model.NewOrderingEmoloyees.FirstOrDefault(p => p.f_LDM_tID == item.f_tID && p.f_EffectiveDate != null && p.f_EffectiveDate.Value.ToString("yyyy-MM-dd") == currentDate)?.f_Quantity : 0)"
+                                               @Html.Raw(!bIsHasLDMtID ? "disabled='disabled'" : "")
+                                               onkeyup="check123(this)" />
+                                        <input class="btn btn-xs btn-info jianhaoBtn" type="button" value="-" @Html.Raw(!bIsHasLDMtID ? "disabled='disabled'" : "") /> 份
+                                    </span>
+                                }
+                            }
+                            @if (Model.NewOrderingEmoloyees?.FirstOrDefault() != null && !(bool)Model.NewOrderingEmoloyees?.FirstOrDefault().f_IsValid)
+                            {
+                                <span style="color:#d43f3a;float:left">*当前订餐无效,请联系行政部门处理!</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr class="trOrderingEmployees" @Html.Raw(Model.NewOrderingEmoloyees?.Count == 0 ? "style='display:none'" : "")>
+                        <td colspan="3">
+                            @foreach (var item in (List<SType>)ViewBag.listTypeLDMType)
+                            {
+                                bool stype = Model.NewOrderingEmoloyees==null?false : Model.NewOrderingEmoloyees.Any(p => p.f_type_tID == item.f_tID);
+                                <span class="input-group-addon">
+                                    @Html.RadioButton("LDMType_tID", item.f_tID, stype? new { @checked = "checked" } : null)  @item.f_value
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="trOrderingEmployees" @Html.Raw(Model.OrderingEmployees?.Count == 0 ? "style='display:none'" : "")>
+                        <td rowspan="2">宿舍订餐</td>
+                        <td colspan="3">
+                            @foreach (var item in (List<SType>)ViewBag.listTypeLDM)
+                            {   /*Any元素中是否有满足匹配条件的*/
+                                bool bIsHasLDMtID = Model.OrderingEmployees == null ? false : Model.OrderingEmployees.Any(p => p.f_LDM_tID == item.f_tID);
+                                <span class="input-group-addon">
+                                    @*update*@
+                                    <input name="LDM_tID" id="LDM_tID" type="checkbox" @Html.Raw(bIsHasLDMtID ? "checked='checked'" : "") value="@item.f_tID"> @item.f_value
+                                    <input class="btn btn-xs btn-info jiahaoBtn" type="button" value="+" @Html.Raw(!bIsHasLDMtID ? "disabled='disabled'" : "") />
+                                    <input type="text" name="LDM_Quantity" class="_Quantity" style="width:30px;text-align:center;" maxlength="2"
+                                           value="@(bIsHasLDMtID ? Model.OrderingEmployees.FirstOrDefault(p => p.f_LDM_tID == item.f_tID).f_Quantity : 0)"
+                                           @Html.Raw(!bIsHasLDMtID ? "disabled='disabled'" : "")
+                                           onkeyup="check123(this)" />
+                                    <input class="btn btn-xs btn-info jianhaoBtn" type="button" value="-" @Html.Raw(!bIsHasLDMtID ? "disabled='disabled'" : "") /> 份
+                                </span>
+                            }
+                            @if (Model.OrderingEmployees?.FirstOrDefault() != null && !(bool)Model.OrderingEmployees?.FirstOrDefault().f_IsValid)
+                            {
+                                <span style="color:#d43f3a;float:left">*当前订餐无效,请联系行政部门处理!</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr class="trOrderingEmployees" @Html.Raw(Model.OrderingEmployees?.Count == 0 ? "style='display:none'" : "")>
+                        <td colspan="3">
+                            @foreach (var item in (List<SType>)ViewBag.listTypeLDMType)
+                            {
+                                bool type = Model.OrderingEmployees == null ? false : Model.OrderingEmployees.Any(p => p.f_type_tID == item.f_tID);
+                                <span class="input-group-addon">
+                                    @Html.RadioButton("LDMType_tID", item.f_tID, type ? new { @checked = "checked" } : null)  @item.f_value
+                                </span>
+                            }
+
+                            <span style="color:#d43f3a;float:left">订餐规则:当日下午17:00前统计次日订餐并提交厨房,17:00之后修改的将于【后天】生效</span>
+
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="4" style="text-align: center;"><button type="button" onclick="btnSumbit()" class="btn btn-primary  btn-lg">@("确认" + sAddorUpdateStr)</button> </td>
+                </tr>
+
+            </table>
+        </div>
+    </form>
+</div>
+<form id="imgFileForm" action="@Url.Action("UploadFile")" enctype="multipart/form-data" method="post">
+    <input type="file" id="imgFile" name="imgFile" style="display:none" />
+    <input type="hidden" id="imgName" name="imgName" value="@FileName" />
+    <input type="hidden" name="HZorRJZtype" value="p" />
+    <input type="hidden" id="eid" name="eid" value="@Model.f_eid" />
+</form>
+<form id="getImageForm" action="@Url.Action("getImagesbase64")" method="post">
+    <input type="hidden" id="str" name="str" value="@Model.f_PassportURL" />
+    <input type="hidden" id="strE" name="strE" value="@Model.f_EntrystampURL" />
+    <input type="hidden" id="strC" name="strC" value="@Model.f_IDCardURL" />
+    <input type="hidden" id="HZorRJZtype" name="HZorRJZtype" value="p" />
+</form>
+<script type="text/javascript">
+
+    //切换社区 加载楼栋
+    function changeCommunity() {
+        var sCommunity = $("#onchangeCommunity").val();
+        if (sCommunity == null || $.trim(sCommunity) == "" || $.trim(sCommunity) == "请选择社区") {
+            $("#EmployeeInfo_f_DormitoryId").val("");
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Communits")',
+            data: { community: sCommunity },
+            error: function (data) {
+                location.href = '@Url.Action("Index", "~/Controllers/Login")'
+            },
+            success: function (data) {
+                if (data != null) {
+                    var str = "<li><a href=\"javaScript:\" id='请选择社区'>请选择社区</a></li>";
+                    for (var i = 0; i < data.length; i++) {
+                        str += "<li><a href=\"javaScript:changeBuilding()\" id='" + data[i] + "'>" + data[i] + "</a></li>";
+                    }
+                    $("#DropdownBuilding").html(str);
+                    $("#onchangeBuilding").val("");
+                    $("#EmployeeInfo_f_DormitoryId").val("");
+                    $("#dropdownMenuBui").text("请选择社区");
+                    $("#dropdownMenuRoomNo").text("请选择楼栋");
+                    //加载之后 重新绑定下拉框事件
+                    setDropdownChangeValue();
+                }
+            }
+        });
+    }
+    //切换楼栋 加载房间号
+    function changeBuilding() {
+        var sBuilding = $("#onchangeBuilding").val();
+        var sCommunity = $("#onchangeCommunity").val();
+        if (sCommunity == null || sBuilding == null || $.trim(sCommunity) == "" || $.trim(sBuilding) == "" || $.trim(sCommunity) == "请选择社区" || $.trim(sBuilding) == "请先选择社区") {
+            $("#EmployeeInfo_f_DormitoryId").val("");
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Building")',
+            data: { community: sCommunity, building: sBuilding },
+            error: function (data) {
+                location.href = '@Url.Action("Index","Login")';
+            },
+            success: function (data) {
+                if (data != null) {
+                    var str = "<li><a href=\"javaScript:\" id='请先选择社区'>请先选择社区</a></li>";
+                    for (var i = 0; i < data.length; i++) {
+                        str += "<li><a href=\"javaScript:changeRoomNo()\" id='" + data[i] + "'>" + data[i] + "</a></li>";
+                    }
+                    $("#DropdownRoomNo").html(str);
+                    $("#EmployeeInfo_f_DormitoryId").val("");
+                    $("#dropdownMenuRoomNo").text("请选择楼栋");
+                    //加载之后 重新绑定下拉框事件
+                    setDropdownChangeValue();
+                }
+            }
+        });
+    }
+    //选择房号 加载对应的宿舍ID
+    function changeRoomNo(e) {
+        var sBuilding = $("#onchangeBuilding").val();
+        var sCommunity = $("#onchangeCommunity").val();
+        var sRoomNo = $("#onchangeRoomNo").val();
+        if (sCommunity == null || sBuilding == null || sRoomNo == null || $.trim(sCommunity) == "" || $.trim(sBuilding) == "" || $.trim(sRoomNo) == "" || $.trim(sCommunity) == "请选择社区" || $.trim(sBuilding) == "请先选择社区" || $.trim(sBuilding) == "请先选择楼栋") {
+            $("#EmployeeInfo_f_DormitoryId").val("");
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("RoomNo")',
+            data: { community: sCommunity, building: sBuilding, roomno: sRoomNo },
+            error: function (data) {
+                location.href = '@Url.Action("Index","Login")';
+            },
+            success: function (data) {
+                if (data != null) {
+                    $("#EmployeeInfo_f_DormitoryId").val(data);
+                }
+            }
+        });
+    }
+    //是否为菲员工
+    function Change() {
+        var isissued = $("input[name='PHStaff']:checked").val();
+        if (isissued == "0") {
+            $(".f_Salary").hide();
+            $("#EmployeeInfo_f_Salary").val(null);
+            $("#EmployeeInfo_f_IsPHStaff").val("Fasle");
+        } else {
+            $(".f_Salary").show();
+            $("#EmployeeInfo_f_IsPHStaff").val("True");
+        }
+    }
+
+    function UpperCase(sValue) {
+        if (sValue == "离职" || sValue == "離職") {
+            $(".workStatus_tID").show();
+        } else {
+            $(".workStatus_tID").hide();
+            $("#EmployeeInfo_f_SeparationDate").val("");
+        }
+    }
+
+    function SetOrderingDate() {
+        if ($("#EmployeeInfo_t_newEmployeeInfo_f_flightArrivalTime").val() == "" && $("#IsOrderingEmployeesTrue").prop("checked")) {
+            chickIsOrderingEmployees(document.getElementById("IsOrderingEmployeesTrue"));
+            return;
+        }
+        var tomorrowStr = new Date(Date.parse($("#EmployeeInfo_t_newEmployeeInfo_f_flightArrivalTime").val().replace(/-/g, "/")));
+        var DayAfterTomorrowStr = new Date(Date.parse($("#EmployeeInfo_t_newEmployeeInfo_f_flightArrivalTime").val().replace(/-/g, "/")));
+        var arrivalTime = new Date(Date.parse($("#EmployeeInfo_t_newEmployeeInfo_f_flightArrivalTime").val().replace(/-/g, "/")));
+        var tomorrow = new Date(tomorrowStr.setDate(arrivalTime.getDate() + 1));
+        var DayAfterTomorrow = new Date(DayAfterTomorrowStr.setDate(arrivalTime.getDate() + 2));
+        $("#observationDate0").text(arrivalTime.format("yyyy-MM-dd"));
+        $("#dateTd").find("span[name='observationDateParent0']").each(function () {
+            $(this).find("input[name='observationDate']").each(function () {
+                $(this).val(arrivalTime.format("yyyy-MM-dd"));
+            });
+        });
+        $("#observationDate1").text(tomorrow.format("yyyy-MM-dd"));
+        $("#dateTd").find("span[name='observationDateParent1']").each(function () {
+            $(this).find("input[name='observationDate']").each(function () {
+                $(this).val(tomorrow.format("yyyy-MM-dd"));
+            });
+        });
+        $("#observationDate2").text(DayAfterTomorrow.format("yyyy-MM-dd"));
+        $("#dateTd").find("span[name='observationDateParent2']").each(function () {
+            $(this).find("input[name='observationDate']").each(function () {
+                $(this).val(DayAfterTomorrow.format("yyyy-MM-dd"));
+            });
+        });
+    }
+</script>

@@ -1,0 +1,160 @@
+﻿@model MI.Core.Domain.CarRegister
+@{ Layout = null;}
+@Styles.Render("~/Content/datetimepicker")
+@Scripts.Render("~/bundles/datetimepicker")
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit</title>
+</head>
+<body>
+    <button type="button" id="btn-quxiao" class="btn btn-danger closebtn">取消（X）</button>
+    <div class="panel panel-default">
+        <div class="panel-heading">车辆管理-增加</div>
+        <div class="table-responsive">
+            <table class="table table-hover table-striped">
+                <tr>
+                    <td>车辆类型：</td>
+                    <td>
+                        <div class="dropdown">
+                            <input type="hidden" correspond="dropdownMenuCarType" id="cartype" value="@Model.f_CarType" />
+                            <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenuCarType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(Model.t_sType?.f_value ?? "请选择")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuCarType">
+                                @foreach (var item in (List<MI.Core.Domain.SType>)ViewBag.listTypeDepartment)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>车牌号：</td>
+                    <td><input type="text" class="form-control" id="carNO" value="@Model.f_CarNO" /></td>
+                </tr>
+                <tr>
+                    <td>车辆品牌：</td>
+                    <td><input type="text" class="form-control" id="carbrand" value="@Model.f_CarBrand" /></td>
+                </tr>
+                <tr>
+                    <td>车主：</td>
+                    <td><input type="text" class="form-control" id="carowner" value="@Model.f_CarOwner" /></td>
+                </tr>
+                <tr>
+                    <td>购置年份：</td>
+                    <td><input type="text" class="form-control" id="purchase" value="@(Model.f_PurchaseDate == null?"":Model.f_PurchaseDate.Value.ToString("yyyy-MM-dd"))" /></td>
+                </tr>
+                <tr>
+                    <td>是否有特殊牌照：</td>
+                    <td>
+                        <input type="radio" name="isissued" onchange="Change()" value="0" id="isissued" @(Model.f_IsIssued ? "" : "checked='checked'") />否
+                        <input type="radio" name="isissued" onchange="Change()" value="1" id="isissued" @(Model.f_IsIssued ? "checked='checked'" : "") />是
+                        <input type="hidden" name="f_IsIssued" id="f_IsIssued" value="@(Model.f_IsIssued)" />
+                    </td>
+                </tr>
+                <tr class="isissdate" style="@(Model.f_IsIssued ? "" : "display:none;")">
+                    <td>特殊牌照到期时间：</td>
+                    <td><input type="text" class="form-control" id="isissdate" value="@(Model.f_IssuedDate == null?"":Model.f_IssuedDate.Value.ToString("yyyy-MM-dd"))" /></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <input type="button" onclick="Submit('@Model.f_ID')" class="btn btn-primary  btn-lg" value="确定" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript">
+    //确定
+    function Submit(id) {
+        var cartype = $("#cartype").val();
+        var carbrand = $("#carbrand").val();
+        var carowner = $("#carowner").val();
+        var purchase = $("#purchase").val();
+        var isissued = $("input[name='isissued']:checked").val() == "1" ? true : false;
+        var isissdate = $("#isissdate").val();
+        var carNO = $("#carNO").val();
+        if (carNO.length > 25) {
+            alert('车牌号超出长度,最多25字!');
+            return;
+        }
+        if (carbrand.length > 30) {
+            alert('车辆品牌超出长度,最多30字!');
+            return;
+        }
+        if (carowner.length>30) {
+            alert('车主超出长度,最多30字!');
+            return;
+        }
+        if (ValidationNullOr0("车辆类型", cartype)) {
+            return;
+        }
+        if (ValidationNull("车辆品牌", carbrand.trim()) || ValidationNull("车牌号", carNO.trim()) || ValidationNull("车主", carowner.trim())) {
+            return;
+        }
+        if (ValidationLength("车主信息", carowner, 30)) {
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("UptateAndAdd")',
+            data: { f_ID: id, f_CarType: cartype, f_CarBrand: carbrand.trim(), f_CarOwner: carowner.trim(), f_PurchaseDate: purchase, f_IsIssued: isissued, f_IssuedDate: isissdate, f_CarNO: carNO.trim() },
+            reeoe: function () {
+            },
+            success: function (data) {
+                if (data != null) {
+                    if (data.result == "1") {
+                        alert("操作成功！");
+                        location.href = location.href;
+                    } else if (data.result == "500") {
+                        alert("操作异常");
+                    } else if (data.result == "12") {
+                        alert(data.tips);
+                    }
+                }
+            }
+        });
+    }
+    //取消
+    $(function () {
+        $("#btn-quxiao").click(function () {
+            $("div.addbg").hide();
+        });  //截止日期
+        setHeightWidth();
+
+        $.datetimepicker.setLocale('zh');
+        $("#isissdate").datetimepicker({
+            lang: 'zh',
+            timepicker: false,
+            format: 'Y-m-d',
+            formatDate: 'Y-m-d'
+        });
+        $("#purchase").datetimepicker({
+            lang: 'zh',
+            timepicker: false,
+            format: 'Y-m-d',
+            formatDate: 'Y-m-d'
+        });
+    })
+    //是否有特殊牌照
+    function Change() {
+        var isissued = $("input[name='isissued']:checked").val();
+        if (isissued == "0") {
+            $(".isissdate").hide();
+            $("#isissdate").val('');
+            $("#f_IsIssued").val('false');
+        } else {
+            $(".isissdate").show();
+            $("#f_IsIssued").val('true');
+        }
+    }
+    </script>
+
+</body>
+</html>

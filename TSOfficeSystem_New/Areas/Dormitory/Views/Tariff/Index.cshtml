@@ -1,0 +1,290 @@
+﻿@using MI.Application.Dto;
+@using MI.Core.Domain;
+@model PageListDto<TariffListDto>
+@{
+    ViewBag.Title = "Index";
+    var input = ViewBag.InputSearch as TariffPagedInputDto;
+    var community = ViewBag.Community as IList<string>;
+    var workLocation = ViewBag.WorkLoaction as IList<SType>;
+}
+@section Styles{
+    <link href="~/Css/datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+}
+<div class="addbg">
+    <div class="addtable">
+        <button type="button" id="btn-quxiao" onclick="closeADDwindow()" class="btn btn-danger closebtn">取消（X）</button>
+        <div class="panel panel-default">
+            <div class="panel-heading">电费超支</div>
+            <div class="table-responsive">
+                <form id="formTable" method="post">
+                    <table class="table table-hover table-striped">
+                        <tr>
+                            <td>社区:</td>
+                            <td>
+                                <div class="dropdown" style="float:left;">
+                                    <button class="btn btn-default dropdown-toggle" style="width:500px" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        请选择
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" id="CommunityLaundry" aria-labelledby="dropdownMenu">
+                                        @foreach (var item in community)
+                                        {
+                                            <li><a id="@item">@item </a></li>
+                                        }
+                                    </ul>
+                                    <input type="hidden" value="" id="Community" name="Community" correspond="dropdownMenu" />
+                                </div>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>楼栋:</td>
+                            <td>
+                                <div class="dropdown" style="float:left;">
+                                    <button class="btn btn-default dropdown-toggle" style="width:500px" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        请选择
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" id="BuildingLaundry" aria-labelledby="dropdownMenu2">
+                                        
+                                    </ul>
+                                    <input type="hidden" id="Building" name="Building" correspond="dropdownMenu2" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>房间号:</td>
+                            <td>
+                                <div id="T-div" style="margin-bottom:0px">
+                                    <input type="text" placeholder="请输入房间号" id="RoomNo" name="roomNo" class="form-control" />
+                                    <span id="Ticon"></span>
+                                </div>
+                                <input type="hidden" class="val_Laundry" id="DormitoryId" name="f_DormitoryId"  />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>电费标准:</td>
+                            <td><input type="text" class="form-control" id="TariffStandard" name="f_TariffStandard"  /></td>
+                        </tr>
+                        <tr>
+                            <td>实际账单:</td>
+                            <td><input type="text" class="form-control" id="RealBill" name="f_RealBill"  /></td>
+                        </tr>
+                        <tr>
+                            <td>超支金额:</td>
+                            <td>
+                                <input type="text" class="form-control" id="Overruns" name="f_Overruns"  />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>超支日期:</td>
+                            <td><input type="text" class="form-control" id="TariffDate" name="f_TariffDate"  /></td>
+                        </tr>
+                        <tr>
+                            <td>登记人:</td>
+                            <td><input type="text" class="form-control" id="Registrant" name="f_Registrant"  /></td>
+                        </tr>
+
+                        <tr>
+                            <td>是否缴费:</td>
+                            <td>
+                                <input type="radio" name="f_IsPayment" value="true" />是
+                                <input type="radio" name="f_IsPayment" value="false" />否
+                                
+                            </td>
+                        </tr>
+                        @*<tr class="Payment" >
+                            <td>收费人:</td>
+                            <td><input type="text" id="Rate" name="f_Rate" class="form-control" readonly="readonly" /></td>
+                        </tr>*@
+                        <tr>
+                            <td>收款地点：</td>
+                            <td>
+                                <div class="dropdown" style="position:absolute;margin-top:-7px;">
+                                    @Html.Hidden("f_AddressId", 0, new { @correspond = "dropdownMenu3" })
+                                    <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        请选择
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu3">
+                                        <li><a href="javaScript:" id="0">请选择 </a></li>
+                                        @foreach (var item in workLocation)
+                                        {
+                                            <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>备注:</td>
+                            <td><input type="text" class="form-control" id="Remark" name="f_Remark" /></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2" style="text-align: center;">
+                                <button type="submit" class="btn btn-primary  btn-lg">确认</button>
+                                <input type="hidden"  id="Id" name="f_Id" />
+                            </td>
+                        </tr>
+
+                    </table>
+                </form>
+            </div>
+        </div><!-- /.panel-default/ table-->
+    </div>
+</div>
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">费用管理</a></li>
+        <li class="active">电费超支</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        <li role="presentation"><a href="/Dormitory/EmpRent">员工租房</a></li>
+        <li role="presentation"><a href="/Dormitory/Grant">外租补助</a></li>
+        <li role="presentation" class="active"><a href="@Url.Action("Index")">电费超支</a></li>
+        <li role="presentation"><a href="/Dormitory/FlightFee">机票差额</a></li>
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="sCommunity">社区：</label>
+                            <input type="text" class="form-control" value="@input.Community" id="sCommunity"  name="Community">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="sBuilding">楼栋：</label>
+                            <input type="text" class="form-control" value="@input.Building" id="sBuilding" name="Building">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="sRoomNo">房间号：</label>
+                            <input type="text" class="form-control" value="@input.RoomNo"  id="sRoomNo" name="RoomNo" onkeyup="checkABC123(this)">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="date_timepicker_start">登记日期：</label>
+                            <input type="text" class="form-control" value="@(input.TariffStartDate?.ToString("yyyy-MM-dd")??string.Empty)" id="date_timepicker_start" name="TariffStartDate">
+                            <label for="date_timepicker_end">--</label>
+                            <input type="text" class="form-control" value="@(input.TariffEndDate?.ToString("yyyy-MM-dd")??string.Empty)" id="date_timepicker_end" name="TariffEndDate">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <div class="dropdown">
+                                <label>是否缴费：</label>
+                                @Html.Hidden("IsPayment", input.IsPayment, new { @correspond = "dropdownMenu4" })
+                                <button class="btn btn-default dropdown-toggle form-control" type="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @(input.IsPayment == 1 ? "是" : input.IsPayment == 0 ? "否" : "全部")
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu4">
+                                    <li><a href="javaScript:" id="2">全部 </a></li>
+                                    <li><a href="javaScript:" id="1">是</a></li>
+                                    <li><a href="javaScript:" id="0">否</a></li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button id="a_export" type="button" class="btn btn-success">导出Excel</button>
+                    </div><!-- /.taiojianli_left-->
+                </form>
+            </div>
+            <div class="taiojianli_right">
+                <button type="button" id="btn-add" class="btn btn-primary">新增+</button>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">电费超支</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>社区</th>
+                            <th>楼栋</th>
+                            <th>房间号</th>
+                            <th>电费标准</th>
+                            <th>实际账单</th>
+                            <th>超支金额</th>
+                            <th>登记日期</th>
+                            <th>登记人</th>
+                            <th>是否缴费</th>
+                            <th>收费人</th>
+                            <th>收款地点</th>
+                            <th>操作人</th>
+                            <th>最后操作时间</th>
+                            <th>备注</th>
+                            <th class="caozuotd">操&nbsp;&nbsp;作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int i = 1;}
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i </td>
+                                <td>@item.Community </td>
+                                <td>@item.Building</td>
+                                <td>@item.RoomNo</td>
+                                <td>@item.TariffStandard</td>
+                                <td>@item.RealBill</td>
+                                <td>@item.Overruns</td>
+                                <td>@(item.TariffDate!=null&&item.TariffDate!=DateTime.MinValue?item.TariffDate.Value.ToString("yyyy-MM-dd"):string.Empty)</td>
+                                <td>@item.Registrant </td>
+                                <td>@(item.IsPayment ? "√" : "×")</td>
+                                <td>@item.Rate</td>
+                                <td>@item.Location</td>
+                                <td>@item.Operator</td>
+                                <td>@(item.OperatorTime!=null&&item.OperatorTime!=DateTime.MinValue?item.OperatorTime?.ToString("yyyy-MM-dd hh:mm:ss"):string.Empty)</td>
+                                <td>@item.Remark</td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-mark="update" data-id="@item.Id">修改</button>
+                                    <button type="button" class="btn btn-danger btn-sm" data-mark="delete" data-id="@item.Id" >删除</button>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="15" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageList(Model.PageIndex, 10, Model.TotalCount)
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Scripts/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script src="~/Scripts/jquery-validation/localization/messages_zh.min.js"></script>
+    <script src="~/Scripts/datetimepicker/jquery.datetimepicker.full.js"></script>
+    <script src="~/Scripts/typeahead/bootstrap3-typeahead.js"></script>
+   <script src="~/Scripts/Script_v_1.0/Common/Common.js"></script>
+    <script src="~/Scripts/Script_v_1.0/Common/JQueryExtension.js"></script>
+    <script src="~/Areas/Dormitory/Views/Tariff/Index.js"></script>
+}
+
+

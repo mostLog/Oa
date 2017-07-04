@@ -1,0 +1,246 @@
+﻿@model List<MI.Core.Domain.DormitoryMaintenance>
+@using MI.Core.Domain;
+@{
+    ViewBag.Title = "宿舍管理";
+    int i = 1;
+    DormitoryMaintenanceWhere dmw = ViewBag.DMW;
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+    List<SType> Buttlist = ViewBag.ButtItem;
+}
+<div class="addbg">
+    <div class="addtable" style="margin-top:30px">
+    </div><!-- /.addtable-->
+</div><!-- /.addbg-->
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="#">宿舍管理</a></li>
+        <li class="active">宿舍维修</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("DormitoryNavTabs", "宿舍维修")
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="f_Community">社区：</label>
+                            <input type="text" class="form-control" value="@dmw.f_Community" id="f_Community" name="f_Community">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="f_Building">楼栋：</label>
+                            <input type="text" class="form-control" value="@dmw.f_Building" id="f_Building" name="f_Building">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="f_RoomNo">房间号：</label>
+                            <input type="text" class="form-control" value="@dmw.f_RoomNo" id="f_RoomNo" name="f_RoomNo" onkeyup="checkABC123(this)">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="f_operator">操作人：</label>
+                            <input type="text" class="form-control" value="@dmw.f_operator" id="f_operator" name="f_operator">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="dropdown">
+                            <label for="f_serviceWay">维修方式：</label>
+                            @Html.Hidden("f_serviceWay", dmw.f_serviceWay, new { @correspond = "dropdownMenu" })
+                            <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @if (dmw.f_serviceWay != null)
+                                {
+                                    switch (dmw.f_serviceWay)
+                                    {
+                                        case 0:
+                                            @("完成")
+                                            break;
+                                        case 1:
+                                            @("送修")
+                                            break;
+                                        case 2:
+                                            @("买新")
+                                            break;
+                                    }
+                                }
+                                else
+                                {
+                                    @("全部")
+                                }
+
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu" style="margin-left:75px;">
+                                <li><a href="javaScript:" id="null">全部</a></li>
+                                <li><a href="javaScript:" id="0">完成</a></li>
+                                <li><a href="javaScript:" id="1">送修</a></li>
+                                <li><a href="javaScript:" id="2">买新</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button id="a_print" type="button" class="btn btn-warning">打印</button>
+                    </div><!-- /.taiojianli_left-->
+                </form>
+            </div>
+            <div class="taiojianli_right">
+                <button type="button" onclick="Update('0')" id="btn-xinzeng" class="btn btn-primary">新增+</button>
+            </div>
+        </div>
+        <!--startprint-->
+        <div class="panel panel-default">
+            <div class="panel-heading">宿舍维修</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped" id="hTable">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>社区</th>
+                            <th>楼栋</th>
+                            <th>房间号</th>
+                            <th>登记人</th>
+                            <th>QQ</th>
+                            <th>维修方式</th>
+                            <th>维修内容(中)</th>
+                            <th>维修内容(英)</th>
+                            <th>对接</th>
+                            <th>维修派件日期</th>
+                            <th>最终完成时间</th>
+                            <th>维修费用</th>
+                            <th>确认(员工)</th>
+                            @*<th>确认(维修工)</th>*@
+                            <th>缴费状态</th>
+                            <th>缴费人</th>
+                            <th>备注</th>
+                            <th>操作人</th>
+                            <th>操作时间</th>
+                            <th class="caozuotd">操&nbsp;&nbsp;作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i </td>
+                                <td>@item.t_dormitory.f_Community </td>
+                                <td>@item.t_dormitory.f_Building</td>
+                                <td>@item.t_dormitory.f_RoomNo</td>
+                                <td>@item.f_Registrant</td>
+                                <td>@item.f_QQNo </td>
+                                <td>@(item.f_serviceWay != null ? Enum.GetName(typeof(serviceWay), item.f_serviceWay) : "")</td>
+                                <td>@item.f_ContentCh</td>
+                                <td>@item.f_ContentEn</td>
+                                <td>
+                                    @if (Buttlist.Where(p => item.f_Butt.Contains(p.f_value)).ToList().Count > 0)
+                                    {
+                                        foreach (var buttType in Buttlist.Where(p => item.f_Butt.Contains(p.f_value)).ToList())
+                                        {
+                                            @(buttType.f_value + "/")
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @(item.f_Butt.Replace("Gil,", ""))
+                                    }
+                                </td>
+                                <td>@(item.f_SendDate != null ? item.f_SendDate.Value.ToString("yyyy-MM-dd") : "")</td>
+                                <td>@(item.f_LastFinishDate != null ? item.f_LastFinishDate.Value.ToString("yyyy-MM-dd") : "")</td>
+                                <td>@item.f_MaintFee </td>
+                                <td>@item.f_IsOK_emp </td>
+                                @*<td>@item.f_IsOK_main </td>*@
+                                <td>@((item.f_PaymentStatus ?? false) ? "已缴费" : "未缴费")</td>
+                                <td>@item.f_Payers</td>
+                                <td>@item.f_Remarks </td>
+                                <td>@item.f_operator</td>
+                                <td>@Html.Raw(item.f_operatorTime?.ToString("yyyy-MM-dd<br />hh:mm:ss"))</td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" onclick="Update('@item.f_Id')">修改</button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="Delete('@item.f_Id')">删除</button>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="17" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!--endprint-->
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageListFor(iCurrentPage, iPageSize, iTotalCount, dmw)
+            </ul>
+        </div><!-- /.fenyediv-->
+
+    </div><!-- /.oacentbox-->
+
+</div>
+
+<script type="text/javascript">
+    var iTotalCount=@iTotalCount;
+    function Update(id) {
+        OpenADDwindow();
+        loadingTips();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Edit")',
+            data: { Id: id },
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data != null) {
+                    $(".addtable").html(data);
+                    setDropdownChangeValue();
+                }
+            }
+        })
+        $("div.addbg").show(200);
+    }
+    function Delete(id) {
+        if (confirm("是否确定删除？")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                data: { Id: id },
+                error: function (data) {
+                }, success: function (data) {
+                    if (data != null) {
+                        if (data == "1") {
+                            alert("删除成功");
+                            location.href = location.href;
+                        }
+                        else if (data == "500") {
+                            alert("删除异常");
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+    function GoToprintView() {
+        if (iTotalCount>100 &&!confirm("当前条件下数据超过100条,请问是否继续操作。\r\n ps:可以筛选条件之后再打印")) {
+            return false;
+        }
+        window.open('@(Url.Action("PrintListView",dmw))', '宿舍维修打印', 'status=no,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,width=1200,height=800');
+    }
+    $('#a_print').click(GoToprintView);
+
+</script>
+

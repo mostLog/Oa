@@ -1,0 +1,213 @@
+﻿@model List<MI.Core.Domain.WorkDistribution>
+@{
+    ViewBag.Title = "工作交接";
+    int i = 1;
+    MI.Application.Dto.WorkDistributionDto wd = ViewBag.model;
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+    int iIsComplete = wd.f_IsComplete != null ? (wd.f_IsComplete ?? false ? 1 : 0) : 2;
+    List<MI.Core.Domain.Employee> emp = ViewBag.Emp;
+    List<MI.Core.Domain.SType> WorkType = ViewBag.WorkType;
+}
+<div class="addbg">
+    <div class="addtable">
+    </div><!-- /.addtable-->
+</div><!-- /.addbg-->
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">工作交接</a></li>
+        <li class="active">日常交接</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="~/Integrated/WorkDistribution/Index">日常交接</a></li>
+        <li role="presentation"><a href="~/Integrated/ReturnHandover/Index">返乡交接</a></li>
+
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">登记人：</label>
+                            <input type="text" class="form-control" id="f_Registered" name="f_Registered" value="@wd.f_Registered" />
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">交接事项：</label>
+                            <input type="text" class="form-control" id="f_Handover" name="f_Handover" value="@wd.f_Handover" />
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <div class="dropdown" style="float:left;">
+                                <label for="exampleInputName2">待处理人：</label>
+                                <input type="hidden" id="f_Treat" name="f_Treat" value="@wd.f_Treat" correspond="dropdownMenuTreat" />
+                                <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuTreat" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @(emp.FirstOrDefault(u => u.f_eid == wd.f_Treat)?.f_nickname ?? emp.FirstOrDefault(u => u.f_eid == wd.f_Treat)?.f_chineseName ?? "请选择")
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuTreat" style="margin-left:75px;">
+                                    <li><a id="0">请选择</a></li>
+                                    @foreach (var item in emp)
+                                    {
+                                        <li><a id="@(item.f_eid)">@(item.f_nickname ?? item.f_chineseName)</a></li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <div class="dropdown" style="float:left;">
+                                <label for="exampleInputName2">工作类别：</label>
+                                <input type="hidden" id="f_WorkType" name="f_WorkType" value="@wd.f_WorkType" correspond="dropdownMenuWorkType" />
+                                <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuWorkType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @((WorkType.FirstOrDefault(u => u.f_tID == wd.f_WorkType)?.f_value) ?? "请选择")
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuWorkType" style="margin-left:75px;">
+                                    <li><a id="0">请选择</a></li>
+                                    @foreach (var item in WorkType)
+                                    {
+                                        <li><a id="@(item.f_tID)">@item.f_value</a></li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">完成情况：</label>
+                            <input type="radio" name="IsComplete" onchange="Change()" value="2" id="IsComplete" @(iIsComplete == 2 ? "checked='checked'" : "") />全部
+                            <input type="radio" name="IsComplete" onchange="Change()" value="0" id="IsComplete" @(iIsComplete == 0 ? "checked='checked'" : "") />未完成
+                            <input type="radio" name="IsComplete" onchange="Change()" value="1" id="IsComplete" @(iIsComplete == 1 ? "checked='checked'" : "") />已完成
+                            <input type="hidden" id="f_IsComplete" name="f_IsComplete" value="@wd.f_IsComplete" />
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>
+                    </div><!-- /.taiojianli_left-->
+                </form>
+            </div>
+            <div class="taiojianli_right">
+                <button type="button" onclick="Update('0')" id="btn-xinzeng" class="btn btn-primary">新增+</button>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">工作交接</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th width="50px">序号</th>
+                            <th width="100px">登记时间</th>
+                            <th width="100px">登记人</th>
+                            <th width="100px">工作类别</th>
+                            <th>交接事项</th>
+                            <th width="100px">待处理人</th>
+                            <th width="150px">紧急事项处理期限</th>
+                            <th width="100px">完成时间</th>
+                            <th width="200px">备注</th>
+                            <th class="caozuotd">操&nbsp;&nbsp;作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td width="50px">@i </td>
+                                <td>@(item.f_RegisterDate == null || item.f_RegisterDate == DateTime.MinValue ? "" : item.f_RegisterDate.ToString("yyyy-MM-dd"))</td>
+                                <td>@item.f_Registered</td>
+                                <td>@((WorkType.FirstOrDefault(u => u.f_tID == item.f_WorkType)?.f_value) ?? "")</td>
+                                <td>@Html.Raw(item.f_Handover.Replace("\r\n", "<br/>"))</td>
+                                <td>@(item.t_employeeInfo?.f_nickname ?? item.t_employeeInfo?.f_chineseName ?? "ALL")</td>
+                                <td>@(item.f_UrgentDate?.ToString("yyyy-MM-dd"))</td>
+                                <td>@(item.f_CompleteDate?.ToString("yyyy-MM-dd")) </td>
+                                <td>@item.f_Remarks</td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" onclick="Update('@item.f_Id')">修改</button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="Delete('@item.f_Id')">删除</button>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="20" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageListFor(iCurrentPage, iPageSize, iTotalCount, wd)
+            </ul>
+        </div><!-- /.fenyediv-->
+
+    </div><!-- /.oacentbox-->
+</div>
+<script type="text/javascript">
+    function Update(id) {
+        OpenADDwindow();
+        loadingTips();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Edit")',
+            data: { Id: id },
+            dataType: "html",
+            error: function (data) {
+                alert("异常");
+                closeADDwindow();
+            },
+            success: function (data) {
+                if (data != null) {
+                    $(".addtable").html(data);
+                    setDropdownChangeValue();
+                } else {
+                    alert("加载内容失败。");
+                    closeADDwindow();
+                }
+            }
+        });
+        $("div.addbg").show(200);
+    }
+    function Delete(id) {
+        if (confirm("是否确定删除？")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                data: { Id: id },
+                error: function (data) {
+                },
+                success: function (data) {
+                    if (data != null) {
+                        if (data == "1") {
+                            alert("删除成功");
+                            location.href = location.href;
+                        } else if (data == "500") {
+                            alert("删除异常");
+                        }
+                    }
+                }
+            });
+        }
+    }
+    //已完成未完成
+    function Change() {
+        var IsComplete = $("input[name='IsComplete']:checked").val();
+        if (IsComplete == "0") {
+            $("#f_IsComplete").val("false");
+        } else if (IsComplete == "1") {
+            $("#f_IsComplete").val("true");
+        } else {
+            $("#f_IsComplete").val(null);
+        }
+    }
+</script>

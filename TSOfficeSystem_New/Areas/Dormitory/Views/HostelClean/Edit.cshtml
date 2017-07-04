@@ -1,0 +1,184 @@
+﻿@model MI.Core.Domain.t_HostelClean
+@{
+    Layout = null;
+}
+
+<button type="button" id="btn-quxiao" onclick="closeADDwindow()" class="btn btn-danger closebtn">取消（X）</button>
+<div class="panel panel-default">
+    <div class="panel-heading">宿舍打扫</div>
+    <div class="table-responsive">
+        <form id="formTable" method="post">
+            <table class="table table-hover table-striped">
+                <tr>
+                    <td>社区:</td>
+                    <td>
+                        @Html.DropDownList("f_Community", ViewBag.Community as IEnumerable<SelectListItem>, "-请选择-", new { onchange = "Community()", @class = "teamedit-select form-control" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>楼栋:</td>
+                    <td>
+                        @Html.DropDownList("f_Building", ViewBag.building as IEnumerable<SelectListItem>, "-请选择-", new { onchange = "Building()", @class = "teamedit-select form-control" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>房间号:</td>
+                    <td>
+                        <div id="T-div" style="margin-bottom:0px">
+                            <input type="text" placeholder="请输入房间号" id="f_RoomNo" name="f_RoomNo" class="form-control" onblur="RoomNo()" onkeyup="checkABC123(this)" value="@Model.t_dormitory.f_RoomNo" />
+                            <span id="Ticon"></span>
+                        </div>
+                        <input type="hidden" id="f_DormitoryId" name="f_DormitoryId" value="@Model.f_DormitoryId" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>星期:</td>
+                    <td style="height:51px;">
+                        <div class="dropdown" style="position:absolute;">
+                            @Html.Hidden("f_Week", Model.f_Week, new { @correspond = "dropdownMenu3" })
+                            <button class="btn btn-default dropdown-toggle form-control" style="width:160px;" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(Model.f_Week == 0 ? "请选择" : Model.f_Week == 1 ? "星期一" : Model.f_Week == 2 ? "星期二" : Model.f_Week == 3 ? "星期三" : Model.f_Week == 4 ? "星期四" : Model.f_Week == 5 ? "星期五" : Model.f_Week == 6 ? "星期六" : Model.f_Week == 7 ? "星期天" : "请选择"  )
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu3">
+                                <li><a href="javaScript:" id="1">星期一</a></li>
+                                <li><a href="javaScript:" id="2">星期二</a></li>
+                                <li><a href="javaScript:" id="3">星期三</a></li>
+                                <li><a href="javaScript:" id="4">星期四</a></li>
+                                <li><a href="javaScript:" id="5">星期五</a></li>
+                                <li><a href="javaScript:" id="6">星期六</a></li>
+                                <li><a href="javaScript:" id="7">星期天</a></li>
+
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>执行人:</td>
+                    <td>
+                        <input type="text" class="form-control" id="f_Cleaner" name="f_Cleaner" value="@Model.f_Cleaner" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <button type="button" onclick="Submit()" class="btn btn-primary  btn-lg">确认</button>
+                        <input type="hidden" value="@Model.f_Id" id="f_Id" name="f_Id" />
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+</div><!-- /.panel-default/ table-->
+
+
+
+<script type="text/javascript">
+
+    function Submit() {
+        var f_DormitoryId = $("#f_DormitoryId").val();
+        var f_Week = $("#f_Week").val();
+        var f_RoomNo = $("#f_RoomNo").val();
+        if (f_RoomNo == "") {
+            alert('请输入房间号');
+            return;
+        }
+        if (f_DormitoryId == "0") {
+            alert('请输入正确的房间号');
+            return;
+        }
+        if (ValidationNullOr0("打扫的星期", f_Week)) {
+            return;
+        }
+        var f_Cleaner = $("#f_Cleaner").val();
+        if (ValidationNull("执行人(打扫者) ", f_Cleaner)) {
+            return;
+        }
+        if (ValidationLength("执行人(打扫者)", f_Cleaner, 25)) {
+            return;
+        }
+        var formdata = $("#formTable").serialize();
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UptateAndAdd")',
+            data: formdata,
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data != null) {
+                    if (data == "1") {
+                        alert("操作成功");
+                        location.href = location.href;
+                    }
+                    else if (data == "500") {
+                        alert("操作异常");
+                    }
+                }
+            }
+        })
+    }
+    //选择社区
+    function Community() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Community")',
+            data: { community: $("#f_Community  option:selected").text() },
+            error: function (data) {
+                alert("异常：COMMUNITY");
+            },
+            success: function (data) {
+                if (data != null) {
+                    var str = "<option value=''>-请选择-</option> ";
+                    for (var i = 0; i < data.length; i++) {
+                        str += "<option>" + data[i] + "</option>";
+                    }
+                    $("#f_Building").html(str);
+                    $("#f_RoomNo").val("");
+                }
+            }
+        });
+    }
+    //选择楼栋
+    function Building() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Building")',
+            data: { community: $("#f_Community  option:selected").text(), building: $("#f_Building  option:selected").text() },
+            error: function (data) {
+                alert("异常：BUILDING");
+            },
+            success: function (data) {
+                if (data != null) {
+                    var str = "<option value=''>-请选择-</option> ";
+                    for (var i = 0; i < data.length; i++) {
+                        str += "<option>" + data[i] + "</option>";
+                    }
+                    $("#f_RoomNo").html(str);
+                    $("#f_RoomNo").val("");
+                }
+            }
+        });
+    }
+    //选择房间号
+    function RoomNo() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("RoomNo")',
+            data: { community: $("#f_Community  option:selected").text(), building: $("#f_Building  option:selected").text(), roomno: $("#f_RoomNo").val() },
+            error: function (data) {
+                alert("异常：ROOMNO");
+            },
+            success: function (data) {
+                if (data != null) {
+                    $("#f_DormitoryId").val(data);
+                }
+                RoomNoTextSwitchStyle(data);
+            }
+        });
+    }
+    $("#T-div").click(function () {
+        $(this).attr("class", "form-group has-warning has-feedback");
+        $("#Ticon").attr("class", "glyphicon glyphicon-warning-sign form-control-feedback");
+    })
+</script>

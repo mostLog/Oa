@@ -1,0 +1,226 @@
+﻿@model MI.Core.Domain.ReturnTicket
+@{
+    Layout = null;
+    List<MI.Core.Domain.SType> AirlineType = ViewBag.AirlineType;//所有航班
+}
+@Styles.Render("~/Content/datetimepicker")
+@Scripts.Render("~/bundles/datetimepicker")
+<script src="~/Scripts/typeahead/bootstrap3-typeahead.js"></script>
+<button type="button" id="btn-quxiao" class="btn btn-danger closebtn">取消（X）</button>
+<div class="panel panel-default">
+    <div class="panel-heading">机票登记-@(Model.f_Id > 0 ? "修改" : "新增")</div>
+    <div class="table-responsive">
+        @using (Html.BeginForm("", "", FormMethod.Post, new { id = "ReturnTicketEditForm" }))
+        {
+            <table class="table table-hover table-striped">
+                <tr>
+                    <td>员工名称：</td>
+                    <td>
+                        <input type="text" class="form-control" name="f_nickname" id="f_nickname" value="@(Model.t_employeeInfo?.f_chineseName??Model.t_employeeInfo?.f_nickname)" placeholder="请输入中文名/昵称/护照名" autocomplete="off" data-provide="typeahead" />
+                        <input type="hidden" name="f_eId" id="f_eId" value="@Model.f_eId" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>返乡日期：</td>
+                    <td>
+                        <input type="text" class="form-control" width="160" name="f_ToDate" id="f_ToDate" value="@(Model.f_ToDate?.ToString("yyyy-MM-dd")??"")" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>返乡航班：</td>
+                    <td>
+                        <div class="dropdown">
+                            @Html.Hidden("f_ToAirlineType_Id", Model.f_ToAirlineType_Id, new { @correspond = "dropdownMenuTAirlin" })
+                            <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuTAirlin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(AirlineType.FirstOrDefault(p => p.f_tID == Model.f_ToAirlineType_Id)?.f_value ?? "请选择" )
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuTAirlin">
+                                <li><a href="javaScript:" id="0">全部</a></li>
+                                @foreach (var item in AirlineType)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>返乡航班时间：</td>
+                    <td>
+                        起飞时间：@Html.TextBox("ToFlightDate", string.IsNullOrWhiteSpace(Model.f_ToFlight) ? "" : Model.f_ToFlight.Split('~')[0], new { @class = "form-control", @onblur = "TimeCompute('To')", @style = "width:160px;display:inline-block;", placeholder = "请输入航班起飞时间" }) &nbsp;&nbsp;&nbsp;
+                        抵达时间：@Html.TextBox("ToFlightArrivalTime", string.IsNullOrWhiteSpace(Model.f_ToFlight) ? "" : Model.f_ToFlight.Split('~')[1], new { @class = "form-control", @onblur = "TimeCompute('To')", @style = "width:160px;display:inline-block;", placeholder = "请输入航班抵达时间" })
+                        <input type="hidden" id="f_ToFlight" name="f_ToFlight" value="@Model.f_ToFlight" />
+                        <input type="hidden" name="f_ToFile" id="f_ToFile" value="@(Model.f_ToFile)" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>地点：</td>
+                    <td>
+                        <input type="text" class="form-control" name="f_ToAddress" id="f_ToAddress" value="@(Model.f_ToAddress)" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>返乡备注：</td>
+                    <td>
+                        <input type="text" class="form-control" name="f_ToRemark" id="f_ToRemark" value="@(Model.f_ToRemark)" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>返菲日期：</td>
+                    <td>
+                        <input type="text" class="form-control" width="160" name="f_FromDate" id="f_FromDate" value="@(Model.f_FromDate?.ToString("yyyy-MM-dd")??"")" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>返菲航班：</td>
+                    <td>
+                        <div class="dropdown">
+                            @Html.Hidden("f_FromAirlineType_Id", Model.f_FromAirlineType_Id, new { @correspond = "dropdownMenuFair" })
+                            <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuFair" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(AirlineType.FirstOrDefault(p => p.f_tID == Model.f_FromAirlineType_Id)?.f_value ?? "请选择" )
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuFair">
+                                <li><a href="javaScript:" id="0">全部</a></li>
+                                @foreach (var item in AirlineType)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>返菲航班时间：</td>
+                    <td>
+                        起飞时间：@Html.TextBox("FromFlightDate", string.IsNullOrWhiteSpace(Model.f_FromFlight) ? "" : Model.f_FromFlight.Split('~')[0], new { @class = "form-control", @style = "width:160px;display:inline-block;", @onblur = "TimeCompute('From')", placeholder = "请输入航班起飞时间" })&nbsp;&nbsp;&nbsp;
+                        抵达时间：@Html.TextBox("FromFlightArrivalTime", string.IsNullOrWhiteSpace(Model.f_FromFlight) ? "" : Model.f_FromFlight.Split('~')[1], new { @class = "form-control", @style = "width:160px;display:inline-block;", @onblur = "TimeCompute('From')", placeholder = "请输入航班抵达时间" })
+                        <input type="hidden" id="f_FromFlight" name="f_FromFlight" value="@Model.f_FromFlight" />
+                        <input type="hidden" name="f_FromFile" id="f_FromFile" value="@(Model.f_FromFile)" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>地点：</td>
+                    <td>
+                        <input type="text" class="form-control" name="f_FromAddress" id="f_FromAddress" value="@(Model.f_FromAddress)" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>返菲备注：</td>
+                    <td>
+                        <input type="text" class="form-control" name="f_FromRemark" id="f_FromRemark" value="@(Model.f_FromRemark)" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <input type="hidden" name="f_Id" id="f_Id" value="@Model.f_Id" />
+                        <input type="hidden" name="f_Operation" id="f_Operation" value="@Model.f_Operation" />
+                        <input type="hidden" name="f_OperationDate" id="f_OperationDate" value="@(Model.f_OperationDate.ToString("yyyy-MM-dd"))" />
+                        <input type="hidden" name="f_OperationId" id="f_OperationId" value="@Model.f_OperationId" />
+                        <input type="button" onclick="Submit('@Model.f_Id')" class="btn btn-primary  btn-lg" value="确定" />
+                    </td>
+                </tr>
+            </table>
+        }
+    </div>
+</div>
+<script type="text/javascript">
+    //提交
+    function Submit(id) {
+        if ($("#ToFlightArrivalTime").val() != "" || $("#ToFlightDate").val() != "") {
+            if ($("#f_ToFlight").val() == "") {
+                alert("返乡航班时间填写不完整，请补全！");
+                return;
+            }
+        }
+        if ($("#FromFlightArrivalTime").val() != "" || $("#FromFlightDate").val() != "") {
+            if ($("#f_FromFlight").val() == "") {
+                alert("返菲航班时间填写不完整，请补全！");
+                return;
+            }
+        }
+        if (ValidationLength("返乡地点", $("#f_ToAddress").val(), 50) || ValidationLength("返菲地点", $("#f_FromAddress").val(), 50) || ValidationLength("返乡备注", $("#f_ToRemark").val(), 100) || ValidationLength("返菲备注", $("#f_FromRemark").val(), 100)) {
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("UptateAndAdd")',
+            data: $("#ReturnTicketEditForm").serialize(),
+            reeoe: function () {
+            },
+            success: function (data) {
+                if (data != null) {
+                    if (data.result == "1") {
+                        alert("操作成功！");
+                        location.href = location.href;
+                    } else if (data.result == "500") {
+                        alert("操作异常");
+                    } else if (data.result == "8") {
+                        alert("您的个人信息昵称为空，请先填写昵称");
+                    } else if (data.result == "9") {
+                        alert("您不是该条信息的添加人，不能修改！")
+                    } else if (data.result == "12") {
+                        alert(data.tips);
+                    }
+                }
+            }
+        });
+    }
+    function Change() {
+        var isissued = $("input[name='Type']:checked").val();
+        if (isissued == "0") {
+            $("#f_Type").val("false");
+        } else {
+            $("#f_Type").val("true");
+        }
+    }
+    function TimeCompute(s) {
+        var FlightDate = $("#" + s + "FlightDate").val();
+        var FlightArrivalTime = $("#" + s + "FlightArrivalTime").val();
+
+        $("#f_" + s + "Flight").val(FlightDate + "~" + FlightArrivalTime);
+
+    }
+    //取消
+    $(function () {
+        $("#btn-quxiao").click(function () {
+            $("div.addbg").hide();
+        });
+        $.datetimepicker.setLocale('zh');
+        //截止日期
+        $("#f_FromDate,#f_ToDate").datetimepicker({
+            lang: 'zh',
+            timepicker: false,
+            format: 'Y-m-d',
+            formatDate: 'Y-m-d'
+        });
+        $("#ToFlightDate,#ToFlightArrivalTime,#FromFlightDate,#FromFlightArrivalTime").datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            step: 15
+        });
+        var name2Id = {}; //姓名对应的id
+        $('#f_nickname').typeahead({
+            source: function (query, process) {
+                var parameter = { query: query };
+                $.post('@Url.Action("GetNames")', parameter, function (e) {
+                    if (e.success) {
+                        var array = [];
+                        $.each(e.data, function (index, ele) {
+                            // console.log(ele);
+                            name2Id[ele.name] = ele.id; //键值对保存下来
+                            array.push(ele.name);
+                        });
+                        process(array);
+                    }
+                });
+            },
+            items: 8,
+            afterSelect: function (item) {
+                $('#f_eId').val(name2Id[item]);
+            },
+            delay: 500 //延迟时间
+        });
+    });
+</script>

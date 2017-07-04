@@ -1,0 +1,93 @@
+﻿@model List<MI.Core.Domain.BedLinenViewModel>
+@{
+    Layout = null;
+    ViewBag.Title = "宿舍管理";
+    int i = 1;
+}
+@Styles.Render("~/Content/bootstrap")
+@Styles.Render("~/Content/ResponsiveStyle")
+<style type="text/css">
+    table.table thead tr th {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .form-inline input.text_width {
+        width: 125px;
+    }
+</style>
+<div class="addbg">
+    <div class="addtable" style="margin-top:30px">
+    </div><!-- /.addtable-->
+</div><!-- /.addbg-->
+<div class="container-fluid">
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline"></form>
+            </div>
+            <div class="taiojianli_right">
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">床被送洗</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">序号</th>
+                            <th rowspan="2">小区</th>
+                            <th rowspan="2">楼栋</th>
+                            <th rowspan="2">房号</th>
+                            <th rowspan="2">床位类型</th>
+                            <th colspan="4">送洗项目</th>
+                            <th rowspan="2">当月送洗次数</th>
+                            <th colspan="3">是否需要加送（新人首次送洗）Add</th>
+                            <th rowspan="2" width="240">备注</th>
+                        </tr>
+                        <tr>
+                            <th>床单数量<br />Sheet</th>
+                            <th>被单数量<br />Bedcover</th>
+                            <th>被子数量<br />Comforter</th>
+                            <th>枕头套数量<br />Pillow Case</th>
+                            <th>床单数量<br />Sheet</th>
+                            <th>被子数量<br />Comforter</th>
+                            <th>枕头套数量<br />Pillow Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            item.listRemarks.RemoveAll(p => p == null);
+
+                            <tr>
+                                <td>@i </td>
+                                <td>@item.Community</td>
+                                <td>@item.Building</td>
+                                <td>@item.RoomNo</td>
+                                <td>@item.Hostels</td>
+                                <td>@item.BunkNo</td>
+                                <td>@item.SheetsNo</td>
+                                <td>@item.QuiltNo</td>
+                                <td>@item.PillowcaseNo</td>
+                                <td>@item.Cont </td>
+                                <td>@item.AddBunkNo</td>
+                                <td>@item.AddSheetsNo</td>
+                                <td>@item.AddPillowcaseNo</td>
+                                <td>@Html.Raw(string.Join("<br/>", item.listRemarks))</td>
+                            </tr>
+                            i++;
+                        }
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="15" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+    </div><!-- /.oacentbox-->
+</div>

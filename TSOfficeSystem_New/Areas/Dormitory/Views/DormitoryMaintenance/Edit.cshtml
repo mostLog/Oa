@@ -1,0 +1,300 @@
+﻿@model MI.Core.Domain.DormitoryMaintenance
+@using MI.Core.Domain;
+@{
+    Layout = null;
+    List<SType> Buttlist = ViewBag.ButtItem;
+}
+@Styles.Render("~/Content/datetimepicker")
+@Scripts.Render("~/bundles/datetimepicker")
+<button type="button" id="btn-quxiao" onclick="closeADDwindow()" class="btn btn-danger closebtn">取消（X）</button>
+<div class="panel panel-default">
+    <div class="panel-heading">宿舍维修</div>
+    <div class="table-responsive">
+        <form id="formTable" method="post">
+            <table class="table table-hover table-striped">
+                <tr>
+                    <td>社区:</td>
+                    <td>
+                        <div class="dropdown" style="float:left;">
+                            <input type="hidden" value="@(Model.t_dormitory.f_Community)" id="CLaundry" name="CLaundry" correspond="dropdownMenuComm" />
+                            <button class="btn btn-default dropdown-toggle " style="width:500px" type="button" id="dropdownMenuComm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(Model.t_dormitory.f_Community ?? "请选择")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" id="CommunityLaundry" aria-labelledby="dropdownMenuComm">
+                                @foreach (var item in (List<string>)ViewBag.LCommunity)
+                                {
+                                    <li><a onclick="Community(this,'Laundry')" id="@item">@item </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>楼栋:</td>
+                    <td>
+                        <div class="dropdown" style="float:left;">
+                            <input type="hidden" value="@(Model.t_dormitory.f_Building)" name="BLaundry" id="BLaundry" correspond="dropdownMenuBui" />
+                            <button class="btn btn-default dropdown-toggle" style="width:500px" type="button" id="dropdownMenuBui" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(Model.t_dormitory.f_Building ?? "请选择")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" id="BuildingLaundry" aria-labelledby="dropdownMenuBui">
+                                @foreach (var item in (List<string>)ViewBag.Lbuilding)
+                                {
+                                    <li><a id="@item" onclick="Building(this, 'Laundry')">@item</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>房间号:</td>
+                    <td>
+                        <div id="T-div" style="margin-bottom:0px">
+                            <input type="text" placeholder="请输入房间号" id="RoomNoLaundry" name="RoomNoLaundry" class="form-control" onblur="RoomNo(this, 'Laundry')" value="@Model.t_dormitory.f_RoomNo" />
+                            <span id="Ticon"></span>
+                        </div>
+                        <input type="hidden" class="val_Laundry" id="f_DormitoryId" name="f_DormitoryId" value="@Model.f_DormitoryId" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>登记人:</td>
+                    <td><input type="text" class="form-control" id="f_Registrant" name="f_Registrant" value="@Model.f_Registrant" /></td>
+                </tr>
+                <tr>
+                    <td>QQ:</td>
+                    <td>
+                        <input type="text" class="form-control" id="f_QQNo" name="f_QQNo" value="@Model.f_QQNo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>维修方式:</td>
+                    <td>
+                        <input type="radio" name="f_serviceWay" value="0" @(Model.f_serviceWay == 0 ? "checked='checked'" : "") />完成
+                        <input type="radio" name="f_serviceWay" value="1" @(Model.f_serviceWay == 1 ? "checked='checked'" : "") />送修
+                        <input type="radio" name="f_serviceWay" value="2" @(Model.f_serviceWay == 2 ? "checked='checked'" : "") />买新
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>维修内容（中）:</td>
+                    <td><input type="text" class="form-control" id="f_ContentCh" name="f_ContentCh" value="@Model.f_ContentCh" /></td>
+                </tr>
+                <tr>
+                    <td>维修内容（英）:</td>
+                    <td><input type="text" class="form-control" id="f_ContentEn" name="f_ContentEn" value="@Model.f_ContentEn" /></td>
+                </tr>
+                <tr>
+                    <td>对接:</td>
+                    <td>
+                        @foreach (var item in Buttlist)
+                        {
+                            <span style="margin-right:10px"><input onclick="CheckboxBinValue()" type="checkbox" name="dptCheckbox" @Html.Raw((Model.f_Butt ?? "").Contains(item.f_value) ? "checked='checked'" : "") value="@(item.f_value + ",")">@(item.f_value ?? "")</span>
+                        }
+                        <input type="hidden" id="f_Butt" name="f_Butt" value="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>維修派件日期:</td>
+                    <td><input type="text" class="form-control basicvalue" id="f_SendDate" placeholder="維修派件日期" name="f_SendDate" value="@(Model.f_SendDate!=null?Model.f_SendDate.Value.ToString("yyyy-MM-dd"):"")" /></td>
+                </tr>
+                <tr>
+                    <td>最終完成時間:</td>
+                    <td><input type="text" class="form-control basicvalue" id="f_LastFinishDate" placeholder="最終完成時間" name="f_LastFinishDate" value="@(Model.f_LastFinishDate!=null?Model.f_LastFinishDate.Value.ToString("yyyy-MM-dd"):"")" /></td>
+                </tr>
+                <tr>
+                    <td>维修费用:</td>
+                    <td><input type="text" class="form-control" id="f_MaintFee" name="f_MaintFee" value="@Model.f_MaintFee" /></td>
+                </tr>
+                <tr>
+                    <td>是否缴费:</td>
+                    <td>
+                        <div style="float:left;height:30px;line-height:30px;margin-right:10px">
+                            <input type="radio" name="f_PaymentStatus" onchange="Change()" value="false" id="Fitness" @Html.Raw(Model?.f_PaymentStatus ?? false ? "" : "checked='checked'") />未缴费
+                            <input type="radio" name="f_PaymentStatus" onchange="Change()" value="true" id="Fitness" @Html.Raw(Model?.f_PaymentStatus ?? false ? "checked='checked'" : "") />已缴费
+                        </div>
+                        <input type="text" class="form-control" style="width:60%;float:left" placeholder="输入缴费人" value="@Model.f_Payers" name="f_Payers" id="f_Payers" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>确认（员工）:</td>
+                    <td><input type="text" class="form-control" id="f_IsOK_emp" name="f_IsOK_emp" value="@Model.f_IsOK_emp" /></td>
+                </tr>
+                <tr>
+                    <td>备注:</td>
+                    <td><input type="text" class="form-control" id="f_Remarks" name="f_Remarks" value="@Model.f_Remarks" /></td>
+                </tr>
+                @*<tr>
+                        <td>确认（维修工）:</td>
+                        <td><input type="text" class="form-control" id="f_IsOK_main" name="f_IsOK_main" value="@Model.f_IsOK_main" /></td>
+                    </tr>*@
+
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <button type="button" onclick="Submit()" class="btn btn-primary  btn-lg">确认</button>
+                        <input type="hidden" value="@Model.f_Id" id="f_Id" name="f_Id" />
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+</div><!-- /.panel-default/ table-->
+<script type="text/javascript">
+    $(function () {
+        bind();
+        $.datetimepicker.setLocale('zh');
+        $('#f_SendDate,#f_LastFinishDate').datetimepicker({
+            lang: 'zh',
+            timepicker: false,
+            format: 'Y-m-d',
+            formatDate: 'Y-m-d'
+        });
+        CheckboxBinValue();
+    })
+    function bind() {
+        $("li").click(function () {
+            var ldtxt = '@Model.t_dormitory.f_Building';
+            var sqtxt = '@Model.t_dormitory.f_Community';
+            if ($("#dropdownMenuBui").text().trim() == ldtxt && $("#dropdownMenuComm").text().trim() == sqtxt) {
+                $("#f_DormitoryId").val('@Model.t_dormitory.f_RoomNo');
+                $("#RoomNoLaundry").val('@Model.t_dormitory.f_RoomNo');
+            } else {
+                $("#f_DormitoryId").val('');
+                $("#RoomNoLaundry").val('');
+            }
+        });
+    }
+    function Submit() {
+        var f_DormitoryId = $("#f_DormitoryId").val();
+        var RoomNoLaundry = $("#RoomNoLaundry").val();
+        if (RoomNoLaundry == "") {
+            alert('请输入房间号');
+            return;
+        }
+        if (f_DormitoryId == "0") {
+            alert('请输入正确的房间号');
+            return;
+        }
+        var f_Registrant = $("#f_Registrant").val();
+        var f_QQNo = $("#f_QQNo").val();
+        var f_ContentCh = $("#f_ContentCh").val();
+        var f_ContentEn = $("#f_ContentEn").val();
+        var f_Butt = $("#f_Butt").val();
+        if (ValidationNull("对接", f_Butt) || ValidationNull("维修内容（英）", f_ContentEn) || ValidationNull("维修内容（中）", f_ContentCh) || ValidationNull("QQ", f_QQNo) || ValidationNull("登记人", f_Registrant)) {
+            return;
+        }
+        //验证长度
+        if (ValidationLength("备注", $("#f_Remarks").val(), 250) || ValidationLength("QQ", f_QQNo, 10) || ValidationLength("登记人", f_Registrant, 25) || ValidationLength("维修内容（英）", f_ContentEn, 250)
+            || ValidationLength("维修内容（中）", f_ContentCh, 250) || ValidationLength("对接", f_Butt, 50) || ValidationLength("缴费人", $("#f_Payers").val(), 50)
+            || ValidationLength("确认（员工）", $("#f_IsOK_emp").val(), 25) || ValidationLength("确认（维修工）", $("#f_IsOK_main").val(), 25)) {
+            return;
+        }
+        var f_MaintFee = $("#f_MaintFee").val();
+        if (ValidationMoney("维修费用", f_MaintFee)) {
+            return;
+        }
+        var formdata = $("#formTable").serialize();
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UptateAndAdd")',
+            data: formdata,
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data != null) {
+                    if (data == "1") {
+                        alert("操作成功");
+                        location.href = location.href;
+                    }
+                    else if (data == "500") {
+                        alert("操作异常");
+                    }
+                }
+            }
+        })
+    }
+    //选择社区
+    function Community(s, type) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Community")',
+            data: { community: $.trim($(s).text()) },
+            error: function (data) {
+                alert("异常");
+            },
+            success: function (data) {
+                if (data != null) {
+                    var str = "<li><a href=\"javaScript:\" id=''>请选择社区</a></li>";
+                    for (var i = 0; i < data.length; i++) {
+                        str += "<li><a onclick=\"Building(this,'" + type + "')\" id='" + data[i] + "'>" + data[i] + "</a></li>";
+                    }
+                    $("#Building" + type).html(str);
+                    //加载之后 重新绑定下拉框事件
+                    setDropdownChangeValue();
+                    bind();
+                    RoomNo($("#RoomNoLaundry"), 'Laundry');
+                    //$(s).parents("tr").next().find("button").text("请选择");
+                }
+            }
+        });
+    }
+    //选择楼栋
+    function Building(s, type) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Building")',
+            data: { community: $.trim($("#C" + type).val()), building: $.trim($(s).text()) },
+            error: function (data) {
+                alert("异常");
+            },
+            success: function (data) {
+                if (data != null) {
+                    var str = "<li><a href=\"javaScript:\" id=''>请选择社区</a></li>";
+                    for (var i = 0; i < data.length; i++) {
+                        str += "<li><a onclick=\"RoomNo(this,'" + type + "')\" id='" + data[i] + "'>" + data[i] + "</a></li>";
+                    }
+                    $("#RoomNo" + type).html(str);
+                    //加载之后 重新绑定下拉框事件
+                    setDropdownChangeValue();
+                    bind();
+                    RoomNo($("#RoomNoLaundry"), 'Laundry');
+                    //$(s).parents("tr").next().find("button").text("请选择");
+                }
+            }
+        });
+    }
+    //选择房间号
+    function RoomNo(s, type) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("RoomNo")',
+            data: { community: $.trim($("#C" + type).val()), building: $.trim($("#B" + type).val()), roomno: $.trim($(s).val()) },
+            error: function (data) {
+                alert("异常");
+            },
+            success: function (data) {
+                if (data != null) {
+                    $(".val_" + type).val(data);
+                }
+                RoomNoTextSwitchStyle(data);
+            }
+        });
+    }
+    $("#T-div").click(function () {
+        $(this).attr("class", "form-group has-warning has-feedback");
+        $("#Ticon").attr("class", "glyphicon glyphicon-warning-sign form-control-feedback");
+    })
+    function CheckboxBinValue()
+    {
+        var buttVale = "";
+        $("input:checkbox[name='dptCheckbox']:checked").each(function () {
+            if (this.checked.toString() == "true") {
+                buttVale += $(this).val();
+            }
+        });
+        $("#f_Butt").val(buttVale);
+    }
+
+</script>

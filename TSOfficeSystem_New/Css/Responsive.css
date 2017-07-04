@@ -1,0 +1,108 @@
+﻿/*@media 媒体查询设计*/
+@media (max-width:980px ) {
+    #caidan {
+        display: block;
+        margin-top: 7px;
+        margin-right: 10px;
+    }
+
+    .sidebar {
+        display: none;
+        background-color: rgba(51,122,183,.90);
+        z-index: 99;
+    }
+
+    .addbg {
+        z-index: 199;
+    }
+
+    #navtop {
+        right: 60px;
+    }
+
+    #main {
+        margin-left: 0;
+    }
+
+    #oatilte {
+        display: block;
+        margin-top: 13px;
+        margin-left: 8px;
+        color: #337AB7;
+        font-size: 22px;
+    }
+
+    .titleh1 {
+        font-size: 42px;
+        padding: 0 20px;
+    }
+
+    .loginbox {
+        float: none;
+        width: 86%;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .loginbgimg {
+        width: 86%;
+        height: 98%;
+    }
+}
+
+@media (max-width:768px ) {
+    #navtop {
+        right: 120px;
+    }
+
+    #xiala {
+        display: block;
+        margin-top: 7px;
+    }
+
+    ul#navtop {
+        display: none;
+        right: 78px;
+        top: 39px;
+        padding: 8px;
+        background-color: rgba(51,122,183,.70);
+        border: #337AB7 solid 1px;
+        z-index: 77;
+        border-radius: 9px;
+       
+    }
+     ul#navtop li a {
+          color: #fff;
+           border-radius: 5px;
+     }
+      ul#navtop li a:hover {
+         background-color: rgba(219,224,76,.57);
+            
+     }
+            ul#navtop li a:visited {
+         background-color: rgba(219,224,76,.07);
+            
+     }
+    #searchicon {
+        display: block;
+    }
+
+    #searchbox {
+        float: none;
+        display: none;
+        position: absolute;
+        top: 48px;
+        padding: 8px;
+        background-color: rgba(51,122,183,.70);
+        border: #337AB7 solid 1px;
+        z-index: 77;
+        border-radius: 9px;
+        color: #fff;
+    }
+
+    .taiojianli_left {
+        clear: both;
+        float: none;
+        margin-bottom: 6px;
+    }
+}

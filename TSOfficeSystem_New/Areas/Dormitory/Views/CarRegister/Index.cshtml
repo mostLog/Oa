@@ -1,0 +1,148 @@
+﻿@model IList<MI.Application.Dto.CarRegisterDto>
+@{
+    ViewBag.Title = "车辆管理";
+    List<MI.Core.Domain.SType> listDepartment = ViewBag.listTypeDepartment;
+    int itype = ViewBag.itype;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <!--新增开始-->
+    <div class="addbg">
+        <div class="addtable">
+            @*@Html.Action("Edit")*@
+        </div><!-- /.addtable-->
+    </div>
+    <!--主页显示开始-->
+    <div class="container-fluid">
+        <ol class="breadcrumb">
+            <li><a href="#">车辆管理</a></li>
+            <li class="active">车辆管理</li>
+        </ol>
+        <div class="oacentbox">
+            <div class="oatiaojian container-fluid">
+                <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+                <div id="searchbox">
+                    <form class="form-inline">
+                        <div class="taiojianli_left">
+                            <div class="dropdown">
+                                <input type="hidden" id="itype" name="itype" correspond="dropdownMenuItype" value="@itype" />
+                                <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenuItype" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @(listDepartment.Where(p => p.f_tID == itype).FirstOrDefault()?.f_value ?? "车辆筛选" )
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuItype">
+                                    <li><a href="javaScript:" id="0">全部</a></li>
+                                    @foreach (var item in listDepartment)
+                                    {
+                                        <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                    }
+                                </ul>.
+                            </div>
+                        </div>
+                        <div class="taiojianli_left">
+                            <button type="submit" class="btn btn-primary">查 询</button>
+                        </div><!-- /.taiojianli_left-->
+                    </form>
+                </div>
+                <div class="taiojianli_right">
+                    <button type="button" id="btn-xinzeng" class="btn btn-primary" onclick="Update(0)">新增</button>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">车辆管理</div>
+                <div class="table-responsive">
+
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>车辆类型</th>
+                                <th>车牌号</th>
+                                <th>车辆品牌</th>
+                                <th>车主</th>
+                                <th>购置年份</th>
+                                <th>特殊牌照</th>
+                                <th>特殊牌照到期时间</th>
+                                <th class="caozuotd">操&nbsp;&nbsp;作</th>
+                            </tr>
+                        </thead>
+                        @{int count = 0; }
+                        @foreach (var m in Model)
+            {
+                            <tbody>
+                                <tr>
+                                    <td>@count</td>
+                                    <td>@m.t_sType.f_value</td>
+                                    <th>@m.f_CarNO</th>
+                                    <td>@m.f_CarBrand</td>
+                                    <td>@m.f_CarOwner</td>
+                                    <td>@((m.f_PurchaseDate == null || m.f_PurchaseDate.Value == DateTime.MinValue) ? "" : m.f_PurchaseDate.Value.ToString("yyyy-MM-dd"))</td>
+                                    <td>@(m.f_IsIssued ? "√" : "×")</td>
+                                    <td>@((m.f_IssuedDate == null || m.f_IssuedDate.Value == DateTime.MinValue) ? "无" : m.f_IssuedDate.Value.ToString("yyyy-MM-dd"))</td>
+                                    <td>
+                                        <a href="javascript:" id="btn-xinzeng" class="btn btn-info btn-sm" onclick="Update('@m.f_ID')">修改</a>
+                                        <a href="javascript:" class="btn btn-danger btn-sm" onclick="Delete('@m.f_ID')">删除</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            count++;
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--主页显示结束-->
+    <script type="text/javascript">
+        function Update(id) {
+            OpenADDwindow();
+            loadingTips();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Edit")',
+                data: { Id: id },
+                error: function (data) {
+                },
+                success: function (data) {
+                    if (data != null) {
+                        console.info(data);
+                    $(".addtable").html(data);
+                    setDropdownChangeValue();
+                }
+            } 
+        })
+       // $("div.addbg").show(200);
+    }
+          function Delete(id) {
+        if (confirm("是否确定删除？")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                data: { Id: id },
+                error: function (data) {
+                    //location.href = '@Url.Action("Error", "Login")'
+                }, success: function (data) {
+                    if (data != null) {
+                        if (data == "1") {
+                            alert("删除成功");
+                            location.href = location.href;
+                        }
+                        else if (data == "500") {
+                            alert("删除异常");
+                        }
+                    }
+                }
+            })
+        }
+    }
+    </script>
+
+</body>
+</html>

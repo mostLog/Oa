@@ -1,0 +1,112 @@
+﻿@model List<MI.Core.Domain.t_HostelClean>
+@{
+    Layout = null;
+}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宿舍打扫日程</title>
+    <link href="~/Css/printCss.css" rel="stylesheet" />
+</head>
+<body>
+    <input style="margin: 10px auto 10px 20px" type="button" value="打印" onclick="printData()" class="noPrint" />
+    <div class="oacentbox">
+        <!--startprint-->
+        <div class="panel panel-default">
+            <div class="panel-heading">宿舍打扫日程</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped" cellspacing="0">
+                    <thead style="display: table-header-group; font-weight: bold">
+                        <tr>
+                            <td>序号</td>
+                            <td>社区</td>
+                            <td>楼栋</td>
+                            <td>房间号</td>
+                            <td>星期</td>
+                            <td>执行人</td>
+                            <td>操作人</td>
+                            <td>最后操作时间</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int iIndex = 1; }
+                        @foreach (var item in Model)
+                        {
+                            <tr @Html.Raw(iIndex % 22 == 0 ? "style='page-break-after:always;'" : "")>
+                                <td>@iIndex </td>
+                                <td>@item.t_dormitory.f_Community </td>
+                                <td>@item.t_dormitory.f_Building</td>
+                                <td>@item.t_dormitory.f_RoomNo</td>
+                                <td>
+                                    @(item.f_Week == 1 ? "星期一" : item.f_Week == 2 ? "星期二" : item.f_Week == 3 ? "星期三" : item.f_Week == 4 ? "星期四" : item.f_Week == 5 ? "星期五" : item.f_Week == 6 ? "星期六" : item.f_Week == 7 ? "星期天" : "--"  )
+                                </td>
+                                <td>@item.f_Cleaner</td>
+                                <td>@item.f_operator</td>
+                                <td>@item.f_operatorTime</td>
+                            </tr>
+                            iIndex++;
+                        }
+
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="9" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--endprint-->
+    </div><!-- /.oacentbox-->
+</body>
+</html>
+<script type="text/javascript">
+
+    var HKEY_Root, HKEY_Path, HKEY_Key;
+    HKEY_Root = "HKEY_CURRENT_USER";
+    HKEY_Path = "\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
+    //设置网页打印的页眉页脚为空
+    function PageSetup_Null() {
+        try {
+            var Wsh = new ActiveXObject("WScript.Shell");
+            HKEY_Key = "header";
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "");
+            HKEY_Key = "footer";
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "");
+        }
+        catch (e)
+        { }
+    }
+    //设置网页打印的页眉页脚为默认值
+    function PageSetup_Default() {
+        try {
+            var Wsh = new ActiveXObject("WScript.Shell");
+            HKEY_Key = "header";
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "&w&b页码,&p/&P");
+            HKEY_Key = "footer";
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "&u&b&d");
+        }
+        catch (e)
+        { }
+    }
+    function printData() {
+        PageSetup_Default();
+        var bdhtml = window.document.body.innerHTML;
+        var sprnstr = "<!--startprint-->";
+        var eprnstr = "<!--endprint-->";
+        var prnhtml = bdhtml.substr(bdhtml.indexOf(sprnstr) + 17);
+        prnhtml = prnhtml.substring(0, prnhtml.indexOf(eprnstr));
+        window.document.body.innerHTML = prnhtml;
+        window.print();
+        window.document.body.innerHTML = bdhtml;
+    }
+</script>
+
+

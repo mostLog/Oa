@@ -1,0 +1,541 @@
+﻿body {
+    font-family: "Microsoft JhengHei";
+}
+
+@font-face {
+    font-family: 'iconfont';
+    src: url('../images/fonticon/iconfont.eot?t=1463122655'); /* IE9*/
+    src: url('../images/fonticon/iconfont.eot?t=1463122655#iefix') format('embedded-opentype'); /* IE6-IE8 */
+    src: url('../images/fonticon/iconfont.svg?t=1463122655#iconfont') format('svg'); /* iOS 4.1- */
+    src: url('../images/fonticon/iconfont.ttf?t=1463122655') format('truetype'); /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+    src: url('../images/fonticon/iconfont.woff?t=1463122655') format('woff'); /* chrome、firefox */
+}
+
+.iconfont {
+    font-family: "iconfont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.08px;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-transition: font-size 0.25s ease-out 0s;
+    -moz-transition: font-size 0.25s ease-out 0s;
+    transition: font-size 0.25s ease-out 0s;
+}
+
+.nav .iconfont {
+    font-size: 24px;
+}
+/*login---------start----*/
+.loginbg {
+    position: absolute;
+    background-color: rgba(51,122,183,.45);
+    z-index: 99;
+    width: 100%;
+    height: 100%;
+}
+
+.loginbox {
+    float: right;
+    margin-top: 72px;
+    margin-right: 90px;
+    color: #fff;
+    border: #4B93D3 solid 1px;
+    padding: 50px 35px;
+    border-radius: 15px;
+    width: 600px;
+}
+
+    .loginbox .form-group label {
+        font-size: 16px;
+    }
+
+#navtop {
+    position: fixed;
+    right: 0;
+    top: 0;
+}
+
+.titleh1 {
+    font-size: 48px;
+    padding: 0 30px;
+    text-align: center;
+}
+
+#caidan {
+    display: none;
+    position: fixed;
+    right: 0;
+    top: 0;
+}
+
+#xiala {
+    display: none;
+    position: fixed;
+    right: 60px;
+    top: 0;
+}
+
+.denglutext {
+    font-size: 38px;
+    text-align: center;
+    margin-top: 80px;
+    margin-bottom: 30px;
+}
+
+p.text-tips {
+    padding-top: 8px;
+    padding-left: 5px;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    color: #fffc00;
+}
+
+.loginbgimg {
+    background: url('../images/loginbg.png') no-repeat 0 0;
+    background-position: left bottom;
+    background-size: contain;
+    position: absolute;
+    left: 2%;
+    bottom: 3%;
+    z-index: 1;
+    width: 68.17%;
+    height: 68.88%;
+}
+
+
+
+.loginbgimg {
+    animation: myfirst 5s;
+    -moz-animation: myfirst 5s; /* Firefox */
+    -webkit-animation: myfirst 5s; /* Safari and Chrome */
+    -o-animation: myfirst 5s; /* Opera */
+}
+
+@keyframes myfirst {
+    0% {
+        left: 2%;
+        bottom: 3%;
+    }
+
+    50% {
+        left: 12%;
+        bottom: 3%;
+    }
+
+    75% {
+        left: 10%;
+        bottom: 3%;
+    }
+}
+
+@-moz-keyframes myfirst /* Firefox */
+{
+    0% {
+        left: 2%;
+        bottom: 3%;
+    }
+
+    50% {
+        left: 12%;
+        bottom: 3%;
+    }
+
+    75% {
+        left: 10%;
+        bottom: 3%;
+    }
+}
+
+@-webkit-keyframes myfirst /* Safari 和 Chrome */
+{
+    0% {
+        left: 2%;
+        bottom: 3%;
+    }
+
+    50% {
+        left: 12%;
+        bottom: 3%;
+    }
+
+    75% {
+        left: 10%;
+        bottom: 3%;
+    }
+}
+
+@-o-keyframes myfirst /* Opera */
+{
+    0% {
+        left: 2%;
+        bottom: 3%;
+    }
+
+    50% {
+        left: 12%;
+        bottom: 3%;
+    }
+
+    75% {
+        left: 10%;
+        bottom: 3%;
+    }
+}
+/*login---------over----*/
+
+
+
+.table tr td, .table tr th {
+    border-left: #DDDDDD solid 1px;
+}
+
+    .table tr td:first-child, .table tr th:first-child {
+        border-left: none;
+    }
+
+.table thead tr th {
+    color: #337AB7;
+}
+
+/*.table tbody tr td {   现在一条数据中可能存在多行数据 就不用定义行高了
+    line-height: 29px;
+}*/
+
+.headerleft {
+    height: 55px;
+    border-bottom: #5D98CB solid 2px;
+}
+
+.headerright {
+    height: 55px;
+    width: 100%;
+    border-bottom: #CCC solid 2px;
+    background-color: #F7F7F8;
+    padding-right: 15px;
+    z-index: 88;
+    position: fixed;
+}
+
+.breadcrumb > li + li:before {
+    color: #337AB7;
+}
+
+.sidebar .navbar-brand {
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 1px;
+    font-size: 22px;
+    width: 100%;
+    text-align: center;
+}
+
+
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 246px;
+    display: block;
+    z-index: 89;
+    color: #fff;
+    background-size: cover;
+    /*background-color: #337AB7;*/
+    height: 100%;
+}
+
+
+    .sidebar .nav {
+        text-align: center;
+    }
+
+        .sidebar .nav li > a.btn {
+            border-radius: 4px;
+            outline: none;
+            border: none;
+            width: 80%;
+            display: inline-block;
+            margin-top: 15px;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: #337AB7 solid 1px;
+            color: #fff;
+        }
+
+        .sidebar .nav li:hover > a, .nav li.navcurrent a.btn {
+            background: rgba(255, 255, 255, 0.28);
+            border: #90B7D8 solid 1px;
+        }
+
+#main {    
+    padding: 0;
+}
+
+#oatilte {
+    display: none;
+}
+
+#oacontent {
+    position: relative;
+    margin-top: 55px;
+}
+
+    #oacontent .container-fluid {
+        padding-top: 10px;
+    }
+
+    #oacontent .panel {
+        margin-top: 10px;
+    }
+
+    #oacontent .panel-heading {
+        font-size: 20px;
+        text-align: center;
+    }
+
+    #oacontent .oatiaojian {
+        padding-left: 0;
+        padding-right: 0;
+        position: relative;
+    }
+
+.oatiaojian .taiojianli_left {
+    float: left;
+    margin-right: 10px;
+}
+
+.oatiaojian .taiojianli_right {
+    float: right;
+    margin-left: 10px;
+}
+
+.table .caozuotd {
+    width: 115px;
+    text-align: center;
+}
+
+#searchicon {
+    float: left;
+    display: none;
+}
+
+#searchbox {
+    float: left;
+}
+
+.oacentbox {
+    padding-top: 10px;
+}
+
+.fenyediv {
+    text-align: center;
+}
+
+.addbg {
+    width: 100%;
+    position: absolute;
+    background-color: rgba(8,52,89,.79);
+    z-index: 99;
+    height: 100%;
+    display: none;
+}
+
+.addtable {
+    max-width: 780px;
+    width: 95%;
+    margin: 0 auto;
+    margin-top: 110px;
+    position: relative;
+}
+
+    .addtable .table-responsive {
+        min-height: 380px;
+    }
+
+.addbg .closebtn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.addtable table tr td:first-child {
+    max-width: 200px;
+    text-align: right;
+}
+/*二级菜单显示--star------------*/
+.erjimenu {
+    position: absolute;
+    top: -35px;
+    right: -167px;
+    width: 167px;
+    padding-top: 15px;
+    padding-bottom: 30px;
+    -webkit-border-radius: 0 8px 8px 0;
+    -moz-border-radius: 0 8px 8px 0;
+    border-radius: 0 8px 8px 0;
+    background-color: rgba(96,151,198,.93);
+    border: solid 2px #d6d6d6;
+    border-left: none;
+}
+
+.erjinav a {
+    width: 128px;
+    height: 45px;
+    margin: 0 auto;
+    display: block;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background-color: rgba(255,255,255,0);
+    border: solid 2px #8cb6da;
+    line-height: 44px;
+    text-align: center;
+    font-size: 16px;
+    color: #b8d7f2;
+    text-decoration: none;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+    a.erjinavcurrent, .erjinav a:hover {
+        border-color: #9dcbf1;
+        color: #daeeff;
+    }
+
+.dangqianArrowleft {
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 30px;
+    left: -14px;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-right: 14px solid #6c9fcb;
+}
+/*二级菜单显示--over*/
+
+/*复选框样式*/
+.titleclick {
+    background: url(../images/gouhao2.png) no-repeat 0 0;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    color: black;
+    display: inline-block;
+}
+
+.titlecheckbox {
+    background: url(../images/gouxuan.png) no-repeat 0 0;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    color: black;
+    display: inline-block;
+}
+.titleclicks {
+    background: url(../images/gouhao2.png) no-repeat 0 0;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    color: black;
+    display: inline-block;
+}
+
+.titlecheckboxs {
+    background: url(../images/gouxuan.png) no-repeat 0 0;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    color: black;
+    display: inline-block;
+}
+.titleclickShuoming {
+    width: 160px;
+    float: left;
+    font-size: 15px;
+}
+/*复选框样式over*/
+
+/*导航栏样式*/
+#wrapper.toggled {
+  padding-left: 246px;
+}
+#wrapper.toggled #sidebar-wrapper {
+  width: 246px;
+  overflow: visible;
+}
+#wrapper.toggled #page-content-wrapper {
+  margin-right: -246px;
+  position: absolute;
+}
+#sidebar-wrapper {
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  -webkit-transition: all 0.5s ease;
+  background-color: #337AB7;
+  height: 100%;
+  left: 246px;
+  margin-left: -246px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  transition: all 0.5s ease;
+  width: 0;
+  z-index: 1000;
+}
+/*-------------------------------*/
+/*       Hamburger-Cross         */
+/*-------------------------------*/
+.hamburger {
+  background: transparent none repeat scroll 0% 0%;
+  border: medium none;
+  display: block;
+  height: 32px;
+  margin-left: 15px;
+  position: fixed;
+  top: 10px;
+  width: 32px;
+  z-index: 999;
+}
+
+.hamburger.is-closed .hamb-top {
+  -webkit-transition: all 0.35s ease-in-out;
+  background-color: #337AB7;
+  top: 5px;
+}
+.hamburger.is-closed .hamb-middle {
+  background-color: #337AB7;
+  margin-top: -2px;
+  top: 50%;
+}
+.hamburger.is-closed .hamb-bottom {
+  -webkit-transition: all 0.35s ease-in-out;
+  background-color: #337AB7;
+  bottom: 5px;
+}
+.hamburger.is-closed .hamb-top,
+.hamburger.is-closed .hamb-middle,
+.hamburger.is-closed .hamb-bottom,
+.hamburger.is-open .hamb-top,
+.hamburger.is-open .hamb-middle,
+.hamburger.is-open .hamb-bottom {
+  height: 4px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  background-color: #337AB7;
+}
+.hamburger.is-open .hamb-top {
+  -webkit-transition: all 0.35s ease-in-out;
+  background-color: #337AB7;
+  top: 5px;
+}
+.hamburger.is-open .hamb-middle {
+  background-color: #337AB7;
+  margin-top: -2px;
+  top: 50%;
+}
+.hamburger.is-open .hamb-bottom {
+  -webkit-transition: all 0.35s ease-in-out;
+  background-color: #337AB7;
+  bottom: 5px;
+}

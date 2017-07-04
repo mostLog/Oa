@@ -1,0 +1,142 @@
+﻿@model MI.Core.Domain.CertAgency
+@{
+    Layout = null;
+    List<MI.Core.Domain.SType> lstCertType = ViewBag.listCertType;
+    List<MI.Core.Domain.SType> lstProcess = ViewBag.listProcess;
+}
+
+<script src="~/Scripts/typeahead/bootstrap3-typeahead.js"></script>
+
+<button type="button" id="btn-quxiao" onclick="closeADDwindow()" class="btn btn-danger closebtn">取消（X）</button>
+<div class="panel panel-default">
+    <div class="panel-heading">证件办理</div>
+    <div class="table-responsive">
+        <form id="formTable" method="post">
+            <table class="table table-hover table-striped">
+                <tr>
+                    <td>员工:</td>
+                    <td>
+                        <input type="text" class="form-control" id="f_chineseName" autocomplete="off" data-provide="typeahead" placeholder="请输入中文名/昵称/护照名/OA账号" name="f_chineseName" value="@ViewBag.f_chineseName" />
+                        <input type="hidden" id="f_eid" name="f_eid" value="@Model.f_eId" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>证件类型：</td>
+                    <td>
+                        <div class="dropdown">
+                            <input type="hidden" name="f_CertificateTypeId" id="f_CertificateTypeId" value="@(Model.f_CertificateTypeId)" correspond = "dropdownMenuCer" />
+                            <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuCer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(lstCertType.FirstOrDefault(p => p.f_tID == Model.f_CertificateTypeId)?.f_value ?? "请选择" )
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuCer">
+                                @foreach (var item in lstCertType)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>办理进度：</td>
+                    <td>
+                        <div class="dropdown">
+                            <input type="hidden" name="f_ProgressId" id="f_ProgressId" value="@(Model.f_ProgressId)" correspond = "dropdownMenuPro" />
+                            <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuPro" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(lstProcess.FirstOrDefault(p => p.f_tID == Model.f_ProgressId)?.f_value ?? "请选择" )
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuPro">
+                                @foreach (var item in lstProcess)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>备注:</td>
+                    <td><input type="text" class="form-control" id="f_Remark" name="f_Remark" value="@Model.f_Remark" /></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <button type="button" onclick="Submit()" class="btn btn-primary  btn-lg">确认</button>
+                        <input type="hidden" value="@Model.f_Id" id="f_Id" name="f_Id" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div><!-- /.panel-default/ table-->
+
+<script type="text/javascript">
+    function Submit() {
+        if ($("#f_eid").val() == 0 || $("#f_chineseName").val() == "") {
+            alert("请选择员工");
+            return;
+        }
+        if ($("#f_CertificateTypeId").val() == 0 || $("#f_CertificateTypeId").val() == "") {
+            alert("请选择证件类型");
+            return;
+        }
+        if ($("#f_ProgressId").val() == 0 || $("#f_ProgressId").val() == "") {
+            alert("请选择办理进度");
+            return;
+        }
+        if (ValidationLength("备注信息", $("#f_Remark").val(), 50)) {
+            alert(sReturnChar);
+            return;
+        }
+        $.ajax({
+            type: 'post',
+            url: '@Url.Action("EditOrAdd")',
+            data: $("#formTable").serialize(),
+            success: function (data) {
+                if (data != null) {
+                    if (data.result == "1") {
+                        alert("操作成功");
+                        location.href = location.href;
+                    }
+                    else if (data.result == "12") {
+                        alert(data.tips);
+
+                    } else if (data.result == "500") {
+                        alert("网络异常");
+                    }
+                    else if (data.result.indexOf("<title>系統錯誤</title>") > -1) {
+                        location.href = "http://" + location.host + "/Login/Error";
+                    }
+                }
+            },
+            error: function (data) {
+            }
+        });
+    }
+
+    $(document).ready(function ($) {
+        var name2Id = {}; //姓名对应的id
+        $('#f_chineseName').typeahead({
+            source: function (query, process) {
+                var parameter = { query: query };
+                $.post('@Url.Action("GetNames")', parameter, function (e) {
+                    if (e.success) {
+                        var array = [];
+                        $.each(e.data, function (index, ele) {
+                            name2Id[ele.name] = ele.id; //键值对保存下来
+                            array.push(ele.name);
+                        });
+                        process(array);
+                    }
+                });
+            },
+            items: 8,
+            afterSelect: function (item) {
+                $('#f_eid').val(name2Id[item]);
+            },
+            delay: 500 //延迟时间
+        });
+    });
+</script>

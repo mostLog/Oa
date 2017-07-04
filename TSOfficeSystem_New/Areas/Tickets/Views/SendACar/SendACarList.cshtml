@@ -1,0 +1,368 @@
+﻿@using MI.Core.Domain
+@model IList<MI.Application.Dto.ReturnTicketDto>
+@{
+    ViewBag.Title = "送机派车";
+    MI.Application.Dto.SendCarDto sc = ViewBag.Sc;
+    List<SType> lstNation = ViewBag.Nation;
+    List<SType> lstFlight = ViewBag.FlightType;
+    List<SType> lstDepartment = ViewBag.DepartmentType;
+    int i = 1;
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+}
+@Styles.Render("~/Content/datetimepicker")
+@Scripts.Render("~/bundles/datetimepicker")
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">人力资源</a></li>
+        <li class="active">派车安排</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        <li class="active" role="presentation"><a href="~/Tickets/SendACar/SendACarList">送机派车</a></li>
+        <li role="presentation"><a href="/Tickets/SendACar/PickupList">接机派车</a></li>
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline">
+
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="Name">姓名：</label>
+                            <input type="text" class="form-control" value="@sc.Name" id="Name" name="Name">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+
+                    <div class="taiojianli_left">
+                        <div class="dropdown">
+                            <input type="hidden" name="National" id="National" value="@(sc.National)" correspond="dropdownMenuInte" />
+                            <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuInte" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(lstNation.FirstOrDefault(p => p.f_value == sc.National)?.f_value ?? "国籍筛选" )
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuInte">
+                                <li><a href="javaScript:" id="0">全部</a></li>
+                                @foreach (var item in lstNation)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_value)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="date_timepicker_start">返乡日期：</label>
+                            <input type="text" class="form-control" value="@(sc.DateStart==DateTime.MinValue ? "":sc.DateStart.ToString("yyyy-MM-dd"))" id="date_timepicker_start" name="DateStart">
+                            <label for="date_timepicker_end">--</label>
+                            <input type="text" class="form-control" value="@(sc.DateEnd==DateTime.MinValue ? "":sc.DateEnd.ToString("yyyy-MM-dd"))" id="date_timepicker_end" name="DateEnd">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <div class="dropdown">
+                                <input type="hidden" name="IsSendACar" id="IsSendACar" value="" correspond="dropdownMenuTSC" />
+                                <button class="btn btn-default dropdown-toggle form-control" type="button" id="dropdownMenuTSC" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @(sc.IsSendACar == "0" ? "没有派车" : sc.IsSendACar == "1" ? "有派车" : "是否派车" )
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuTSC">
+                                    <li><a href="javaScript:" id="2">全部 </a></li>
+                                    <li><a href="javaScript:" id="1">有派车</a></li>
+                                    <li><a href="javaScript:" id="0">没有派车</a></li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button id="btnExport" type="button" class="btn btn-success">导出Excel</button>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button id="btnPrint" type="button" class="btn btn-warning">打印</button>
+                    </div><!-- /.taiojianli_left-->
+                </form>
+            </div>
+            <div class="taiojianli_right">
+                <button type="button" class="btn btn-primary" onclick="CarMarker()">派车标记</button>
+            </div>
+        </div>
+        <!--startprint-->
+        <div class="panel panel-default">
+            <div class="panel-heading">每月【送機】派車清單   GO TO AIRPORT</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>&nbsp;</th>
+                            <th>序號<br />No.</th>
+                            <th>姓名<br />Name</th>
+                            <th>性别<br />Sex</th>
+                            <th>部门</th>
+                            <th>國籍</th>
+                            <th>昵稱</th>
+                            <th>社區<br />Community</th>
+                            <th>樓棟<br />Building</th>
+                            <th>房號<br />Room</th>
+                            <th>日期<br />Date</th>
+                            <th>航空<br />Flight</th>
+                            <th>航廈<br />Terminal</th>
+                            <th>班機時間<br />Time</th>
+                            <th>地点</th>
+                            <th>出發時間<br />Departure</th>
+                            <th>国内号码</th>
+                            <th>菲律宾号码</th>
+                            <th>備註<br />Remark</th>
+                            <th>是否派车</th>
+                            <th class="caozuotd">操&nbsp;&nbsp;作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            if (Model == null || Model.Count <= 0)
+                            {
+                                <tr>
+                                    <td align="center" colspan="21">没有数据</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td><input type="checkbox" value="@item.f_Id" /></td>
+                                        @if (item.f_ToCode != null && !string.IsNullOrWhiteSpace(item.f_ToCode.Value.ToString()))
+                                        {
+                                            <td>A-@item.f_ToCode.Value</td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+                                        }
+                                        <td>@(item.t_employeeInfo?.f_chineseName ?? "")</td>
+                                        <td>@(item.t_employeeInfo?.f_sex == 1 ? "M" : "F" ?? "") </td>
+                                        <td>@(lstDepartment.FirstOrDefault(u => u.f_tID == (item.t_employeeInfo?.f_department_tID ?? 0))?.f_value ?? "")</td>
+                                        <td>@(item.t_employeeInfo?.f_international ?? "")</td>
+                                        <td>@(item.t_employeeInfo?.f_nickname ?? "")</td>
+                                        <td>@(item.t_employeeInfo?.t_Dormitory?.f_Community)</td>
+                                        <td>@(item.t_employeeInfo?.t_Dormitory?.f_Building)</td>
+                                        <td>@(item.t_employeeInfo?.t_Dormitory?.f_RoomNo)</td>
+                                        <td>@(item.f_ToDate?.ToString("yyyy-MM-dd") ?? "")</td>
+                                        <td>@(lstFlight.FirstOrDefault(u => u.f_tID == item.f_ToAirlineType_Id)?.f_value ?? "")</td>
+                                        <td>@(lstFlight.FirstOrDefault(u => u.f_tID == item.f_ToAirlineType_Id)?.f_Remark ?? "")</td>
+                                        <td>@item.f_ToFlight</td>
+                                        <td>@item.f_ToAddress</td>
+                                        <td><input type="text" class="form-control" style="width: 70px;" name="f_ToDropOffTime" value="@item.f_ToDropOffTime" /></td>
+                                        <td>@(item.t_employeeInfo?.f_TelNoCN ?? "")</td>
+                                        <td>@(item.t_employeeInfo?.f_TelNoPH ?? "")</td>
+
+                                        <td><input type="text" class="form-control" style="width: 100px;" name="f_ToSendACarRemark" value="@item.f_ToRemark" /></td>
+                                        <td>@(item.f_ToIsSendACar ? "√" : "×")</td>
+                                        <td>
+                                            <button type="button" class="btn btn-info btn-sm" onclick="SendSaveData(this, '@item.f_Id')">保存</button>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!--endprint-->
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageListFor(iCurrentPage, iPageSize, iTotalCount, sc)
+            </ul>
+        </div><!-- /.fenyediv-->
+    </div><!-- /.oacentbox-->
+</div>
+<script type="text/javascript">
+
+    var HKEY_Root, HKEY_Path, HKEY_Key;
+    HKEY_Root = "HKEY_CURRENT_USER";
+    HKEY_Path = "\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
+    //设置网页打印的页眉页脚为空
+    function PageSetup_Null() {
+        try {
+            var Wsh = new ActiveXObject("WScript.Shell");
+            HKEY_Key = "header";
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "");
+            HKEY_Key = "footer";
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "");
+        }
+        catch (e)
+        { }
+    }
+    //设置网页打印的页眉页脚为默认值
+    function PageSetup_Default() {
+        try {
+            var Wsh = new ActiveXObject("WScript.Shell");
+            HKEY_Key = "header";
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "&w&b页码,&p/&P");
+            HKEY_Key = "footer";
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "&u&b&d");
+        }
+        catch (e)
+        { }
+    }
+
+    //导出功能
+    $('#btnExport').on('click', function () {
+        //查询条件
+        var data = "Name=" + encodeURI($('#Name').val())
+            + "&National=" + encodeURI($('#National').val())
+            + "&DateStart=" + encodeURI($('#date_timepicker_start').val())
+            + "&DateEnd=" + encodeURI($('#date_timepicker_end').val())
+            + "&IsSendACar=" + encodeURI($('#IsSendACar').val());
+        //跳转页面(直接打开 Excel)
+        location.href = '/Tickets/SendACar/ExportSendCar?' + data;
+    });
+
+    //打印功能
+    $('#btnPrint').on('click', function () {
+        bdhtml = window.document.body.innerHTML;
+        sprnstr = "<!--startprint-->";
+        eprnstr = "<!--endprint-->";
+        prnhtml = bdhtml.substr(bdhtml.indexOf(sprnstr) + 17);
+        prnhtml = prnhtml.substring(0, prnhtml.indexOf(eprnstr));
+
+        prnhtml = hiddenOpt(prnhtml);
+        window.document.body.innerHTML = prnhtml;
+        window.print();
+    });
+
+    function hiddenOpt(tHtml) {
+        var obj = parseDom(tHtml);
+        var t = obj.getElementsByTagName("table");
+        t = t[0];
+        t.setAttribute('style', 'font-size:14px;border:solid #DDDDDD 1px;');
+        for (var i = 0; i < t.rows.length; i++) {
+            var cells = t.rows[i].cells;
+            for (var j = 0; j < cells.length; j++) {
+                if ((i != 0) && ((j == 15) || (j == 18))) {
+                    cells[j].innerHTML = cells[j].childNodes[0].defaultValue;
+                }
+                if ((j == cells.length - 1) || (j == 0)) {
+                    cells[j].style.display = "none";
+                }
+            }
+        }
+        return obj.innerHTML;
+    }
+
+    function parseDom(arg) {
+        var objE = document.createElement("div");
+        objE.innerHTML = arg;
+        return objE.childNodes[1];
+    }
+
+    //派车标记
+    function CarMarker() {
+        var rows = $(":checked"); //匹配所有选中的复选框元素
+        if (rows.length == 0) {
+            alert("请选择数据后再进行标注");
+            return;
+        }
+        //让用户再次确认是否要删除数据。
+        if (confirm("操作确认：您确定要标注选中的[ " + rows.length + " ]笔数据吗？")) {
+            //将选中数据的ID拼接起来
+            var tagList = "";
+            $.each(rows, function (index) {
+                tagList += this.value + ",";
+            });
+            //去掉最后一个“,”号。
+            tagList = tagList.substr(0, tagList.length - 1);
+            //执行AJAX操作
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("SendTag", "SendACar")',
+                data: { tagList: tagList },
+                success: function (data) {
+                    if (data != null) {
+                        if (data.result == 1) {
+                            alert("批量标注成功");
+                            location.href = location.href;
+                        } else {
+                            alert(data.tips);
+                        }
+                    }
+                },
+                error: function (data) {
+                    alert("网络异常");
+                }
+            });
+        }
+    }
+
+    //保存的事件
+    function SendSaveData(s, id) {
+        //出发时间
+        var toDropOffTime = $(s).parents()[1].children[15].children[0].value;
+        //备注
+        var remark = $(s).parents()[1].children[18].children[0].value;
+        if (ValidationLength("备注信息", remark, 100)) {
+            alert(sReturnChar);
+            return;
+        }
+        $.ajax({
+            type: "post",
+            url: '@Url.Action("SendSaveData", "SendACar")',
+            data: { id: id, toDropOffTime: toDropOffTime, remark: remark },
+            success: function (data) {
+                if (data != null) {
+                    if (data.result == 1) {
+                        alert("保存成功");
+                        location.href = location.href;
+                    } else if (data.result == "12") {
+                        alert(data.tips);
+                    } else {
+                        alert(data.tips);
+                    }
+                }
+            },
+            error: function (data) {
+                alert("修改异常");
+            }
+        });
+    }
+
+    $(function () {
+        $.datetimepicker.setLocale('zh');
+        jQuery('#date_timepicker_start').datetimepicker({
+            lang: 'zh',
+            format: 'Y-m-d',
+            onShow: function (ct) {
+                this.setOptions({
+                    maxDate: jQuery('#date_timepicker_end').val() ? jQuery('#date_timepicker_end').val() : false
+                });
+            },
+            timepicker: false
+        });
+        jQuery('#date_timepicker_end').datetimepicker({
+            lang: 'zh',
+            format: 'Y-m-d',
+            onShow: function (ct) {
+                this.setOptions({
+                    minDate: jQuery('#date_timepicker_start').val() ? jQuery('#date_timepicker_start').val() : false
+                });
+            },
+            timepicker: false
+        });
+
+
+        $("input[name='f_ToDropOffTime']").datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            step: 30
+        });
+    });
+</script>
+
+
+

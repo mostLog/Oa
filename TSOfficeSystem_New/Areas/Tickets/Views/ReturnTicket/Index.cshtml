@@ -1,0 +1,326 @@
+﻿@model List<MI.Core.Domain.ReturnTicket>
+@{
+    ViewBag.Title = "人力资源";
+    int i = 1;
+    MI.Application.Dto.TicketWhereDto TicketDto = ViewBag.TicketDto;
+    List<MI.Core.Domain.SType> Department = ViewBag.listTypeDepartment;//所有部门
+    List<MI.Core.Domain.SType> International = ViewBag.listTypeInternational;//所有国籍
+    List<MI.Core.Domain.SType> AirlineType = ViewBag.AirlineType;//所有航班
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+    int iEid = ViewBag.Eid;
+}
+@Styles.Render("~/Content/datetimepicker")
+@Scripts.Render("~/bundles/datetimepicker")
+<style>
+    td {
+        word-wrap: break-word;
+    }
+</style>
+<div class="addbg">
+    <div class="addtable">
+    </div>
+</div>
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="#">人力资源</a></li>
+        <li class="active">机票登记</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        <li class="active" role="presentation"><a href="~/Tickets/ReturnTicket/Index">机票登记</a></li>
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="dropdown">
+                            @Html.Hidden("f_departmentId", "", new { @correspond = "dropdownMenuDep" })
+                            <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuDep" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @( TicketDto.f_departmentId == 0 ? "全部" : Department.FirstOrDefault(p => p.f_tID == TicketDto.f_departmentId)?.f_value ?? "部门筛选" )
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuDep">
+                                <li><a href="javaScript:" id="0">全部</a></li>
+                                @foreach (var item in Department)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="taiojianli_left">
+                        <div class="dropdown">
+                            @Html.Hidden("f_international", "", new { @correspond = "dropdownMenuInt" })
+                            <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuInt" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(International.FirstOrDefault(p => p.f_value == TicketDto.f_international)?.f_value ?? "国籍筛选" )
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuInt">
+                                <li><a href="javaScript:" id="0">全部</a></li>
+                                @foreach (var item in International)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_value)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">姓名/昵称：</label>
+                            <input type="text" class="form-control" value="@TicketDto.Name" id="Name" name="Name">
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">返乡日期：</label>
+                            <input type="text" class="form-control" id="f_ToDate" name="f_ToDate" value="@(TicketDto.f_ToDate?.ToString("yyyy-MM-dd")??"")">
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">返菲日期：</label>
+                            <input type="text" class="form-control" value="@(TicketDto.f_FromDate?.ToString("yyyy-MM-dd")??"")" id="f_FromDate" name="f_FromDate">
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="dropdown">
+                            @Html.Hidden("f_ToAirlineType_Id", TicketDto.f_ToAirlineType_Id, new { @correspond = "dropdownMenuTAirt" })
+                            <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuTAirt" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(AirlineType.FirstOrDefault(p => p.f_tID == TicketDto.f_ToAirlineType_Id)?.f_value ?? "航班筛选" )
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuTAirt">
+                                <li><a href="javaScript:" id="0">全部</a></li>
+                                @foreach (var item in AirlineType)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>&nbsp;&nbsp;&nbsp;
+                        <button id="a_export" onclick="Export()" type="button" class="btn btn-success">导出Excel</button>
+                    </div>
+                </form>
+            </div>
+            <div class="taiojianli_right">
+                <button type="button" onclick="Update('0')" id="btn-xinzeng" class="btn btn-primary">新增+</button>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">机票登记</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped" style="table-layout:fixed;">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>姓名</th>
+                            <th>国籍</th>
+                            <th>部门</th>
+                            <th>昵称</th>
+                            <th>返乡日期</th>
+                            <th>返乡航班</th>
+                            <th>返乡时间</th>
+                            <th>地点</th>
+                            <th style="width: 130px;">返乡资料</th>
+                            <th>备注</th>
+                            <th>返菲日期</th>
+                            <th>返菲航班</th>
+                            <th>返菲时间</th>
+                            <th>地点</th>
+                            <th style="width: 130px;">返菲资料</th>
+                            <th>备注</th>
+                            <th>操作人</th>
+                            <th>操作时间</th>
+                            <th class="caozuotd">操&nbsp;&nbsp;作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i </td>
+                                <td>@(item.t_employeeInfo?.f_chineseName ?? "")</td>
+                                <td>@(item.t_employeeInfo?.f_international ?? "")</td>
+                                <td>@(Department.FirstOrDefault(p => p.f_tID == (item.t_employeeInfo?.f_department_tID ?? 0))?.f_value ?? "" )</td>
+                                <td>@(item.t_employeeInfo?.f_nickname ?? "")</td>
+                                <td>@(item.f_ToDate?.ToString("yyyy-MM-dd") ?? "")</td>
+                                <td>@(AirlineType.FirstOrDefault(u => u.f_tID == item.f_ToAirlineType_Id)?.f_value ?? "")</td>
+                                <td>@item.f_ToFlight</td>
+                                <td>@item.f_ToAddress</td>
+                                <td style="width: 130px;">
+                                    <input type="button" id="UpFileTo" name="UpFileTo" value="上传" onclick="FileUp('f_ToFile', '@item.f_Id')" class="btn btn-info btn-sm">&nbsp;&nbsp;&nbsp;
+                                    <input type="button" value="下载" onclick="Filedown('@(item.f_ToFile)')" class="btn btn-danger btn-sm">
+                                </td>
+                                <td>@item.f_ToRemark</td>
+                                <td>@(item.f_FromDate?.ToString("yyyy-MM-dd") ?? "")</td>
+                                <td>@(AirlineType.FirstOrDefault(u => u.f_tID == item.f_FromAirlineType_Id)?.f_value ?? "")</td>
+                                <td>@item.f_FromFlight</td>
+                                <td>@item.f_FromAddress</td>
+                                <td style="width: 130px;">
+                                    <input type="button" id="UpFileFrom" name="UpFileFrom" value="上传" onclick="FileUp('f_FromFile','@item.f_Id')" class="btn btn-info btn-sm">&nbsp;&nbsp;&nbsp;
+                                    <input type="button" value="下载" onclick="Filedown('@(item.f_FromFile)')" class="btn btn-danger btn-sm">
+                                </td>
+                                <td>@item.f_FromRemark</td>
+                                <td>@item.f_Operation </td>
+                                <td>@item.f_OperationDate.ToString("yyyy-MM-dd") </td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" onclick="Update('@item.f_Id')">修改</button>
+                                    @if (iEid == item.f_OperationId)
+                                    {
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="Delete('@item.f_Id')">删除</button>
+                                    }
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="18" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageListFor(iCurrentPage, iPageSize, iTotalCount, TicketDto)
+            </ul>
+        </div>
+    </div>
+</div>
+<form id="fileForm" method="post" enctype="multipart/form-data" action="@Url.Action("FileSave")">
+    <input type="file" id="imgFile" name="imgFile" style="display:none" />
+    <input type="hidden" name="f_eId" id="f_eId" value="" />
+    <input type="hidden" name="ToOrFrom" id="ToOrFrom" value="" />
+</form>
+<script type="text/javascript">
+    function Update(id) {
+        OpenADDwindow();
+        loadingTips();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Edit")',
+            data: { Id: id },
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data != null) {
+                    $(".addtable").html(data);
+                    setDropdownChangeValue();
+                }
+            }
+        })
+        $("div.addbg").show(200);
+    }
+    function Delete(id) {
+        if (confirm("是否确定删除？")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                data: { Id: id },
+                error: function (data) {
+                    location.href = '@Url.Action("Error", "Login")'
+                }, success: function (data) {
+                    if (data != null) {
+                        if (data == "1") {
+                            alert("删除成功");
+                            location.href = location.href;
+                        }
+                        else if (data == "500") {
+                            alert("删除异常");
+                        }
+                    }
+                }
+            })
+        }
+    }
+    //上传s=返乡资料或者返菲资料
+    function FileUp(s, id) {
+        $("#ToOrFrom").val(s);
+        $("#f_eId").val(id);
+        $("#imgFile").click();
+    }
+    //选中图片提交
+    $("#imgFile").change(function (e) {
+        var $file = $(this);
+        var fileObj = $file[0];
+        var windowURL = window.URL || window.webkitURL;
+        var dataURL;
+
+        if (fileObj && fileObj.files && fileObj.files[0]) {
+            dataURL = windowURL.createObjectURL(fileObj.files[0]);
+        } else {
+            dataURL = $file.val();
+        }
+        fileSumbit(dataURL);
+    });
+    //上传图片
+    function fileSumbit(objUrl) {
+        $("#fileForm").ajaxSubmit({
+            dataType: "json",    // html（默认）、xml、script、json接受服务器端返回的类型
+            success: function (data) {
+                if (data != null) {
+                    if (data == "5") {
+                        alert("资料格式必须为图片、压缩文件、word、PDF、excel");
+                    }
+                    else if (data == "500") {
+                        alert("上传异常，请稍后再试！");
+                    } else if (data == "1") {
+                        alert("上传成功！");
+                        location.href = location.href;
+                    } else if (data=="12") {
+                        alert("文件名过长，请检查");
+                    }
+                    else if (data == "9") {
+                        alert("您不是该条信息的添加人，不能上传！");
+                    }
+                }
+            }    // 提交后的回调函数
+        });
+    }
+    //下载
+    function Filedown(fielname) {
+        if (fielname == "") {
+            alert("暂时未上传文件！");
+            return;
+        }
+        location.href = '@Url.Action("Filedown")?FileName=' + fielname;
+    }
+    //导出
+    function Export() {
+        //查询条件
+        var data = "f_departmentId=" + encodeURI($('#f_departmentId').val())
+                + "&f_international=" + encodeURI($('#f_international').val())
+                + "&Name=" + encodeURI($('#Name').val())
+                + "&f_ToDate=" + encodeURI($('#f_ToDate').val())
+        + "&f_FromDate=" + encodeURI($('#f_FromDate').val())
+        + "&f_ToAirlineType_Id=" + encodeURI($('#f_ToAirlineType_Id').val());
+        //跳转页面(直接打开 Excel)
+        location.href = '/Tickets/ReturnTicket/Export?' + data;
+    }
+
+    $(function () {
+        $.datetimepicker.setLocale('zh');
+        $('#f_ToDate').datetimepicker({
+            lang: 'zh',
+            timepicker: false,
+            format: 'Y-m-d',
+            formatDate: 'Y-m-d'
+        });
+        $('#f_FromDate').datetimepicker({
+            lang: 'zh',
+            timepicker: false,
+            format: 'Y-m-d',
+            formatDate: 'Y-m-d'
+        });
+    });
+
+</script>

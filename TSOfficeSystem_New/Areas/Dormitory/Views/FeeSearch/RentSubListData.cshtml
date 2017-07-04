@@ -1,0 +1,67 @@
+﻿@model IList<MI.Application.Dto.GrantDto>
+@{
+    ViewBag.Title = "外租补助";
+    int i = 1;
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+}
+
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">登记查询</a></li>
+        <li class="active">外租补助</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("FeeSearchNavMeuns", "外租补助", ViewData)
+    </ul>
+    <div class="oacentbox">
+        <div class="panel panel-default">
+            <div class="panel-heading">外租补助</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>员工</th>
+                            <th>补助金额</th>
+                            <th>补助月份</th>
+                            <th>是否已发放补助</th>
+                            <th>发放人</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            if (Model == null || Model.Count <= 0)
+                            {
+                                <tr>
+                                    <td colspan="6" align="center">没有数据</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.t_employeeInfo.f_chineseName</td>
+                                        <td>@item.f_amount</td>
+                                        <td>@(item.f_GrantDate == DateTime.MinValue ? "" : item.f_GrantDate.ToString("yyyy-MM"))</td>
+                                        <td>@(item.f_IsPayment ? "√" : "×")</td>
+                                        <td>@item.f_Payee</td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageList(iCurrentPage, iPageSize, iTotalCount)
+            </ul>
+        </div>
+    </div>
+</div>

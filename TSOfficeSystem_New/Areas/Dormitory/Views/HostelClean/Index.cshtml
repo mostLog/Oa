@@ -1,0 +1,243 @@
+﻿@model List<MI.Core.Domain.t_HostelClean>
+@{
+    ViewBag.Title = "宿舍管理";
+    int i = 1;
+    MI.Core.Domain.HostelCleanWhere dmw = ViewBag.DMW;
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+    Dictionary<int, string> dic = new Dictionary<int, string>();
+    dic.Add(1, "一");
+    dic.Add(2, "二");
+    dic.Add(3, "三");
+    dic.Add(4, "四");
+    dic.Add(5, "五");
+    dic.Add(6, "六");
+    dic.Add(7, "天");
+}
+<div class="addbg">
+    <div class="addtable" style="margin-top:30px">
+    </div><!-- /.addtable-->
+</div><!-- /.addbg-->
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="#">宿舍管理</a></li>
+        <li class="active">宿舍打扫日程</li>
+    </ol>
+    <ul class="nav nav-tabs">
+
+        @Html.Partial("DormitoryNavTabs", "宿舍打扫")
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">社区：</label>
+                            <input type="text" class="form-control" value="@dmw.f_Community" id="f_Community" name="f_Community">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">楼栋：</label>
+                            <input type="text" class="form-control" value="@dmw.f_Building" id="f_Building" name="f_Building">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">房间号：</label>
+                            <input type="text" class="form-control" value="@dmw.f_RoomNo" id="f_RoomNo" name="f_RoomNo" onkeyup="checkABC123(this)">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <div class="dropdown">
+                                <label for="f_Week">打扫日期：</label>
+                                @Html.Hidden("f_Week", dmw.f_Week, new { @correspond = "dropdownMenuWeek" })
+                                <button class="btn btn-default dropdown-toggle form-control" type="button" style="width:160px;" id="dropdownMenuWeek" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @if (dmw.f_Week == 0)
+                                    {
+                                        @("全部")
+                                    }
+                                    else
+                                    {
+                                        @("星期" + dic[dmw.f_Week])
+                                    }
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuWeek" style="margin-left:75px;">
+                                    <li><a href="javaScript:" id="0">全部 </a></li>
+                                    <li><a href="javaScript:" id="1">星期一</a></li>
+                                    <li><a href="javaScript:" id="2">星期二</a></li>
+                                    <li><a href="javaScript:" id="3">星期三</a></li>
+                                    <li><a href="javaScript:" id="4">星期四</a></li>
+                                    <li><a href="javaScript:" id="5">星期五</a></li>
+                                    <li><a href="javaScript:" id="6">星期六</a></li>
+                                    <li><a href="javaScript:" id="7">星期天</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button id="a_export" type="button" class="btn btn-success">导出Excel</button>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button id="a_print" type="button" class="btn btn-warning">打印</button>
+                    </div><!-- /.taiojianli_left-->
+                </form>
+            </div>
+            <div class="taiojianli_right">
+                <button type="button" onclick="GetADDHtml()" class="btn btn-primary">新增+</button>
+            </div>
+        </div>
+        <!--startprint-->
+        <div class="panel panel-default">
+            <div class="panel-heading">宿舍打扫日程</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped" style="border:solid #DDDDDD 1px;">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>社区</th>
+                            <th>楼栋</th>
+                            <th>房间号</th>
+                            <th>星期</th>
+                            <th>执行人</th>
+                            <th>操作人</th>
+                            <th>最后操作时间</th>
+                            <th class="caozuotd">操&nbsp;&nbsp;作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i </td>
+                                <td>@item.t_dormitory.f_Community </td>
+                                <td>@item.t_dormitory.f_Building</td>
+                                <td>@item.t_dormitory.f_RoomNo</td>
+                                <td>
+                                    @(item.f_Week == 1 ? "星期一" : item.f_Week == 2 ? "星期二" : item.f_Week == 3 ? "星期三" : item.f_Week == 4 ? "星期四" : item.f_Week == 5 ? "星期五" : item.f_Week == 6 ? "星期六" : item.f_Week == 7 ? "星期天" : "--"  )
+                                </td>
+                                <td>@item.f_Cleaner</td>
+                                <td>@item.f_operator</td>
+                                <td>@item.f_operatorTime</td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" onclick="Update('@item.f_Id')">修改</button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="Delete('@item.f_Id')">删除</button>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="9" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>  <!--endprint-->
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageListFor(iCurrentPage, iPageSize, iTotalCount, dmw)
+            </ul>
+        </div><!-- /.fenyediv-->
+
+    </div><!-- /.oacentbox-->
+
+</div>
+
+<script type="text/javascript">
+    var iTotalCount=@iTotalCount;
+    function GetADDHtml() {
+        OpenADDwindow();
+        loadingTips();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Edit")',
+            data: { Id: 0 },
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data != null) {
+                    $(".addtable").html(data);
+                    //ajax请求的html 需要重新绑定下拉框的动作事件
+                    setDropdownChangeValue();
+                }
+            }
+        })
+        $("div.addbg").show(200);
+    }
+    function Update(id) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Edit")',
+            data: { Id: id },
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data != null) {
+                    $(".addtable").html(data);
+                    //ajax请求的html 需要重新绑定下拉框的动作事件
+                    setDropdownChangeValue();
+                }
+            }
+        })
+        $("div.addbg").show(200);
+    }
+    function Delete(id) {
+        if (confirm("是否确定删除？")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                data: { Id: id },
+                error: function (data) {
+                }, success: function (data) {
+                    if (data != null) {
+                        if (data == "1") {
+                            alert("删除成功");
+                            location.href = location.href;
+                        }
+                        else if (data == "500") {
+                            alert("删除异常");
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+    function excelExport() {
+        //查询条件
+        var data = "f_Community=" + encodeURI($('#f_Community').val())
+            + "&f_Building=" + encodeURI($('#f_Building').val())
+            + "&f_RoomNo=" + encodeURI($('#f_RoomNo').val())
+            + "&f_Week=" + encodeURI($('#f_Week').val())
+        //跳转页面(直接打开 Excel)
+        location.href = '/Dormitory/HostelClean/Export?' + data;
+    }
+
+
+    function GoToprintView() {
+        if (iTotalCount > 100 && !confirm("当前条件下数据超过100条,请问是否继续操作。\r\n ps:可以筛选条件之后再打印")) {
+            return false;
+        }
+        window.open('@(Url.Action("PrintListView",dmw ))', '宿舍打扫日程打印', 'status=no,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,width=1200,height=800');
+    }
+
+    $('#a_export').click(excelExport);
+
+    $('#a_print').click(GoToprintView);
+
+</script>
+
+

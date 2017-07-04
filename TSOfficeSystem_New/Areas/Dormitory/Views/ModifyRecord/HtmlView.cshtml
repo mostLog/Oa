@@ -1,0 +1,94 @@
+﻿@model List<MI.Core.Domain.t_ModifyRecord>
+@using MI.Core.Common
+@{
+    Layout = null;
+    int count = ViewBag.count;
+    Newtonsoft.Json.Linq.JObject odldata = null;
+    Newtonsoft.Json.Linq.JObject newdata = null;
+}@foreach (var item in Model)
+{
+    <tr>
+        <td>@(++count)</td>
+        <th>@(item.f_ChangeTime.ToString("yyyy-MM-dd HH:mm:ss"))</th>
+        <th>@(AOUnity.GetActionStatus(item.f_ActionStatus))</th>
+        <th>@(AOUnity.GetCategoryItem(item.f_ItemCategory))</th>
+        <th>@item.f_ByWho</th>
+        <th>@item.f_ByIP</th>
+        <th>
+            <div class="edit">
+                <span>(@item.f_TableName)：</span>
+                <br />
+                <br />
+                @{
+                    if (!string.IsNullOrWhiteSpace(item.f_OldData) && item.f_OldData.ToLower() != "null" && item.f_OldData.ToLower() != "{}")
+                    {
+                        odldata = Newtonsoft.Json.Linq.JObject.Parse(item.f_OldData);
+                    }
+                    if (!string.IsNullOrWhiteSpace(item.f_NewData) && item.f_NewData.ToLower() != "null" && item.f_NewData.ToLower() != "{}")
+                    {
+                        newdata = Newtonsoft.Json.Linq.JObject.Parse(item.f_NewData);
+                    }
+                }
+                @if (item.f_ActionStatus == 1)
+                {
+                    if (newdata != null)
+                    {
+                        foreach (var json in newdata)
+                        {
+                            <span>@(json.Key)：</span>
+                            <font color="red">
+                                @(json.Value)
+                            </font>
+                            <br>
+                        }
+                    }
+                }
+                else if (item.f_ActionStatus == 2)
+                {
+                    if (odldata != null)
+                    {
+                        foreach (var json in odldata)
+                        {
+                            <span>@(json.Key)：</span>
+                            <font color="blue">
+                                @(json.Value)
+                            </font>
+                            <br>
+                        }
+                    }
+                }
+                else if (item.f_ActionStatus == 3)
+                {
+                    if (odldata != null && newdata != null)
+                    {
+                        foreach (var json in newdata)
+                        {
+                            <div>
+                                @(json.Key)：
+                                <span>@odldata[json.Key]</span> --->
+                                <span>@json.Value</span>
+                            </div>
+                        }
+                    }
+                }
+            </div>
+        </th>
+        <th>
+            @if (item.f_ActionStatus == 1 || item.f_ItemCategory == (int)CategoryItem.CashRegister || item.f_ItemCategory == (int)CategoryItem.SendACar || item.f_ItemCategory == (int)CategoryItem.ReturnTicket)
+            {
+
+            }
+            else
+            {
+                if (item.f_IsRecovered != null && item.f_IsRecovered.Value)
+                {
+                    <a href="javascript:" class="btn btn-danger btn-sm" disabled="disabled" )>已恢复</a>
+                }
+                else
+                {
+                    <a href="javascript:" class="btn btn-danger btn-sm" onclick="Recovery('@(item.f_Id)','@(item.f_ActionStatus)')" )>恢复</a>
+                }
+            }
+        </th>
+    </tr>
+                    }

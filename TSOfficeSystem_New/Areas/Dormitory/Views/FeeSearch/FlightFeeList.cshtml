@@ -1,0 +1,98 @@
+﻿@model List<MI.Core.Domain.FlightFee>
+@{
+    ViewBag.Title = "登记查询";
+    int i = 1;
+    MI.Application.Dto.FlightFeeDto gw = ViewBag.GW;
+    List<MI.Core.Domain.SType> workLocation = ViewBag.listWorkLocation;
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+}
+
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">登记查询</a></li>
+        <li class="active">员工机票差额统计表</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("FeeSearchNavMeuns", "机票差额")
+    </ul>
+    <div class="oacentbox">
+        <div class="panel panel-default">
+            <div class="panel-heading">机票差额</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>员工</th>
+                            <th>机票差额</th>
+                            <th>单位</th>
+                            <th>航班日期</th>
+                            <th>航班</th>
+                            <th>起止地点</th>
+                            <th>缴费状态</th>
+                            <th>收款地点</th>
+                            <th>操作人</th>
+                            <th>备注</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i </td>
+                                <td>@item.t_employeeInfo.f_chineseName</td>
+                                <td>@item.f_Amount</td>
+                                <td>₱</td>
+                                <td>@item.f_FlightDate.ToString("yyyy-MM-dd")</td>
+                                <td>@item.f_Flight </td>
+                                <td>@item.f_StartEndAdd </td>
+                                <td>@(item.f_IsPay ? "√" : "×")</td>
+                                <td>@(workLocation.FirstOrDefault(p => p.f_tID == item.f_AddressId)?.f_value ?? "" )</td>
+                                <td>@item.f_operator</td>
+                                <td>@item.f_Remark</td>
+
+                            </tr>
+                            i++;
+                        }
+
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="11" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageListFor(iCurrentPage, iPageSize, iTotalCount, gw)
+            </ul>
+        </div><!-- /.fenyediv-->
+
+    </div><!-- /.oacentbox-->
+
+</div>
+<script type="text/javascript">
+    function changeState() {
+        $.ajax({
+            type: "post",
+            url: '@Url.Action("ChangeState")',
+            data: { tableName: "机票差额" },
+            success: function (data) {
+                //TODO
+            }
+        });
+    }
+
+    $(function() {
+        //  setTimeout(changeState, 1000);  //延迟加载了为了避免点登记查询时默认进入的员工租房的提示变化太快，页面看不到员工租房的提示
+        changeState();
+
+    });
+
+</script>

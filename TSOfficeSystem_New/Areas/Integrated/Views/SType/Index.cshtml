@@ -1,0 +1,271 @@
+﻿@model List<MI.Core.Domain.SType>
+@using MI.Application
+@{
+    ViewBag.Title = "类别和权限";
+    List<MI.Core.Domain.SType> shequ = ViewBag.shequ;
+    int i = 1;
+}
+<div class="addbg">
+    <div class="addtable">
+    </div><!-- /.addtable-->
+</div><!-- /.addbg-->
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">类别和权限</a></li>
+    </ol>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <div class="dropdown" style="float:left;">
+                                <label for="exampleInputName2">大类型：</label>
+                                <input type="hidden" id="iType" name="iType" value="@ViewBag.iType" correspond="dropdownMenuIType" />
+                                <button class="btn btn-default dropdown-toggle" style="width:210px" type="button" id="dropdownMenuIType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @(STypeGetValue.GetValueByType(ViewBag.iType))
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuIType" style="margin-left:60px; ">
+                                    <li><a href="javaScript:" id="0">权限类型</a></li>
+                                    <li><a href="javaScript:" id="1">班次类型</a></li>
+                                    <li><a href="javaScript:" id="2">部门类型</a></li>
+                                    <li><a href="javaScript:" id="3">在职状态类型</a></li>
+                                    <li><a href="javaScript:" id="24">工作类别</a></li>
+                                    <li><a href="javaScript:" id="4">上班地点类型</a></li>
+                                    <li><a href="javaScript:" id="5">订餐类型</a></li>
+                                    <li><a href="javaScript:" id="6">订餐要求类型</a></li>
+                                    <li><a href="javaScript:" id="20">公司用餐统计部门班次类型</a></li>
+                                    <li><a href="javaScript:" id="21">公司用餐时间类型</a></li>
+                                    <li><a href="javaScript:" id="22">房间类型</a></li>
+                                    <li><a href="javaScript:" id="23">车辆类型</a></li>
+                                    <li><a href="javaScript:" id="25">国籍</a></li>
+                                    <li><a href="javaScript:" id="26">航班类型</a></li>
+                                    <li><a href="javaScript:" id="27">社区类型</a></li>
+                                    <li><a href="javaScript:" id="29">签证类型</a></li>
+                                    <li><a href="javaScript:" id="30">证件类型</a></li>
+                                    <li><a href="javaScript:" id="31">办理进度</a></li>
+                                    <li><a href="javaScript:" id="32">床位类型</a></li>
+                                    <li><a href="javaScript:" id="33">银行储值类型</a></li>
+                                    <li><a href="javaScript:" id="36">金流客服等级类型</a></li>
+                                    <li><a href="javaScript:" id="37">金流客服权限控制</a></li>
+                                    <li><a href="javaScript:" id="51">上车地点配置</a></li>
+                                    <li><a href="javaScript:" id="52">宿舍wifi配置</a></li>
+                                    <li><a href="javaScript:" id="53">行政部联系方式配置</a></li>
+                                    @*<li><a href="javaScript:" id="54">宿舍订餐领便当处</a></li> (宿舍订餐领便当处)暂时写死了*@
+                                    <li><a href="javaScript:" id="55">宿舍饮水订购方式</a></li>
+                                    <li><a href="javaScript:" id="56">宿舍瓦斯订购方式</a></li>
+                                    <li><a href="javaScript:" id="57">宿舍维修对接</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>
+                    </div><!-- /.taiojianli_left-->
+                </form>
+            </div>
+            <div class="taiojianli_right">
+                <button type="button" onclick="Update('0')" id="btn-xinzeng" class="btn btn-primary">新增+</button>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">系统类型管理</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>类型</th>
+                            <th>描述</th>
+                            <th>大类型</th>
+                            <th class="caozuotd">操&nbsp;&nbsp;作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i </td>
+                                <td>@(int.Parse(ViewBag.iType) == (int)sTypeEnum.上车地点配置 ? shequ.Where(p => p.f_tID == int.Parse(item.f_value)).FirstOrDefault()?.f_value ?? "" : item.f_value)</td>
+                                <td>
+                                    @{ string remark = item.f_Remark ?? "";}
+                                    <div style="width:1000px;@(item.f_type==0?"":"display:none;")">
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("Login,Home"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;登录
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("CarRegister"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;车辆管理
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("Dormitory"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;宿舍管理
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("LatticeD"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;宿舍视图
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("EmpRent"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;费用管理
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("FeeSearch"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;登记查询
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("CompanyOfFood"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;餐饮管理
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("WorkDistribution"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;工作交接
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("ModifyRecord"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;操作记录
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("employeeInfo"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;员工管理
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("OrderingAndPersonalInfo"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;个人资料
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("Notice"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;公告管理
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("SType"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;类别和权限
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("ReturnTicket"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;机票登记
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("SendACar"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;派车安排
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("CashRegister")) ? "titleclicks" : "titlecheckboxs")"></div>
+                                            &nbsp;现金登记
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("BedLinen"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;床被送洗
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("Department"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;查看其他部门信息
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("IsNewEmpAction"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;新人新增移走功能
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("Rights1"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;修改权限功能
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("Sector1"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;修改部门功能
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("CertAgency"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;证件办理
+                                        </div>
+                                        <div class="titleclickShuoming">
+                                            <div id="xuanze_titlecheckbox" class="@((remark.Contains("SectorALL"))?"titleclicks":"titlecheckboxs")"></div>
+                                            &nbsp;登记查询本部门所有
+                                        </div>
+                                    </div>
+                                    <div style="@(item.f_type==4?"":"display:none")">
+                                        <div id="xuanze_titlecheckbox" class="@((remark.Contains("班车"))?"titleclicks":"titlecheckboxs")"></div>
+                                        &nbsp;是否需要统计班车人数
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <div id="xuanze_titlecheckbox" class="@((remark.Contains("餐饮"))?"titleclicks":"titlecheckboxs")"></div>
+                                        &nbsp;是否需要统计公司餐饮
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <div id="xuanze_titlecheckbox" class="@((remark.Contains("现金"))?"titleclicks":"titlecheckboxs")"></div>
+                                        &nbsp;是否显示[现金登记]据点
+                                    </div>
+                                    <div style="@(item.f_type==27?"":"display:none")">
+                                        <div id="xuanze_titlecheckbox" class="@((remark.Contains("true"))?"titleclicks":"titlecheckboxs")"></div>
+                                        &nbsp;是否需要统计班车人数
+                                    </div>
+                                    <div style="@(item.f_type==3?"":"display:none")">
+                                        <div id="xuanze_titlecheckbox" class="@((remark.Contains("true"))?"titleclicks":"titlecheckboxs")"></div>
+                                        &nbsp;是否允许登录
+                                    </div>
+                                    <div style="@((item.f_type==0||item.f_type==27||item.f_type==4||item.f_type==3)?"display:none":"")">
+                                        @item.f_Remark
+                                    </div>
+                                </td>
+                                <td>@(STypeGetValue.GetValueByType(item.f_type.ToString()))</td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" onclick="Update('@item.f_tID')">修改</button>
+                                    @if (item.f_type != (int)sTypeEnum.上车地点配置 && item.f_type != (int)sTypeEnum.宿舍wifi配置 && item.f_type != (int)sTypeEnum.行政部联系方式配置 && item.f_type != (int)sTypeEnum.宿舍订餐领便当处 && item.f_type != (int)sTypeEnum.宿舍饮水订购方式 && item.f_type != (int)sTypeEnum.宿舍瓦斯订购方式)
+                                    {
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="Delete('@item.f_tID')">删除</button>
+                                    }
+                                </td>
+                            </tr>
+                                            i++;
+                                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+    </div><!-- /.oacentbox-->
+
+</div>
+<script type="text/javascript">
+    function Update(id) {
+        OpenADDwindow();
+        loadingTips();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Edit")',
+            data: { Id: id },
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data != null) {
+                    $(".addtable").html(data);
+                    setDropdownChangeValue();
+                }
+            }
+        })
+        $("div.addbg").show(200);
+    }
+    function Delete(id) {
+        if (confirm("是否确定删除？")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                data: { Id: id },
+                error: function (data) {
+                    //location.href = '@Url.Action("Error", "Login")'
+                },
+                success: function (data) {
+                    if (data != null) {
+                        if (data.result == "1") {
+                            alert("删除成功");
+                            location.href = location.href;
+                        } else if (data.result == "500") {
+                            alert("删除异常");
+                        } else if (data.result == "600") {
+                            alert("该条数据关联" + data.tips + "中数据，无法删除");
+                        }
+                    }
+                }
+            });
+        }
+    }
+</script>

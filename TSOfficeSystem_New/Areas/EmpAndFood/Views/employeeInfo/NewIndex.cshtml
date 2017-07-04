@@ -1,0 +1,403 @@
+﻿@using MI.Core.Domain
+@model List<MI.Core.Domain.Employee>
+@{
+    ViewBag.Title = "新人登记";
+    ViewBag.current = "员工管理";
+    int i = 1;
+    //部门
+    List<MI.Core.Domain.SType> listDepartment = ViewBag.listTypeDepartment;
+    //航班
+    List<MI.Core.Domain.SType> listTypeFlight = ViewBag.listTypeFlight;
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+    //订餐类型
+    List<MI.Core.Domain.SType> typeList = ViewBag.typeList;
+    //所有订餐类型
+    List<MI.Core.Domain.SType> lstLDM = ViewBag.LDM;
+    string[] level = ViewBag.levelValue ?? "";//权限
+    MI.Application.Dto.EmployeeDto employedto = ViewBag.employee;
+}
+<link href="~/Css/editable/bootstrap-editable.css" rel="stylesheet" />
+<script src="~/Scripts/editable/bootstrap-editable.js"></script>
+@Styles.Render("~/Content/datetimepicker")
+@Scripts.Render("~/bundles/datetimepicker")
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("td,th").css("padding", "4px");
+        $.datetimepicker.setLocale('zh');
+        $("#arrivalDate").datetimepicker({
+            timepicker: false,
+            format: 'Y-m-d',
+            step: 5
+        });
+        $("#rideWorkTime").datetimepicker({
+            timepicker: false,
+            format: 'Y-m-d',
+            step: 5
+        });
+
+    });
+</script>
+<style>
+    .remarkTd {
+        word-wrap: break-word;
+        word-break: break-all;
+        width: 10%;
+    }
+</style>
+<div class="addbg">
+    <div class="addtable" style="margin-top:30px;">
+    </div>
+</div>
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javaScript:">员工管理</a></li>
+        <li class="active">新人登记</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("emplotyeeInfoNavigation", "新人登记")
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="dropdown">
+                            @Html.Hidden("f_department_tID", "", new { @correspond = "dropdownMenuSelectDep" })
+                            <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenuSelectDep" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @( employedto.f_department_tID == 0? "全部" : listDepartment.FirstOrDefault(p => p.f_tID == employedto.f_department_tID)?.f_value ?? "部门筛选" )
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuSelectDep">
+                                <li><a href="javaScript:" id="0">全部</a></li>
+                                @foreach (var item in listDepartment)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">名字：</label>
+                            <input type="text" class="form-control" id="Name" name="Name" value="@employedto.Name" placeholder="中文名/护照名/昵称">
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputDate">抵达日期：</label>
+                            <input type="text" class="form-control" id="arrivalDate" name="arrivalDate" value="@(employedto.arrivalDate == DateTime.MinValue ? "" : employedto.arrivalDate.ToString("yyyy-MM-dd"))" placeholder="抵达日期">
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputDate">报到日期：</label>
+                            <input type="text" class="form-control" id="rideWorkTime" name="rideWorkTime" value="@(employedto.rideWorkTime == DateTime.MinValue ? "" : employedto.rideWorkTime.ToString("yyyy-MM-dd"))" placeholder="报到日期">
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>
+                    </div>
+                </form>
+            </div>
+            <div class="taiojianli_right">
+                <button type="button" onclick="NewEmpPrint()" class="btn btn-primary">新员工报到须知表</button>
+                &nbsp;&nbsp;
+                <button type="button" class="btn btn-primary" onclick="previews()">打印数据</button>
+                &nbsp;&nbsp;
+                @if (level.Contains("IsNewEmpAction") && level.Contains("Department"))
+                {
+                    <button type="button" onclick="GetADDHtml()" class="btn btn-primary">新增+</button>
+                }
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">新人登记表</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="titleclickShuoming" style="width:60px;">
+                                    <div onclick="check(this)" id="xuanze_titlecheckbox" class="titleclick" value="0÷"></div>
+                                    &nbsp;全选
+                                </div>
+                            </th>
+                            <th>序号 </th>
+                            <th>国籍</th>
+                            <th>部门 </th>
+                            <th>姓名 </th>
+                            <th>OA帐号/密码</th>
+                            <th>性别 </th>
+                            <th>类型</th>
+                            <th width="135px">航班日期</th>
+                            <th>报到地址</th>
+                            <th width="135px">报到日期</th>
+                            <th>社区/楼栋/房号</th>
+                            <th>新人餐</th>
+                            <th>借款金额</th>
+                            <th>储值卡</th>
+                            <th>电话卡</th>
+                            <th>确认签字</th>
+                            <th>保关</th>
+                            <th>派車</th>
+                            <th>备注</th>
+                            <th class="caozuotd" style="width:165px">操&nbsp;&nbsp;作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var oData = (item.NewEmployee?.f_flightDate?.Date) ?? DateTime.MaxValue.Date;
+                            <tr>
+                                <td>
+                                    <div class="titleclickShuoming" style="width:60px;">
+                                        <div onclick="check(this)" name="checked" class="titleclick" value="@(item.f_eid + "÷")"></div>
+                                        &nbsp;
+                                    </div>
+                                </td>
+                                <td>@i </td>
+                                <td>@item.f_international </td>
+                                <td>@(item.STypeDepartment?.f_value)</td>
+                                <td id="@("tips" + item.f_eid)">@($"{item.f_chineseName}({item.f_passportName})")</td>
+                                <td>@(item.f_AccountName)<br />(@(item.f_pwd))</td>
+                                <td>@(item.f_sex == 1 ? "男" : "女")</td>
+                                <td>
+                                    @(listTypeFlight.FirstOrDefault(p => p.f_tID == item.NewEmployee?.f_flightTypt_tID)?.f_value)
+                                </td>
+                                <td>
+                                    @Html.Raw(item.NewEmployee?.f_flightDate == null ? "" : item.NewEmployee?.f_flightDate.Value.ToString("yyyy-MM-dd") + "&nbsp;&nbsp;&nbsp;" + item.NewEmployee?.f_flightDate.Value.ToString("HH:mm"))
+                                    <br />@Html.Raw(item.NewEmployee?.f_flightArrivalTime == null ? "" : item.NewEmployee?.f_flightArrivalTime.Value.ToString("yyyy-MM-dd") + "&nbsp;&nbsp;&nbsp;" + item.NewEmployee?.f_flightArrivalTime.Value.ToString("HH:mm"))
+                                </td>
+                                <td>@(item.STypeWorkLocation?.f_value)</td>
+                                <td>@(item.f_rideWorkTime?.ToString("yyyy-MM-dd") ?? "") &nbsp; @(item.f_rideOffWorkTime?.ToString("HH:mm") ?? "")</td>
+                                <td>@(item.t_Dormitory?.f_Community + "/ " + @item.t_Dormitory?.f_Building + "/ " + @item.t_Dormitory?.f_RoomNo)</td>
+                                <td>
+                                    @{
+                                        var orderers = item.NewOrderingEmoloyees.GroupBy(p => new { p.f_LDM_tID }).OrderBy(p => p.Key.f_LDM_tID).ToList();
+                                        List<NewOrderingEmployees> sortList;
+                                    }
+                                    @foreach (var one in orderers)
+                                    {
+                                        sortList = item.NewOrderingEmoloyees.Where(p => p.f_LDM_tID == one.Key.f_LDM_tID).OrderBy(p => p.f_EffectiveDate).ToList();
+                                        <span>
+                                            @(lstLDM.FirstOrDefault(p => p.f_tID == one.Key.f_LDM_tID).f_value)
+                                            @Html.Raw("<br/>")
+                                            @foreach (var data in sortList)
+                                            {
+                                                @(data.f_EffectiveDate.Value.ToString("MM/dd") + "*" + typeList.FirstOrDefault(p => p.f_tID == data.f_type_tID).f_value + "*" + data.f_Quantity + "份")
+                                                @Html.Raw("<br/>")
+                                            }
+                                        </span>
+                                    }
+                                </td>
+                                <td>@(item.NewEmployee?.f_LoanAmount) </td>
+                                <td>@(item.NewEmployee?.f_GiftCard) </td>
+                                <td>@(item.NewEmployee?.f_TelCatd)</td>
+                                <td>@(item.NewEmployee?.f_signature ?? false ? "已确认" : "")</td>
+                                <td>
+                                    @(item.NewEmployee?.f_TrainingDirector)
+                                    @if (item.NewEmployee?.f_isInform ?? false)
+                                    {
+                                        <span>√</span>
+                                    }
+                                </td>
+                                <td>@(item.t_ReturnTicket.Any(u => u.f_FromDate == oData && u.f_FromIsSendACar) ? "√" : "")</td>
+                                <td class="remarkTd">@(item.NewEmployee?.f_Remark )</td>
+                                <td>
+                                    <button type="button" onclick="GetUpdate(@item.f_eid)" class="btn btn-info btn-sm">修改</button>
+                                    @if (level.Contains("IsNewEmpAction"))
+                                    {
+                                        <button type="button" onclick="RemovalByID(@item.f_eid)" class="btn btn-danger btn-sm">移走</button>
+                                    }
+                                    <input type="button" title="请输入删除口令" eid="@item.f_eid" class="btn btn-danger btn-sm btn_Del" placeholder="密码" value="删除" style="color:white;font-style:inherit" />
+                                </td>
+                            </tr>
+                                            i++;
+                                        }
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="19" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageListFor(iCurrentPage, iPageSize, iTotalCount, employedto)
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function GetADDHtml() {
+        OpenADDwindow();
+        loadingTips();
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetCreate")',
+            data: {
+                isNew: true
+            },
+            dataType: "html",
+            error: function (data) {
+                alert("异常");
+                closeADDwindow();
+            },
+            success: function (data) {
+                if (data != null) {
+                    $(".addtable").html(data);
+                    setDropdownChangeValue();
+                } else {
+                    alert("加载内容失败。");
+                    closeADDwindow();
+                }
+            }
+        });
+    }
+    //修改
+    function GetUpdate(eId) {
+        OpenADDwindow();
+        loadingTips();
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("getEdit")',
+            data: {
+                id: eId
+            },
+            dataType: "html",
+            error: function (data) {
+                alert("异常");
+                closeADDwindow();
+            },
+            success: function (data) {
+                if (data != null) {
+                    $(".addtable").html(data);
+                    setDropdownChangeValue();
+                } else {
+                    alert("加载内容失败。");
+                    closeADDwindow();
+                }
+            }
+        });
+    }
+    //移走
+    function RemovalByID(eId) {
+        if (confirm("是否确认移走该新人【" + $("#tips" + eId).text() + "】。\n ps：移到人事报表 \n 默认:\n 如果报道时间为空,那么上下班时间为09:00~18:00，不为空就计算上下班时间。\n 上班地址为报到地址")) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Removal")',
+                data: {
+                    id: eId
+                },
+                dataType: "json",
+                error: function (data) {
+                    alert("异常");
+                    closeADDwindow();
+                },
+                success: function (data) {
+                    if (data.result == 1) {
+                        alert("移动成功");
+                        RefreshF5();
+                    } else {
+                        alert(data.tips);
+                    }
+                }
+            });
+        }
+    }
+    //全选
+    $("#xuanze_titlecheckbox").click(function () {
+        if ($("#xuanze_titlecheckbox").hasClass("titleclick")) {
+            $("div[name='checked']").attr("class", "titleclick");
+        } else if ($("#xuanze_titlecheckbox").hasClass("titlecheckbox")) {
+            $("div[name='checked']").attr("class", "titlecheckbox");
+        }
+    })
+    //复选框点击事件
+    function check(s) {
+        if ($(s).hasClass("titleclick")) {
+            $(s).attr("class", "titlecheckbox");
+        } else if ($(s).hasClass("titlecheckbox")) {
+            $(s).attr("class", "titleclick");
+        }
+    }
+    //打印
+    function previews() {
+        if (@iTotalCount > 100 && !confirm("当前条件下数据超过100条,请问是否继续操作。\r\n ps:可以筛选条件之后再打印")) {
+            return false;
+        }
+        var path = "";
+        $("div.titleclick").each(function () {
+            if (this.id=="xuanze_titlecheckbox") {
+                return true;
+            }
+            path += $(this).attr("value");
+        })
+        if (path != "") {
+            window.open('NewIndexView?periodType_f_tid='+'@employedto.periodType_f_tid'
+            +"&department_f_tid="+'@employedto.f_department_tID'
+            +"&rideWorkTime="+'@employedto.rideWorkTime'
+            +"&workStatus_f_tid="+'@employedto.workStatus_f_tid'
+            +"&Name="+'@employedto.Name'
+            +"&StartDate="+'@employedto.StartDate'
+            +"&TelNoPH="+'@employedto.TelNoPH'
+            +"&EndDate="+'@employedto.EndDate'
+            +"&arrivalDate="+'@employedto.arrivalDate'
+            +"&BuildingOrRoomNo="+'@employedto.BuildingOrRoomNo'
+            +"&iEid="+'@employedto.iEid'
+            + '&feid='+ path, '新人管理表', 'status=no,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,width=1500,height=800');
+        } else {
+            alert('请勾选需要打印的员工!');
+        }
+    }
+    //新人须知表
+    function NewEmpPrint()
+    {
+        var Path = "";
+        $("div.titleclick").each(function () {
+            Path += $(this).attr("value");
+        })
+        if (Path != "") {
+            window.open('NewEmpPrintView?eId='+Path, '新员工报道须知表', 'status=no,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,width=1500,height=800');
+        } else {
+            alert('请勾选需要打印新人须知表的员工!');
+        }
+    }
+    $(function () {
+        var URL = '@Url.Action("DeleteByID")';
+        $(".btn_Del").each(function () {
+            var $this = $(this);
+            var eid = $this.attr("eid");
+            $(this).editable({
+                type: 'text',
+                pk: eid,
+                name: 'DelPwd',
+                url: URL,
+                title: 'title',
+                validate: function (value) { //删除口令
+                    if ($.trim(value) == "") {
+                        return '不能为空!';
+                    }
+                },
+                success: function (response) {
+                    if (response.result == 1) {
+                        alert("删除成功");
+                        RefreshF5();
+                    } else {
+                        alert(response.tips);
+                    }
+                }
+            });
+        });
+
+
+    })
+</script>

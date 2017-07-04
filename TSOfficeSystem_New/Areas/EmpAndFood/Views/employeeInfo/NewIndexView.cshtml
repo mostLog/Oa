@@ -1,0 +1,148 @@
+﻿@model List<MI.Core.Domain.Employee>
+@{
+    ViewBag.Title = "新人管理";
+    Layout = null;
+    int i = 1;
+    //航班
+    List<MI.Core.Domain.SType> listTypeFlight = ViewBag.listTypeFlight;
+    List<MI.Core.Domain.SType> lstLDM = ViewBag.LDM; //所有订餐类型
+}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/Css/printCss.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="oacentbox">
+            <div class="oatiaojian container-fluid noPrint">
+                <button type="button" class="btn btn-primary" onclick="preview()">打印数据</button>
+            </div>
+            <!--startprint-->
+            <div class="panel panel-default">
+                <div class="panel-heading">新人管理表</div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped" cellspacing="0">
+                        <thead style="display: table-header-group; font-weight: bold">
+                            <tr>
+                                <td>序号 </td>
+                                <td>国籍</td>
+                                <td>部门 </td>
+                                <td>姓名 </td>
+                                <td>性别 </td>
+                                <td>类型</td>
+                                <td>航班日期</td>
+                                <td>报到地址</td>
+                                <td>报到日期</td>
+                                <td>社区/楼栋/房号</td>
+                                <td>新人餐</td>
+                                <td>借款金额</td>
+                                <td>储值卡</td>
+                                <td>电话卡</td>
+                                <td>确认签字</td>
+                                <td>备注</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                int[] LDMInfo = item.OrderingEmployees?.Select(p => p.f_LDM_tID.Value).ToArray();
+                                <tr @Html.Raw(i % 10 == 0 ? "style='page-break-after:always;'" : "")>
+                                    <td>@i </td>
+                                    <td>@item.f_international </td>
+                                    <td>@(item.STypeDepartment?.f_value)</td>
+                                    <td id="@("tips"+item.f_eid)">@($"{item.f_chineseName}")</td>
+                                    <td>@(item.f_sex == 1 ? "男" : "女")</td>
+                                    <td>
+                                        @(listTypeFlight.FirstOrDefault(p => p.f_tID == item.NewEmployee?.f_flightTypt_tID)?.f_value)
+                                    </td>
+                                    <td>
+                                        起飞:@Html.Raw(item.NewEmployee?.f_flightDate == null ? "" : item.NewEmployee?.f_flightDate.Value.ToString("yyyy-MM-dd") + "&nbsp;&nbsp;&nbsp;" + item.NewEmployee?.f_flightDate.Value.ToString("HH:mm"))
+                                        <br />
+                                        到达:@Html.Raw(item.NewEmployee?.f_flightArrivalTime == null ? "" : item.NewEmployee?.f_flightArrivalTime.Value.ToString("yyyy-MM-dd") + "&nbsp;&nbsp;&nbsp;" + item.NewEmployee?.f_flightArrivalTime.Value.ToString("HH:mm"))
+                                    </td>
+                                    <td>@(item.STypeWorkLocation?.f_value)</td>
+                                    <td>@(item.f_rideWorkTime?.ToString("yyyy-MM-dd") ?? "") @(item.f_rideOffWorkTime?.ToString("HH:mm") ?? "")</td>
+                                    <td>
+                                        @(item.t_Dormitory?.f_Community)
+                                        <br />
+                                        @(item.t_Dormitory?.f_Building)
+                                        <br />
+                                        @(item.t_Dormitory?.f_RoomNo)
+                                    </td>
+                                    <td>
+                                        @foreach (var one in lstLDM.Where(p => LDMInfo.Contains(p.f_tID)))
+                                        {
+                                            <span>@(one.f_value + ",")</span>
+                                        }
+                                    </td>
+                                    <td>@(item.NewEmployee?.f_LoanAmount) </td>
+                                    <td>@(item.NewEmployee?.f_GiftCard) </td>
+                                    <td>@(item.NewEmployee?.f_TelCatd)</td>
+                                    <td>@(item.NewEmployee?.f_signature ?? false ? "已确认" : "")</td>
+                                    <td>@(item.NewEmployee?.f_Remark )</td>
+                                </tr>
+                                i++;
+                            }
+                            @if (Model == null || Model.Count == 0)
+                            {
+                                <tr>
+                                    <td colspan="19" align="center">没有数据</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--endprint-->
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var HKEY_Root, HKEY_Path, HKEY_Key;
+        HKEY_Root = "HKEY_CURRENT_USER";
+        HKEY_Path = "\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
+        //设置网页打印的页眉页脚为空
+        function PageSetup_Null() {
+            try {
+                var Wsh = new ActiveXObject("WScript.Shell");
+                HKEY_Key = "header";
+                Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "");
+                HKEY_Key = "footer";
+                Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "");
+            }
+            catch (e)
+            { }
+        }
+        //设置网页打印的页眉页脚为默认值
+        function PageSetup_Default() {
+            try {
+                var Wsh = new ActiveXObject("WScript.Shell");
+                HKEY_Key = "header";
+                Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "&w&b页码,&p/&P");
+                HKEY_Key = "footer";
+                Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "&u&b&d");
+            }
+            catch (e)
+            { }
+        }
+        PageSetup_Default();
+        function preview() {
+            var bdhtml = window.document.body.innerHTML;
+            var sprnstr = "<!--startprint-->";//标记页面内容打印开始的地方
+            var eprnstr = "<!--endprint-->";  //标记页面内容打印结束的地方
+            var prnhtml = bdhtml.substr(bdhtml.indexOf(sprnstr) + 17);
+            prnhtml = prnhtml.substring(0, prnhtml.indexOf(eprnstr));//截取需要打印的页面内容
+            window.document.body.innerHTML = prnhtml;
+            window.print();
+            window.document.body.innerHTML = bdhtml;
+        }
+    </script>
+</body>
+</html>

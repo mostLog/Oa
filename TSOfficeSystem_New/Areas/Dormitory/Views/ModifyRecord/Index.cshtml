@@ -1,0 +1,232 @@
+﻿
+@{
+    ViewBag.Title = "操作记录";
+    MI.Core.Domain.ModifyRecordWhere modify = ViewBag.Modify;
+}
+<style type="text/css">
+    .potdiv {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 40px;
+        background-color: rgba(255,255,251,.75);
+    }
+
+    .pot {
+        display: block;
+        background: url('/images/ui.loading.gif') left center no-repeat;
+        width: 160px;
+        height: 40px;
+        margin: 0px auto;
+        line-height: 40px;
+        padding-left: 30px;
+    }
+</style>
+@Styles.Render("~/Content/datetimepicker")
+@Scripts.Render("~/bundles/datetimepicker")
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="#">操作记录</a></li>
+    </ol>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <div class="taiojianli_left">
+                                <label>变更时间：</label>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" value="@(modify.f_ChangeTime.ToString("yyyy-MM-dd"))" id="f_ChangeTime" name="f_ChangeTime">&nbsp;&nbsp;&nbsp;至
+                                    <input type="text" class="form-control" value="@(modify.f_EndChangeTime.ToString("yyyy-MM-dd"))" id="f_EndChangeTime" name="f_EndChangeTime">
+                                </div>
+                            </div><!-- /.taiojianli_left-->
+                            <div class="taiojianli_left">
+                                <div class="form-group">
+                                    <div class="dropdown" style="float:left;">
+                                        <label for="exampleInputName2">操作类型：</label>
+                                        <input type="hidden" id="f_ActionStatus" name="f_ActionStatus" value="@modify.f_ActionStatus" correspond="dropdownMenuAStatus" />
+                                        <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuAStatus" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            @(AOUnity.GetActionStatus(modify.f_ActionStatus))
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuAStatus" style="margin-left:75px;">
+                                            <li><a id="0">请选择</a></li>
+                                            <li><a id="1">新增</a></li>
+                                            <li><a id="2">删除</a></li>
+                                            <li><a id="3">修改</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div><!-- /.taiojianli_left-->
+                            <div class="taiojianli_left">
+                                <div class="form-group">
+                                    <div class="dropdown" style="float:left;">
+                                        <label for="exampleInputName2">操作项目：</label>
+                                        <input type="hidden" id="f_ItemCategory" name="f_ItemCategory" value="@modify.f_ItemCategory" correspond="dropdownMenuItemCategory" />
+                                        <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuItemCategory" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            @(AOUnity.GetCategoryItem(modify.f_ItemCategory))
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuItemCategory" style="margin-left:75px;">
+                                            <li><a id="0">请选择</a></li>
+                                            <li><a id="1">车辆管理</a></li>
+                                            <li><a id="2">宿舍管理</a></li>
+                                            <li><a id="3">餐饮管理</a></li>
+                                            <li><a id="4">工作交接</a></li>
+                                            <li><a id="5">员工管理</a></li>
+                                            <li><a id="6">个人资料</a></li>
+                                            <li><a id="7">公告管理</a></li>
+                                            <li><a id="8">类别和权限</a></li>
+                                            <li><a id="9">新人登记</a></li>
+                                            <li><a id="10">机票登记</a></li>
+                                            <li><a id="11">现金登记</a></li>
+                                            <li><a id="12">派车安排</a></li>
+                                            <li><a id="13">费用管理</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div><!-- /.taiojianli_left-->
+                            <div class="taiojianli_left">
+                                <div class="form-group">
+                                    <label for="exampleInputName2">内容：</label>
+                                    <input type="text" class="form-control" value="@modify.f_Content" id="f_Content" name="f_Content">
+                                </div>
+                            </div><!-- /.taiojianli_left-->
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <a href="javascript:" onclick="Cahxun()" class="btn btn-primary">查 询</a>
+                    </div><!-- /.taiojianli_left-->
+                </form>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">操作记录</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>创建时间</th>
+                            <th>操作类型</th>
+                            <th>操作项目</th>
+                            <th>操作人</th>
+                            <th>操作人IP</th>
+                            <th style="width:60%;">内容</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody class="htmlview">
+                        <tr id="fill">
+                            <td colspan="20" align="center"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+    </div><!-- /.oacentbox-->
+</div>
+<div class="potdiv">
+    <span class="pot">数据正在加载中...</span>
+</div>
+<script type="text/javascript">
+    var pageIndex = 1;
+    GetHtml();
+    $(function () {
+        var PageNum = 0;
+        //滑动事件（瀑布流）
+        $(window).scroll(function () {
+            var totalheight = parseFloat($(window).height()) + parseFloat($(window).scrollTop());//浏览器的高度加上滚动条的高度
+            if ($(document).height() <= totalheight)//当文档的高度小于或者等于总的高度的时候，开始动态加载数据
+            {
+                var randcode = 1 + Math.round(Math.random() * 9999);
+                pageIndex++;
+                GetHtml();
+            }
+        });
+
+        $.datetimepicker.setLocale('zh');
+        $('#f_ChangeTime,#f_EndChangeTime').datetimepicker({
+            lang: 'zh',
+            timepicker: false,
+            format: 'Y-m-d',
+            formatDate: 'Y-m-d'
+        });
+    });
+    //寻找
+    function Cahxun() {
+        $(".htmlview").html("<tr id=\"fill\"><td colspan=\"20\" align=\"center\"></td></tr>");
+        pageIndex = 1;
+        GetHtml();
+    }
+    //按条件获取指定数据
+    function GetHtml() {
+        $(".potdiv").fadeIn("5000");
+        var string = "无操作记录！";
+        var count = $(".htmlview tr").last().find("td").eq(0).text();
+        count = count == "" || count == string ? 0 : count;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("HtmlView")',
+            data: { f_ChangeTime: $("#f_ChangeTime").val(), f_EndChangeTime: $("#f_EndChangeTime").val(), f_ActionStatus: $("#f_ActionStatus").val(), f_ItemCategory: $("#f_ItemCategory").val(), f_Content: $("#f_Content").val(), iPageIndex: pageIndex, Count: count },
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data.trim() != "") {
+                    $("#fill").remove();
+                    $(".htmlview").append(data);
+                    AddCss();
+                } else if ($("#fill td").length == 1) {
+                    $("#fill td").text(string);
+                }
+                $(".potdiv").fadeOut("8000");
+            }
+        });
+    }
+    function AddCss() {
+        $(".edit div span").css("color", "blue")
+        var alen = $(".edit div span:nth-child(1)");
+        for (var i = 0; i < alen.length; i++) {
+            var value1 = alen[i].innerText;
+            var value2 = $(".edit div span:nth-child(2)")[i].innerText;
+            if (value1.replace(/\s+/g, "") != value2.replace(/\s+/g, "")) {
+                $(".edit div span:nth-child(2)")[i].style.color = "red";
+            }
+        }
+    }
+    //恢复
+    function Recovery(id, ActionItem) {
+        if (ActionItem == 1) {
+            alert("该数据为新增数据不需要恢复！");
+            return;
+        } else {
+            if (confirm("是否恢复？")) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Recovery")',
+                    data: { Id: id },
+                    error: function (data)
+                    { },
+                    success: function (data) {
+                        if (data != null) {
+                            if (data == "1") {
+                                alert("恢复成功");
+                                //location.href = location.href;
+                                $('.form-inline').submit();
+                            }
+                            else if (data == "13") {
+                                alert("数据已被删除，请先恢复删除的记录");
+                            }
+                            else if (data == "500") {
+                                alert("恢复失败，请稍后再试！");
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    }
+</script>

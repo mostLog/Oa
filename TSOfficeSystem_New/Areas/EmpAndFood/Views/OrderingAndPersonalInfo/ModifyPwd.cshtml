@@ -1,0 +1,69 @@
+﻿@model MI.Application.Dto.ModifyPwdModel
+@{
+    ViewBag.Title = "修改密码";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="panel panel-default" style="width:40%;margin:100px auto">
+        <div class="panel-heading">修改个人密码 </div>
+        <div class="form-horizontal" style="width:65%;margin:30px auto">
+            <span class="validation-summary-errors text-warning"></span>
+            @Html.Hidden("eid", Model.eid)
+            <div class="form-group">
+                @Html.LabelFor(model => model.oldPwd, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.oldPwd, new { htmlAttributes = new { @class = "form-control", maxLength = 10 } })
+                    @Html.ValidationMessageFor(model => model.oldPwd, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.newPwd, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.newPwd, new { htmlAttributes = new { @class = "form-control", maxLength = 10 } })
+                    @Html.ValidationMessageFor(model => model.newPwd, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="button" id="btnSave" value="保存" class="btn btn-default" />
+                    <input type="button" id="btnClose" value="关闭" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        //保存事件
+        $("#btnSave").on("click", function () {
+            $("form").ajaxSubmit(options);
+        });
+        var options = {
+            beforeSubmit: showRequest,
+            success: showResponse,
+            dataType: "json",
+            timeout:3000
+        }
+        function showRequest(formData, jqForm, options) {
+            if ($.trim(formData[3].value) == $.trim(formData[2].value)) {
+                $(".validation-summary-errors").text("新旧密码一致,请重新输入!");
+                return false;
+            }
+            var newData = $("form").formSerialize();
+            formData = newData;
+            return true; // 只要不返回false，表单都会提交，在这里可以对表单元素进行验证 EmployeeInfo
+        }
+        function showResponse(responseText, statusText) {
+            $(".validation-summary-errors").text(responseText.tips);
+            if (responseText.result == 1) {
+                $("#form").resetForm();
+            }
+        }
+        //关闭窗体事件
+        $("#btnClose").on("click", function () {
+            location.href = "/Home/Index";
+        });
+    </script>
+}
+

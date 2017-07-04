@@ -1,0 +1,124 @@
+﻿@model List<MI.Core.Domain.ReturnTicket>
+@{
+    ViewBag.Title = "登记查询";
+    int i = 1;
+    MI.Application.Dto.TicketWhereDto rtw = ViewBag.RTW;
+    List<MI.Core.Domain.SType> AirlineType = ViewBag.AirlineType;//所有航班
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+}
+<script type="text/javascript">
+    $(function () {
+        if ('@ViewBag.AlertS' != "") {
+            alert('@ViewBag.AlertS');
+            location.href = location.href.split('?AlertS=')[0];
+        }
+    })
+</script>
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">登记查询</a></li>
+        <li class="active">机票查询</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("FeeSearchNavMeuns", "机票查询")
+    </ul>
+    <div class="oacentbox">
+        <div class="panel panel-default">
+            <div class="panel-heading">机票查询</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>姓名</th>
+                            <th>国籍</th>
+                            @*<th>部门</th>*@
+                            <th>昵称</th>
+                            <th>返乡日期</th>
+                            <th>返乡航班</th>
+                            <th>返乡时间</th>
+                            <th>返乡资料</th>
+                            <th>备注</th>
+                            <th>返菲日期</th>
+                            <th>返菲航班</th>
+                            <th>返菲时间</th>
+                            <th>返菲资料</th>
+                            <th>备注</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i </td>
+                                <td>@(item.t_employeeInfo?.f_chineseName ?? "")</td>
+                                <td>@(item.t_employeeInfo?.f_international ?? "")</td>
+                                @*<td>@(Department.Where(p => p.f_tID == item.t_employeeInfo.f_department_tID).FirstOrDefault()?.f_value ?? "" )</td>*@
+                                <td>@(item.t_employeeInfo?.f_nickname ?? "")</td>
+                                <td>@(item.f_ToDate?.ToString("yyyy-MM-dd") ?? "")</td>
+                                <td>@(AirlineType.FirstOrDefault(u => u.f_tID == item.f_ToAirlineType_Id)?.f_value ?? "")</td>
+                                <td>@item.f_ToFlight</td>
+                                <td>
+                                    <input type="button" value="下载" onclick="Filedown('@(item.f_ToFile)','f_ToFile','@item.f_Id')" class="btn btn-danger btn-sm">&nbsp;&nbsp;
+                                    @Html.Raw(item.f_ToIsTips ? "<img src='/images/Tips.gif'/>" : "")
+                                </td>
+                                <td>@item.f_ToRemark</td>
+                                <td>@(item.f_FromDate?.ToString("yyyy-MM-dd") ?? "")</td>
+                                <td>@(AirlineType.FirstOrDefault(u => u.f_tID == item.f_FromAirlineType_Id)?.f_value ?? "")</td>
+                                <td>@item.f_FromFlight</td>
+                                <td>
+                                    <input type="button" value="下载" onclick="Filedown('@(item.f_FromFile)','f_FromFile','@item.f_Id')" class="btn btn-danger btn-sm">
+                                    @Html.Raw(item.f_FromIsTips ? "<img src='/images/Tips.gif'/>" : "")
+                                </td>
+                                <td>@item.f_FromRemark</td>
+                            </tr>
+                            i++;
+                        }
+
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="14" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageListFor(iCurrentPage, iPageSize, iTotalCount, rtw)
+            </ul>
+        </div><!-- /.fenyediv-->
+
+    </div><!-- /.oacentbox-->
+
+</div>
+<script type="text/javascript">
+    //下载
+    function Filedown(fielname, ToOrFrom, id) {
+        if (fielname == "") {
+            alert("暂时未上传文件！");
+            return;
+        }
+        location.href = '@Url.Action("Filedown")?FileName=' + fielname + "&ToOrFrom=" + ToOrFrom + "&f_eId=" + id;
+    }
+
+    function changeState() {
+        $.ajax({
+            type: "post",
+            url: '@Url.Action("ChangeState")',
+            data: { tableName: "机票查询" },
+            success: function (data) {
+                //TODO
+            }
+        });
+    }
+
+    $(function () {
+        //  setTimeout(changeState, 1000);  //延迟加载了为了避免点登记查询时默认进入的员工租房的提示变化太快，页面看不到员工租房的提示
+        changeState();
+    });
+</script>

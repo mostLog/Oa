@@ -1,0 +1,153 @@
+﻿
+@model  List<MI.Core.Domain.t_CoupleRegister>
+@{
+    Layout = null;
+}
+
+<script src="~/Scripts/typeahead/bootstrap3-typeahead.js"></script>
+
+<button type="button" id="btn-quxiao" onclick="RefreshF5()" class="btn btn-danger closebtn">关闭（X）</button>
+<div class="panel panel-default">
+    <div class="panel-heading">新登记情侣/夫妻关系</div>
+    <div class="table-responsive">
+        <form id="formTable" method="post" action="@Url.Action("EditCP")">
+            <table id="tableNameList" class="table table-hover table-striped">
+                <tr>
+                    <td>
+                        关系1:
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" autocomplete="off" data-provide="typeahead" placeholder="请输入中文名/昵称/护照名" name="f_chineseName" value="" />
+                        <input type="hidden" id="[0].f_eId1" name="[0].f_eId1" value="@Model[0].f_eId1" />
+                    </td>
+                    <td>与</td>
+                    <td>
+                        <input type="text" class="form-control" autocomplete="off" data-provide="typeahead" placeholder="请输入中文名/昵称/护照名" name="f_chineseName" value="" />
+                        <input type="hidden" id="[0].f_eId2" name="[0].f_eId2" value="@Model[0].f_eId2" />
+                    </td>
+                </tr>
+                <tr class="notText">
+                    <td colspan="4" style="text-align: center;">
+                        <a href="javascript:AddInputHtml()">点击登记更多</a>
+                    </td>
+                </tr>
+                <tr class="notText">
+                    <td colspan="4" style="text-align: center;">
+                        <button type="button" onclick="btnSumbit()" class="btn btn-primary  btn-lg">确认</button>
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+</div><!-- /.panel-default/ table-->
+<script type="text/javascript">
+    var booIsCreate = '@ViewBag.IsCreate' == 'True';
+    $(document)
+        .ready(function ($) {
+            //为每个文本框绑定自动补充功能
+            $('input[name=f_chineseName]')
+                .each(function () {
+                    configure.publicFunction.binTypeahead($(this));
+                });
+
+            //当文本框获取到焦点之后把颜色状态改回默认
+            $("#tableNameList tr td input")
+                .focus(function () {
+                    var $thisTr = $(this).parent().parent();
+                    if ($thisTr.hasClass("has-success")) {
+                        $thisTr.find("input").val("");
+                    }
+                    $thisTr.removeClass("has-error has-success");
+                }).blur(function () {
+                    if (!configure.publicFunction.checkNull($(this).val(), "")) {
+                        $(this).parent().find("input").val("");
+                    }
+                });
+
+        });
+
+    //提交表单
+    function btnSumbit() {
+        $("#formTable").ajaxSubmit(options);
+    }
+
+    var options = {
+        beforeSubmit: showRequest, // 提交前的回调函数
+        success: showResponse, // 提交后的回调函数
+        dataType: "json", // html（默认）、xml、script、json接受服务器端返回的类型
+        timeout: 3000 // 限制请求的时间，当请求大于3秒后，跳出请求
+    }
+
+    function showRequest(formData, jqForm, options) {
+        var isOk = false;
+        $("input[name*=f_eId]").each(function () {
+            if (configure.publicFunction.checkNull($(this).val(), "0")) {
+                isOk = true;
+            }
+        });
+        if (!isOk) {
+            alert("请用下拉的方式选择员工。\r输入员工昵称之后等待0.5~1s钟会出现员工下拉列表。");
+        }
+        return isOk;
+        // return true; // 只要不返回false，表单都会提交，在这里可以对表单元素进行验证 EmployeeInfo
+    }
+
+    function showResponse(responseText, statusText) {
+        if (responseText != null) {
+            var sMsg = "      执行结果\r\r";
+            for (var item in responseText) {
+                if (responseText.hasOwnProperty(item)) {
+                    sMsg += "关系" + (parseInt(item, 10) < 10 ? " " : "") + item + "==>" + responseText[item] + "\r\n";
+                    if (responseText[item].indexOf("成功") > -1) {
+                        $("#tableNameList tr").eq(parseInt(item, 10) - 1).addClass("has-success");
+
+                    } else {
+                        $("#tableNameList tr").eq(parseInt(item, 10) - 1).addClass("has-error");
+                    }
+                }
+            }
+            alert(sMsg);
+        } else {
+            alert("提交失败！508");
+        }
+
+    }
+    //追加关系文本框
+    function AddInputHtml() {
+        var inputCount = $('input[name=f_chineseName]').length;
+        var trCount = $("#tableNameList tr").not(".notText").length;
+        if (trCount < 10 || confirm("已经存在" + trCount + "条，是否继续添加？")) {
+            var trHtml = "<tr><td>关系" + ((trCount + 1) < 10 ? " " : "") + (trCount + 1) + ":</td><td>" +
+                "<input type=\"text\" class=\"form-control\" autocomplete=\"off\" data-provide=\"typeahead\" placeholder=\"请输入中文名/昵称/护照名\" name=\"f_chineseName\" value=\"1\" />" +
+                "<input type=\"hidden\" id=\"[1].f_eId1\" name=\"[" + trCount + "].f_eId1\" value=\"\" />" +
+            "</td><td>与:</td><td>" +
+                "<input type=\"text\" class=\"form-control\" autocomplete=\"off\" data-provide=\"typeahead\" placeholder=\"请输入中文名/昵称/护照名\" name=\"f_chineseName\" value=\"2\" />" +
+                "<input type=\"hidden\" id=\"[1].f_eId2\" name=\"[" + trCount + "].f_eId2\" value=\"\" />" +
+            "</td></tr>";
+            $("#tableNameList tr").not(".notText").last().after(trHtml);
+        }
+
+        //添加完之后为文本框添加自动补充功能
+        $('input[name=f_chineseName]')
+            .each(function (i) {
+                if ((i + 1) > inputCount) {
+                    configure.publicFunction.binTypeahead($(this));
+                }
+            });
+
+        //当文本框获取到焦点之后把颜色状态改回默认
+        $("#tableNameList tr td input")
+            .focus(function () {
+                var $thisTr = $(this).parent().parent();
+                if ($thisTr.hasClass("has-success")) {
+                    $thisTr.find("input").val("");
+                }
+                $thisTr.removeClass("has-error has-success");
+            }).blur(function () {
+                if (!configure.publicFunction.checkNull($(this).val(), "")) {
+                    $(this).parent().find("input").val("");
+                }
+            });
+    }
+</script>

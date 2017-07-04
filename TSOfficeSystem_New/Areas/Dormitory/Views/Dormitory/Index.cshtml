@@ -1,0 +1,243 @@
+﻿@model List<MI.Core.Domain.t_Dormitory>
+@{
+    ViewBag.Title = "宿舍管理";
+    int i = 1;
+    MI.Core.Domain.DormitoryWhere dw = ViewBag.Dorm;
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+}
+<link href="~/Css/datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/Scripts/datetimepicker/jquery.datetimepicker.full.js"></script>
+<div class="addbg">
+    <div class="addtable" style="margin-top:30px">
+    </div><!-- /.addtable-->
+</div><!-- /.addbg-->
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="#">宿舍管理</a></li>
+        <li class="active">宿舍登记</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("DormitoryNavTabs", "宿舍登记")
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="f_Community">社区：</label>
+                            <input type="text" class="form-control" value="@dw.f_Community" id="f_Community" name="f_Community">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="f_Building">楼栋：</label>
+                            <input type="text" class="form-control" value="@dw.f_Building" id="f_Building" name="f_Building">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="f_RoomNo">房间号：</label>
+                            <input type="text" class="form-control" style="width:100px;" value="@dw.f_RoomNo" id="f_RoomNo" name="f_RoomNo" onkeyup="checkABC123(this)">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="date_timepicker_start">签约日期：</label>
+                            <input type="text" class="form-control" style="width:120px;" value="@(dw.f_ContractDateST==DateTime.MinValue ? "":dw.f_ContractDateST.ToString("yyyy-MM-dd"))" id="date_timepicker_start" name="f_ContractDateST">
+                            <label for="date_timepicker_end">--</label>
+                            <input type="text" class="form-control" style="width:120px;" value="@(dw.f_ContractDateED==DateTime.MinValue ? "":dw.f_ContractDateED.ToString("yyyy-MM-dd"))" id="date_timepicker_end" name="f_ContractDateED">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <div class="dropdown">
+                                <label for="IsBerth">是否有车位：</label>
+                                @Html.Hidden("IsBerth", dw.IsBerth, new { @correspond = "dropdownMenuIsB" })
+                                <button class="btn btn-default dropdown-toggle form-control" style="width:160px;" type="button" id="dropdownMenuIsB" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @(dw.IsBerth == "1" ? "有车位" : (dw.IsBerth == "0" ? "没车位" : "全部"))
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuIsB" style="margin-left:75px;">
+                                    <li><a href="javaScript:" id="2">全部 </a></li>
+                                    <li><a href="javaScript:" id="1">有车位</a></li>
+                                    <li><a href="javaScript:" id="0">没车位</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button id="a_export" type="button" class="btn btn-success">导出Excel</button>
+                    </div><!-- /.taiojianli_left-->
+                </form>
+            </div>
+            <div class="taiojianli_right">
+                <button onclick="UpdateSel('0')" type="button" id="btn-xinzeng" class="btn btn-primary">新增+</button>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">宿舍登记</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>社区</th>
+                            <th>楼栋</th>
+                            <th>房间号</th>
+                            <th>签约日期</th>
+                            <th>期限（月）</th>
+                            <th>截止日期</th>
+                            <th>剩余天数</th>
+                            <th>中介</th>
+                            <th>租金</th>
+                            <th>停车位</th>
+                            <th>停车位号</th>
+                            <th style="width:90px;">房间类型</th>
+                            <th>洗衣房/密码</th>
+                            <th>晾衣房/密码</th>
+                            <th>备注</th>
+                            <th>操作人</th>
+                            <th style="width:160px;">最后操作时间</th>
+                            <th class="caozuotd">操&nbsp;&nbsp;作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i </td>
+                                <td>@item.f_Community </td>
+                                <td>@item.f_Building</td>
+                                <td>@item.f_RoomNo</td>
+                                <td>@(item.f_ContractDate == DateTime.MinValue ? "" : item.f_ContractDate.ToString("yyyy-MM-dd"))</td>
+                                <td>@item.f_Term</td>
+                                <td>@(item.f_DueDate == DateTime.MinValue ? "" : item.f_DueDate.ToString("yyyy-MM-dd"))</td>
+                                <td>@((item.f_DueDate - DateTime.Now.Date).TotalDays)</td>
+                                <td>@item.f_Landlady</td>
+                                <td>@item.f_Rent</td>
+                                <td>@(item.f_IsBerth ? "√" : "×")</td>
+                                <td>@item.f_erthNo </td>
+                                <td>@item.f_RoomType</td>
+                                <td>@item.f_LaundryAndPwd </td>
+                                <td>@item.f_ClothesAndPwd</td>
+                                <td>@item.f_Remark</td>
+                                <td>@item.f_operator</td>
+                                <td>@item.f_operatorTime</td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" onclick="UpdateSel('@item.f_DormitoryId')">修改</button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="Delete('@item.f_DormitoryId')">删除</button>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="18" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageListFor(iCurrentPage, iPageSize, iTotalCount, dw)
+            </ul>
+        </div><!-- /.fenyediv-->
+    </div><!-- /.oacentbox-->
+</div>
+
+<script type="text/javascript">
+    function UpdateSel(id) {
+        OpenADDwindow();
+        loadingTips();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Edit_sel")',
+            data: { Id: id },
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data != null) {
+                    $(".addtable").html(data);
+                    setDropdownChangeValue();
+                }
+            }
+        });
+        $("div.addbg").show(200);
+    }
+
+    function Delete(id) {
+        if (confirm("是否确定删除？")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                data: { Id: id },
+                error: function (data) {
+                },
+                success: function (data) {
+                    if (data != null) {
+                        if (data.result == 1) {
+                            alert("删除成功");
+                            location.href = location.href;
+                        } else {
+                            alert(data.tips);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    function excelExport() {
+        //查询条件
+        var data = "f_Community=" + encodeURI($('#f_Community').val())
+                + "&f_Building=" + encodeURI($('#f_Building').val())
+                + "&f_RoomNo=" + encodeURI($('#f_RoomNo').val())
+                + "&f_ContractDateST=" + encodeURI($('#date_timepicker_start').val())
+                + "&f_ContractDateED=" + encodeURI($('#date_timepicker_end').val())
+                + "&IsBerth=" + encodeURI($('#IsBerth').val());
+        //跳转页面(直接打开 Excel)
+        location.href = '/Dormitory/Dormitory/Export?' + data;
+    }
+
+    $('#a_export').click(excelExport);
+
+    //	签约日期
+    jQuery(function () {
+
+        $.datetimepicker.setLocale('zh');
+        jQuery('#date_timepicker_start').datetimepicker({
+            lang: 'zh',
+            format: 'Y-m-d',
+            onShow: function (ct) {
+                this.setOptions({
+                    maxDate: jQuery('#date_timepicker_end').val() ? jQuery('#date_timepicker_end').val() : false
+                });
+            },
+            timepicker: false
+        });
+        jQuery('#date_timepicker_end').datetimepicker({
+            lang: 'zh',
+            format: 'Y-m-d',
+            onShow: function (ct) {
+                this.setOptions({
+                    minDate: jQuery('#date_timepicker_start').val() ? jQuery('#date_timepicker_start').val() : false
+                });
+            },
+            timepicker: false
+        });
+        //$('#date_timepicker_start').val("");
+        //$('#date_timepicker_end').val("");
+    });
+
+</script>

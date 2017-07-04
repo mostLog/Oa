@@ -1,0 +1,266 @@
+﻿@using MI.Application.Dto;
+@using MI.Core.Domain;
+@model PageListDto<EmpRentListDto>
+@{
+    ViewBag.Title = "Index";
+    var searchInput = ViewBag.SearchInput as EmpRentPagedInputDto;
+    var workLocation = ViewBag.WorkLoaction as IList<SType>;
+}
+@section Styles{
+    <link href="~/Css/datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+    <link href="~/Areas/Dormitory/Content/Loading.css" rel="stylesheet" />
+}
+
+<div id="loading">
+    <div id="loading-center">
+        <div id="loading-center-absolute">
+            <div class="object" id="object_one"></div>
+            <div class="object" id="object_two"></div>
+            <div class="object" id="object_three"></div>
+            <div class="object" id="object_four"></div>
+            <div class="object" id="object_five"></div>
+            <div class="object" id="object_six"></div>
+            <div class="object" id="object_seven"></div>
+            <div class="object" id="object_eight"></div>
+        </div>
+    </div>
+</div>
+<div class="addbg">
+    <div class="addtable">
+        <button type="button" id="btn-quxiao" onclick="closeADDwindow()" class="btn btn-danger closebtn">取消（X）</button>
+        <div class="panel panel-default">
+            <div class="panel-heading">员工租房登记</div>
+            <div class="table-responsive">
+                <form id="formTable" method="post">
+                    <table class="table table-hover table-striped">
+                        <tr>
+                            <td>員工:</td>
+                            <td>
+                                <input type="text" class="form-control" id="ChineseName" autocomplete="off" data-provide="typeahead" placeholder="请输入中文名/昵称/护照名" name="f_chineseName"  required/>
+                                <input type="hidden" id="EId" name="f_eid" value="" />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>宿舍:</td>
+                            <td>
+                                <input type="text" class="form-control" id="RoomNoLaundry" name="RoomNoLaundry" readonly="readonly" value="" />
+                                <input type="hidden" class="val_Laundry" id="DormitoryId" name="f_DormitoryId" value="" />
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>租金:</td>
+                            <td><input type="text" class="form-control" id="Rent" name="f_Rent" value="0" /></td>
+                        </tr>
+                        <tr>
+                            <td>补贴:</td>
+                            <td><input type="text" class="form-control" id="Grant" name="f_Grant" value="0" /></td>
+                        </tr>
+                        <tr>
+                            <td>應繳費:</td>
+                            <td><input type="text" class="form-control" id="Amount" name="f_Amount" value="0" /></td>
+                        </tr>
+                        <tr>
+                            <td>繳費月份:</td>
+                            <td><input type="text" class="form-control" id="PaymentDate" name="f_PaymentDate" value="" /></td>
+                        </tr>
+                        <tr>
+                            <td>是否缴费:</td>
+                            <td>
+                                <input type="radio" name="f_IsPayment" value="true" />是
+                                <input type="radio" name="f_IsPayment" value="false" />否
+                                @*<input type="hidden" id="f_IsPayment" name="f_IsPayment" value="" />*@
+                            </td>
+                        </tr>
+
+                        <tr class="Payment" style="">
+                            <td>收款人:</td>
+                            <td><input type="text" id="Payee" name="f_Payee" class="form-control" readonly="readonly" value="" /></td>
+                        </tr>
+                        <tr>
+                            <td>收款地点：</td>
+                            <td height="51px;">
+                                <div id="dropLocation" class="dropdown" style="position:absolute;">
+                                    @Html.Hidden("f_AddressId", 0,  new { @correspond = "dropdownMenu3" })
+                                    <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        请选择
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu3">
+                                        <li><a href="javaScript:" id="0">请选择 </a></li>
+                                        @foreach (var item in workLocation)
+                                        {
+                                            <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>备注:</td>
+                            <td><input type="text" class="form-control" id="Remark" name="f_Remark" value="" /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align: center;">
+                                <button type="submit"  class="btn btn-primary  btn-lg">确认</button>
+                                <input type="hidden" value="" id="Id" name="f_Id" />
+                            </td>
+                        </tr>
+
+                    </table>
+                </form>
+            </div>
+        </div><!-- /.panel-default/ table-->
+    </div><!-- /.addtable-->
+</div><!-- /.addbg-->
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">费用管理</a></li>
+        <li class="active">员工外租</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="@Url.Action("Index")">员工租房</a></li>
+        <li role="presentation"><a href="/Dormitory/Grant">外租补助</a></li>
+        <li role="presentation"><a href="/Dormitory/Tariff">电费超支</a></li>
+        <li role="presentation"><a href="/Dormitory/FlightFee">机票差额</a></li>
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div class="taiojianli_right">
+                <button id="btn-makeup" type="button" title="根据员工换房补录当月数据（补房租大于0,生效月份在本月）" class="btn bg-primary">补录当月数据</button>
+                <button id="btn-generateNext" type="button" title="根据本月数据生成下个月数据(自动更新换房成功的新宿舍)"  class="btn bg-primary">生成下个月数据</button>
+                <button type="button" id="btn-add" class="btn btn-primary">新增+</button>
+            </div>
+            <hr />
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="Name">员工：</label>
+                            <input type="text" class="form-control" id="Name" name="Name" value="@(searchInput?.Name)" placeholder="中文名/护照名/昵称">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="f_Building">楼栋：</label>
+                            <input type="text" class="form-control" id="f_Building" value="@(searchInput?.Building)" name="Building">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="f_RoomNo">房间号：</label>
+                            <input type="text" class="form-control" id="f_RoomNo" name="RoomNo" value="@(searchInput?.RoomNo)" onkeyup="checkABC123(this)">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="date_timepicker_start">缴费月份：</label>
+                            <input type="text" class="form-control" id="date_timepicker_start" value="@(searchInput?.PaymentStartDate!=null?searchInput.PaymentStartDate.Value.ToString("yyyy-MM-dd"):"")" name="PaymentStartDate">
+                            <label for="date_timepicker_end">--</label>
+                            <input type="text" class="form-control" id="date_timepicker_end" value="@(searchInput?.PaymentEndDate!=null?searchInput.PaymentEndDate.Value.ToString("yyyy-MM-dd"):"")" name="PaymentEndDate">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <label>是否缴费：</label>
+                        <div class="form-group">
+                            <div class="dropdown">
+                                @Html.Hidden("IsPayment", searchInput?.IsPayment, new { @correspond = "dropdownMenu2" })
+                                <button class="btn btn-default dropdown-toggle form-control" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @(searchInput?.IsPayment == 1 ? "是" : searchInput?.IsPayment == 0 ? "否" : "全部")
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                    <li><a href="javaScript:" id="2">全部</a></li>
+                                    <li><a href="javaScript:" id="1">是</a></li>
+                                    <li><a href="javaScript:" id="0">否</a></li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button id="a_export" type="button" class="btn btn-success">导出Excel</button>
+                    </div><!-- /.taiojianli_left-->
+                </form>
+            </div>
+
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">员工租房登记</div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>员工</th>
+                            <th>部门</th>
+                            <th>宿舍</th>
+                            <th>租金</th>
+                            <th>补贴</th>
+                            <th>应缴费</th>
+                            <th>缴费月份</th>
+                            <th>是否缴费</th>
+                            <th>收款人</th>
+                            <th>收款地点</th>
+                            <th>收款时间</th>
+                            <th>操作人</th>
+                            <th>最后操作时间</th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            var item = Model[i];
+                            <tr>
+                                <td>@(i+1)</td>
+                                <td>@item.EmployeeName</td>
+                                <td>@item.DeptName</td>
+                                <td>@item.DormitoryName</td>
+                                <td>@item.Rent</td>
+                                <td>@item.Grant</td>
+                                <td>@item.Amount</td>
+                                <td>@(item.PaymentDate!=null&&item.PaymentDate!=DateTime.MinValue?item.PaymentDate.Value.ToString("yyyy-MM"):string.Empty)</td>
+                                <td>@(item.IsPayment == true ? "√" : "×")</td>
+                                <td>@item.Payee</td>
+                                <td>@item.Address</td>
+                                <td>@(item.EffectiveDate!=null&&item.EffectiveDate!=DateTime.MinValue?item.EffectiveDate.Value.ToString("yyyy-MM-dd") :string.Empty )</td>
+                                <td>@item.Operator</td>
+                                <td>@item.OperatorTime</td>
+                                <td>@item.Remark</td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-mark="update" data-id="@item.Id" >修改</button>
+                                    <button type="button" class="btn btn-danger btn-sm" data-mark="delete" data-id="@item.Id" >删除</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageList(Model.PageIndex, 10, Model.TotalCount)
+            </ul>
+        </div><!-- /.fenyediv-->
+
+    </div><!-- /.oacentbox-->
+
+</div>
+@section Scripts{
+    <script src="~/Scripts/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script src="~/Scripts/jquery-validation/localization/messages_zh.min.js"></script>
+    <script src="~/Scripts/datetimepicker/jquery.datetimepicker.full.js"></script>
+    <script src="~/Scripts/typeahead/bootstrap3-typeahead.js"></script>
+    <script src="~/Scripts/Script_v_1.0/Common/Common.js"></script>
+    <script src="~/Scripts/Script_v_1.0/Common/JQueryExtension.js"></script>
+    <script src="~/Areas/Dormitory/Views/EmpRent/Index.js"></script>
+}

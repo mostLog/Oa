@@ -1,0 +1,81 @@
+﻿@model List<MI.Core.Domain.t_HostelClean>
+@{
+    ViewBag.Title = "登记查询";
+    int i = 1;
+    MI.Application.Dto.HostelCleanDto dmw = ViewBag.DMW;
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+}
+<div class="addbg">
+    <div class="addtable" style="margin-top:30px">
+    </div><!-- /.addtable-->
+</div><!-- /.addbg-->
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">登记查询</a></li>
+        <li class="active">宿舍打扫</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("FeeSearchNavMeuns", "宿舍打扫")
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+        </div>
+        <!--startprint-->
+        <div class="panel panel-default">
+            <div class="panel-heading">宿舍打扫日程</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped" style="border:solid #DDDDDD 1px;">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>社区</th>
+                            <th>楼栋</th>
+                            <th>房间号</th>
+                            <th>星期</th>
+                            <th>执行人</th>
+                            <th>操作人</th>
+                            <th>最后操作时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i </td>
+                                <td>@item.t_dormitory.f_Community </td>
+                                <td>@item.t_dormitory.f_Building</td>
+                                <td>@item.t_dormitory.f_RoomNo</td>
+                                <td>
+                                    @(item.f_Week == 1 ? "星期一" : item.f_Week == 2 ? "星期二" : item.f_Week == 3 ? "星期三" : item.f_Week == 4 ? "星期四" : item.f_Week == 5 ? "星期五" : item.f_Week == 6 ? "星期六" : item.f_Week == 7 ? "星期天" : "--"  )
+                                </td>
+                                <td>@item.f_Cleaner</td>
+                                <td>@item.f_operator</td>
+                                <td>@item.f_operatorTime</td>
+                            </tr>
+                            i++;
+                        }
+
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="9" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>  <!--endprint-->
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageListFor(iCurrentPage, iPageSize, iTotalCount, dmw)
+            </ul>
+        </div><!-- /.fenyediv-->
+
+    </div><!-- /.oacentbox-->
+
+</div>
+
+

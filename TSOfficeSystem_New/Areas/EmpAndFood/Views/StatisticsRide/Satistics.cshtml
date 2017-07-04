@@ -1,0 +1,108 @@
+﻿@model IEnumerable<MI.Application.Dto.TrafficStatisticsDto>
+@{
+    ViewBag.Title = "员工班车资料汇总表";
+    Layout = null; //重要
+}
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行政OA管理系统 - @ViewBag.Title</title>
+    @Styles.Render("~/Content/bootstrap")
+    @Styles.Render("~/Content/ResponsiveStyle")
+    <style>
+        td, th {
+            border: 1px solid #000000;
+        }
+    </style>
+    @{
+        int arrCommunityLength = ((string[])ViewBag.arrCommunity).Length;
+        int arrWorkLocationLength = ((string[])ViewBag.arrWorkLocation).Length;
+    }
+</head>
+<body>
+    <div id="oacontent">
+        <div class="container-fluid" style="padding-left:130px;padding-right:60px">
+            <div class="panel panel-default">
+                <div class="panel-heading" style="text-align:center"><h3>员工班车资料汇总表@(ViewBag.IsY ? "(包括返乡)" : "")</h3></div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped" style="border:1px solid #000000">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">类别 </th>
+                                <th rowspan="2">搭车时间 </th>
+                                <td colspan="@arrCommunityLength" style="color:#337AB7;">社区分类</td>
+                                <td colspan="@arrWorkLocationLength" style="color: #337AB7;">地点分类</td>
+                                <th rowspan="2">合计</th>
+                            </tr>
+                            <tr>
+                                @foreach (string Community in (string[])ViewBag.arrCommunity)
+                                {
+                                    <th>@(Community + "人数")</th>
+                                }
+                                @foreach (string WorkLocation in (string[])ViewBag.arrWorkLocation)
+                                {
+                                    <th>@(WorkLocation + "人数")</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr @Html.Raw(item.isComprising ? "class='bg-warning'" : "")>
+                                    <td>@(item.srType == 1 ? "上班" : "下班") </td>
+                                    <td>@item.RideTime.Value.ToString("HH:mm")</td>
+                                    @foreach (int SumCommunity in item.Community)
+                                    {
+                                        <td>@SumCommunity </td>
+                                    }
+                                    @foreach (int SumWorkLocation in item.WorkLocation)
+                                    {
+                                        <td>@SumWorkLocation </td>
+                                    }
+                                    <td>@item.Count</td>
+                                </tr>
+                            }
+                            @if (Model == null || !Model.Any())
+                            {
+                                <tr>
+                                    <td>上班</td>
+                                    <td>无</td>
+                                    @for (int i = 0; i < arrCommunityLength; i++)
+                                    {
+                                        <td>0 </td>
+                                    }
+                                    @for (int i = 0; i < arrWorkLocationLength; i++)
+                                    {
+                                        <td>0 </td>
+                                    }
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>下班</td>
+                                    <td>无</td>
+                                    @for (int i = 0; i < arrCommunityLength; i++)
+                                    {
+                                        <td>0 </td>
+                                    }
+                                    @for (int i = 0; i < arrWorkLocationLength; i++)
+                                    {
+                                        <td>0 </td>
+                                    }
+                                    <td>0</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

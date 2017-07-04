@@ -1,0 +1,240 @@
+﻿@model List<MI.Core.Domain.ReturnHandover>
+@{
+    ViewBag.Title = "返乡交接";
+    //int i = 1;
+    MI.Application.Dto.ReturnHandoverDto rw = ViewBag.RW;
+    //int iCurrentPage = ViewBag.iPageIndex;
+    //int iPageSize = ViewBag.iPageSize;
+    //int iTotalCount = ViewBag.iCount;
+}
+
+<link href="~/Css/datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/Scripts/datetimepicker/jquery.datetimepicker.full.js"></script>
+<div class="addbg">
+    <div class="addtable">
+    </div><!-- /.addtable-->
+</div><!-- /.addbg-->
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">工作交接</a></li>
+        <li class="active">返乡交接</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        <li role="presentation"><a href="~/Integrated/WorkDistribution/Index">日常交接</a></li>
+        <li role="presentation" class="active"><a href="~/Integrated/ReturnHandover/Index">返乡交接</a></li>
+
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">员工：</label>
+                            <input type="text" class="form-control" value="@rw.Name" id="Name" name="Name" placeholder="中文名/护照名/昵称">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">返乡日期：</label>
+                            <input type="text" class="form-control" value="@rw.f_ReturnDateST" id="date_timepicker_start" name="f_ReturnDateST">
+                            <label for="exampleInputName2">--</label>
+                            <input type="text" class="form-control" value="@rw.f_ReturnDateED" id="date_timepicker_end" name="f_ReturnDateED">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>
+                    </div><!-- /.taiojianli_left-->
+                </form>
+            </div>
+            <div class="taiojianli_right">
+                <button type="button" onclick="Add()" id="btn-xinzeng" class="btn btn-primary">新增+</button>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">返乡交接</div>
+            <div class="table-responsive">
+                <table class="table table-hover ">
+                    <thead>
+                        <tr>
+                            <th style="width:100px;">返乡員工</th>
+                            <th style="width:140px;">返乡时间</th>
+                            <th style="width:350px;">工作任务</th>
+                            <th style="width:130px;">当前移交进度</th>
+                            <th style="width:100px;">代理人</th>
+                            <th style="width:350px;">代理人处理进度及结果</th>
+
+                            <th style="width:200px;" class="caozuotd">操&nbsp;&nbsp;作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model == null || !Model.Any())
+                        {
+                            <tr>
+                                <td colspan="7" style="text-align:center;">没有数据</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var item in Model.GroupBy(p => new { p.t_employeeInfo.f_chineseName, p.f_StartDate, p.f_EndDate }).Select(p => new { a = p.Key, b = p.Select(u => new { tid = u.f_Id, wi = u.f_WorkItem, cp = u.f_CurrentProgress, ag = u.f_Agent, ap = u.f_AgentProcess }).OrderBy(u => u.tid).ToList() }))
+                            {
+                                <tr>
+                                    <td rowspan="@item.b.Count()">@item.a.f_chineseName</td>
+                                    <td rowspan="@item.b.Count()">@(item.a.f_StartDate?.ToString("MM/dd") + " -- " + item.a.f_EndDate?.ToString("MM/dd") )</td>
+                                    <td>@item.b[0].wi</td>
+                                    <td>@item.b[0].cp</td>
+                                    <td>@item.b[0].ag</td>
+                                    <td>@item.b[0].ap</td>
+                                    <td>
+                                        <button type="button" class="btn btn-success" onclick="AddWork('@item.b[0].tid')">添加任务</button>
+                                        <button type="button" class="btn btn-info btn-sm" onclick="Update('@item.b[0].tid')">修改</button>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="Delete('@item.b[0].tid')">删除</button>
+                                    </td>
+                                </tr>
+
+                                for (int ii = 1; ii < item.b.Count; ii++)
+                                {
+                                    <tr>
+                                        <td>@item.b[ii].wi</td>
+                                        <td>@item.b[ii].cp</td>
+                                        <td>@item.b[ii].ag</td>
+                                        <td>@item.b[ii].ap</td>
+                                        <td>
+                                            <button type="button" class="btn btn-success" onclick="AddWork('@item.b[ii].tid')">添加任务</button>
+                                            <button type="button" class="btn btn-info btn-sm" onclick="Update('@item.b[ii].tid')">修改</button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="Delete('@item.b[ii].tid')">删除</button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+        @*<div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageListFor(iCurrentPage, iPageSize, iTotalCount, rw)
+            </ul>
+        </div>*@<!-- /.fenyediv-->
+
+    </div><!-- /.oacentbox-->
+
+</div>
+
+
+<script type="text/javascript">
+    function Update(id) {
+        OpenADDwindow();
+        loadingTips();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Edit")',
+            data: { Id: id },
+            error: function (data) {
+                alert("异常");
+            },
+            success: function (data) {
+                if (data != null) {
+                    $(".addtable").html(data);
+                    setDropdownChangeValue();
+                }
+            }
+        })
+        $("div.addbg").show(200);
+    }
+
+    function AddWork(id) {
+        OpenADDwindow();
+        loadingTips();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AddWorkItem")',
+            data: { Id: id },
+            error: function (data) {
+                alert("异常");
+            },
+            success: function (data) {
+                if (data != null) {
+                    $(".addtable").html(data);
+                    setDropdownChangeValue();
+                }
+            }
+        })
+        $("div.addbg").show(200);
+    }
+
+    function Add() {
+        OpenADDwindow();
+        loadingTips();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Add")',
+            data: { },
+            error: function (data) {
+                alert("异常");
+            },
+            success: function (data) {
+                if (data != null) {
+                    $(".addtable").html(data);
+                    setDropdownChangeValue();
+                } else {
+                    alert("加载内容失败。");
+                    closeADDwindow();
+                }
+            }
+        })
+        $("div.addbg").show(200);
+    }
+
+    function Delete(id) {
+        if (confirm("是否确定删除？")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                data: { Id: id },
+                error: function (data) {
+                }, success: function (data) {
+                    if (data != null) {
+                        if (data == "1") {
+                            alert("删除成功");
+                            location.href = location.href;
+                        }
+                        else if (data == "500") {
+                            alert("删除异常");
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+    //缴费日期
+    jQuery(function () {
+        $.datetimepicker.setLocale('zh');
+        jQuery('#date_timepicker_start').datetimepicker({
+            lang: 'zh',
+            format: 'Y-m-d',
+            onShow: function (ct) {
+                this.setOptions({
+                    maxDate: jQuery('#date_timepicker_end').val() ? jQuery('#date_timepicker_end').val() : false
+                })
+            },
+            timepicker: false
+        });
+        jQuery('#date_timepicker_end').datetimepicker({
+            lang: 'zh',
+            format: 'Y-m-d',
+            onShow: function (ct) {
+                this.setOptions({
+                    minDate: jQuery('#date_timepicker_start').val() ? jQuery('#date_timepicker_start').val() : false
+                })
+            },
+            timepicker: false
+        });
+        $('#date_timepicker_start').val("");
+        $('#date_timepicker_end').val("");
+    });
+
+</script>

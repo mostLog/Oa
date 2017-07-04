@@ -1,0 +1,53 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行政OA管理系统 - @ViewBag.Title</title>
+    @Styles.Render("~/Content/bootstrap")
+    @Styles.Render("~/Content/ResponsiveStyle")
+
+    @RenderSection("Styles", false)
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryForm")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/JavaScript")
+    
+
+    <script>
+        //设置左边菜单栏选择哪一栏
+        var current = "@(ViewBag.current??ViewBag.Title)";
+    </script>
+</head>
+<body>
+    <div id="wrapper" class="toggled">
+        <div id="overlay"></div>
+        <div class="sidebar" style="width:0">
+            @Html.Partial("Left")
+        </div>
+        <div id="main" class="container-fluid">
+            <button type="button" class="hamburger is-closed animated fadeInLeft" data-toggle="offcanvas">
+                <span class="hamb-top"></span>
+                <span class="hamb-middle"></span>
+                <span class="hamb-bottom"></span>
+            </button>
+            <header class="headerright">
+                @Html.Partial("Top")
+                <button type="submit" class="btn btn-primary" id="xiala"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true" style="font-size: 16px;"></span></button>
+                <button type="submit" class="btn btn-primary" id="caidan"><span class="glyphicon glyphicon-list" aria-hidden="true" style="font-size: 16px;"></span></button>
+            </header><!-- /.header-->
+            <div id="oacontent">
+                @RenderBody()
+            </div><!-- /#oacontent-->
+        </div><!-- /.main-->
+    </div>
+    <script src="~/Scripts/Script_v_1.0/OA.js"></script>
+    <script src="~/Scripts/GetScripts"></script>
+    @RenderSection("Scripts", false)
+</body>
+</html>

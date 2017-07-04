@@ -1,0 +1,207 @@
+﻿@model PageListDto<CashRegisterListDto>
+@{
+    ViewBag.Title = "Index";
+    var input = ViewBag.InputSearch as CashRegisterPagedInputDto;
+    //据点
+    var stronghold = ViewBag.Stronghold as IList<SType>;
+    //汇率信息
+    var rates = ViewBag.Rate as IList<KeyValueDto<string, string>>;
+
+    //总收入总支出
+    var earnAndPay = Model.Datas;
+}
+@section Styles{
+    <link href="~/Css/datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+}
+<div class="addbg">
+    <div class="addtable">
+        <button type="button" id="btn-cancel" class="btn btn-danger closebtn">取消（X）</button>
+        <div class="panel panel-default">
+            <div class="panel-heading">现金登记</div>
+            <div class="table-responsive">
+                <form id="formTable" method="post">
+                    <table class="table table-hover table-striped">
+                        <tr>
+                            <td>日期：</td>
+                            <td>
+                                @*@if (bIsworkLocation)
+                                    {
+                                        <input type="hidden" name="f_workLocation_f_tid" id="f_workLocation_f_tid" value="@Model.f_workLocation_f_tid" />
+                                    }*@
+                                <input type="text" class="form-control" name="f_Date" id="Date" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>品项(内容)：</td>
+                            <td>
+                                <input cols="100" rows="5" type="text" class="form-control" name="f_Items" id="Items" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>收入：</td>
+                            <td><input type="text" class="form-control" name="f_Income" id="Income" /></td>
+                        </tr>
+                        <tr>
+                            <td>支出：</td>
+                            <td><input type="text" class="form-control" name="f_Expenses" id="Expenses" /></td>
+                        </tr>
+                        <tr>
+                            <td>有无收据：</td>
+                            <td>
+                                <div>
+                                    <input type="radio" id="yes" name="f_HasReceipt" value="true" />有收据
+                                    <input type="radio" id="no" name="f_HasReceipt" value="false" />无收据
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>备注：</td>
+                            <td><input type="text" class="form-control" name="f_Remark" id="Remark" /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align: center;">
+                                <input type="hidden" name="f_CId" id="CId" />
+                                <input type="hidden" name="f_Handled_f_Eid" id="Handled_f_Eid" />
+                                <button type="submit" class="btn btn-primary  btn-lg">确定</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">现金登记</a></li>
+        <li class="active"></li>
+    </ol>
+    <div class="oacentbox">
+        <div class="taiojianli_left">
+            <label style="float:left;height:30px;line-height:30px;">据点：</label>
+            <div class="btn-group" id="listItemBui" data-toggle="buttons">
+                @foreach (var item in stronghold)
+                {
+                    <label class="btn btn-info @(item.f_tID==input.TypeID ? " active":"" )" style="position:static" onclick="javascript: document.location.href=('@(Url.Action("Index", new { TypeID=item.f_tID}))')">
+                        @item.f_value
+                    </label>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">开始时间：</label>
+                            <input type="text" class="form-control" id="sStarDate" name="StarDate" value="@(input.StarDate?.ToString("yyyy-MM-dd")??string.Empty)">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">结束时间：</label>
+                            <input type="text" class="form-control" id="sEndDate" name="EndDate" value="@(input.EndDate?.ToString("yyyy-MM-dd")??string.Empty)">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">经办人：</label>
+                            <input type="text" class="form-control" id="sName" name="Name" value="@(input.Name ?? "")">
+                            <input type="hidden" id="sTypeID" name="TypeID" value="@input.TypeID" />
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>&nbsp;&nbsp;&nbsp;
+                        <button id="a_export" onclick="Export()" type="button" class="btn btn-success">导出Excel</button>
+                    </div><!-- /.taiojianli_left-->
+                </form>
+                <div class="taiojianli_left" style="margin-top:10px;">
+                    <label for="exampleInputName2">当前条件下的总支出：</label>
+                    <span style="color:red;">@(earnAndPay.FirstOrDefault(c => c.Key.Equals("pay"))?.Value ?? 0)</span>
+                    <label for="exampleInputName2">当前条件下的总收入：</label>
+                    <span style="color:red;">@(earnAndPay.FirstOrDefault(c => c.Key.Equals("earn"))?.Value ?? 0)</span>
+                    <label style="color:red;margin-left:20px;">美金汇率:</label>
+                    <input type="text" style="width:80px;display: inline" class="form-control" id="Dollar" name="Dollar" value="@(rates.FirstOrDefault(m=>m.Key.Equals("美金汇率"))?.Value)">
+                    <label style="color:red">人民币汇率:</label>
+                    <input type="text" style="width:80px;display: inline" class="form-control" id="RMB" name="RMB" value="@(rates.FirstOrDefault(m=>m.Key=="人民币汇率")?.Value)">
+                    <label style="color:red">台币汇率:</label>
+                    <input type="text" style="width:80px;display: inline" class="form-control" id="Taiwan" name="Taiwan" value="@(rates.FirstOrDefault(m=>m.Key.Equals("台币汇率"))?.Value)">
+                    <button id="btn-Rate" style="margin-left:10px;" type="button" class="btn btn-success">保存汇率</button>
+                </div>
+            </div>
+            <div class="taiojianli_right">
+                <button type="button" id="btn-add" class="btn btn-primary">新增</button>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">现金登记</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>日期</th>
+                            <th>品项</th>
+                            <th>收入</th>
+                            <th>支出</th>
+                            <th>有无收据</th>
+                            <th>剩余金额</th>
+                            <th>经手人</th>
+                            <th>备注</th>
+                            <th style="width:12%;" class="caozuotd">操&nbsp;&nbsp;作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{int count = 1; }
+                        @foreach (var m in Model)
+            {
+                            <tr>
+                                <td>@count</td>
+                                <td>@(m.f_Date?.ToString("yyyy-MM-dd"))</td>
+                                <td>@(m.f_Items)</td>
+                                <td>@m.f_Income</td>
+                                <td>@m.f_Expenses</td>
+                                <td>@((m.f_HasReceipt != null && m.f_HasReceipt.Value) ? "有" : "无")</td>
+                                <td>@(m.f_Balance)</td>
+                                <td>@m.f_nickname</td>
+                                <td>@m.f_Remark</td>
+                                <td>
+                                    <button class="btn btn-info btn-sm" data-mark="update" data-id="@m.f_CId">修改</button>
+                                    <button class="btn btn-danger btn-sm" data-mark="delete" data-id="@m.f_CId">删除</button>
+                                </td>
+                            </tr>
+                            count++;
+                        }
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="20" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageList(Model.PageIndex, 10, Model.TotalCount)
+            </ul>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/Scripts/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script src="~/Scripts/jquery-validation/localization/messages_zh.min.js"></script>
+    <script src="~/Scripts/datetimepicker/jquery.datetimepicker.full.js"></script>
+    <script src="~/Scripts/typeahead/bootstrap3-typeahead.js"></script>
+    <script src="~/Scripts/Script_v_1.0/Common/JQueryExtension.js"></script>
+    <script src="~/Scripts/Script_v_1.0/Common/Common.js"></script>
+    <script src="~/Areas/Integrated/Views/CashRegister/Index.js"></script>
+}
+

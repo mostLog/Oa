@@ -1,0 +1,15 @@
+﻿@model string
+    @{ 
+        string[] sFeeSearch = { "员工租房", "外租补助", "电费超支", "机票差额", "机票查询", "维修查询", "送机查询", "接机查询", "证件查询", "床被送洗", "宿舍打扫" };
+    }
+<li role="presentation" @Html.Raw(Model == sFeeSearch[0] ? "class=\"active\"" : "")><a href="~/Dormitory/FeeSearch/EmpRentListData">@sFeeSearch[0]</a></li>
+<li role="presentation" @Html.Raw(Model == sFeeSearch[1] ? "class=\"active\"" : "")><a href="~/Dormitory/FeeSearch/RentSubListData">@sFeeSearch[1]</a></li>
+<li role="presentation" @Html.Raw(Model == sFeeSearch[2] ? "class=\"active\"" : "")><a href="~/Dormitory/FeeSearch/TariffList">@sFeeSearch[2]</a></li>
+<li role="presentation" @Html.Raw(Model == sFeeSearch[3] ? "class=\"active\"" : "")><a href="~/Dormitory/FeeSearch/FlightFeeList">@sFeeSearch[3]</a></li>
+<li role="presentation" @Html.Raw(Model == sFeeSearch[4] ? "class=\"active\"" : "")><a href="~/Dormitory/FeeSearch/ReturnTicketList">@sFeeSearch[4]</a></li>
+<li role="presentation" @Html.Raw(Model == sFeeSearch[5] ? "class=\"active\"" : "")><a href="~/Dormitory/FeeSearch/RepairFees">@sFeeSearch[5]</a></li>
+<li role="presentation" @Html.Raw(Model == sFeeSearch[6] ? "class=\"active\"" : "")><a href="~/Dormitory/FeeSearch/SendCarList">@sFeeSearch[6]</a></li>
+<li role="presentation" @Html.Raw(Model == sFeeSearch[7] ? "class=\"active\"" : "")><a href="~/Dormitory/FeeSearch/PickupList">@sFeeSearch[7]</a></li>
+<li role="presentation" @Html.Raw(Model == sFeeSearch[8] ? "class=\"active\"" : "")><a href="~/Dormitory/FeeSearch/CertAgencyList">@sFeeSearch[8]</a></li>
+<li role="presentation" @Html.Raw(Model == sFeeSearch[9] ? "class=\"active\"" : "")><a href="~/Dormitory/FeeSearch/BedLinenList">@sFeeSearch[9]</a></li>
+<li role="presentation" @Html.Raw(Model == sFeeSearch[10] ? "class=\"active\"" : "")><a href="~/Dormitory/FeeSearch/HostelCleanList">@sFeeSearch[10]</a></li>

@@ -1,0 +1,10 @@
+﻿@model string
+@{
+    string[] sStringList = { "人事报表", "新人登记", "已移走新人", "班车统计", "人员统计" };
+}
+<li role="presentation" @Html.Raw(Model == sStringList[0] ? "class=\"active\"" : "")><a href="~/EmpAndFood/employeeInfo/Index">@sStringList[0]</a></li>
+<li role="presentation" @Html.Raw(Model == sStringList[1] ? "class=\"active\"" : "")><a href="~/EmpAndFood/employeeInfo/NewIndex">@sStringList[1]</a></li>
+<li role="presentation" @Html.Raw(Model == sStringList[2] ? "class=\"active\"" : "")><a href="~/EmpAndFood/employeeInfo/NewEmpRemove">@sStringList[2]</a></li>
+<li role="presentation" @Html.Raw(Model == sStringList[3] ? "class=\"active\"" : "")><a href="~/EmpAndFood/StatisticsRide/Index">@sStringList[3]</a> </li>
+<li role="presentation" @Html.Raw(Model == sStringList[4] ? "class=\"active\"" : "")><a href="~/EmpAndFood/employeeInfo/PersonnelStatistics">@sStringList[4]</a></li>
+

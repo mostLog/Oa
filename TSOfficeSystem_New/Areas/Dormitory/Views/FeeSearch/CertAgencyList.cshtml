@@ -1,0 +1,103 @@
+﻿@model List<MI.Application.Dto.CertAgencyDto>
+@{
+    ViewBag.Title = "登记查询";
+    int i = 1;
+}
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">登记查询</a></li>
+        <li class="active">证件查询</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("FeeSearchNavMeuns", "证件查询")
+    </ul>
+    <div class="oacentbox">
+        <div class="panel panel-default">
+            <div class="panel-heading">证件查询</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>员工</th>
+                            <th>部门</th>
+                            <th>昵称</th>
+                            <th>工作地点</th>
+                            <th>证件类型</th>
+                            <th>办理进度</th>
+                            <th>处理人</th>
+                            <th>最后处理时间</th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i </td>
+                                <td>@item.Name</td>
+                                <td>@item.Sector</td>
+                                <td>@item.Nickname</td>
+                                <td>@item.WorkLocation</td>
+                                <td>@item.f_CertificateType</td>
+                                <td>@item.f_Progress</td>
+                                <td>@item.f_Operator</td>
+                                <td>@(item.f_OperatorTime?.ToString("yyyy-MM-dd"))</td>
+                                <td>@item.f_Remark</td>
+                                <td>
+                                    @if (string.IsNullOrWhiteSpace(item.f_FileName))
+                                    {
+                                        <input type="button" value="下载" onclick="Filedown('@(item.f_FileName)', 'f_FileName', '@item.f_Id')" disabled="disabled" class="btn btn-danger btn-sm">
+                                    }
+                                    else
+                                    {
+                                        <input type="button" value="下载" onclick="Filedown('@(item.f_FileName)', 'f_FileName', '@item.f_Id')" class="btn btn-danger btn-sm">
+
+                                        @Html.Raw(item.f_DownTips ? "<img src='/images/Tips.gif'/>" : "")
+                                    }
+
+                                </td>
+                            </tr>
+                            i++;
+                        }
+
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="11" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+    </div><!-- /.oacentbox-->
+</div>
+<script type="text/javascript">
+    //下载
+    function Filedown(fielname, ToOrFrom, id) {
+        if (fielname == "") {
+            alert("暂时未上传文件！");
+            return;
+        }
+        location.href = '@Url.Action("Filedown")?FileName=' + fielname + "&ToOrFrom=" + ToOrFrom + "&f_eId=" + id;
+    }
+
+    function changeState() {
+        $.ajax({
+            type: "post",
+            url: '@Url.Action("ChangeState")',
+            data: { tableName: "证件查询" },
+            success: function (data) {
+                //TODO
+            }
+        });
+    }
+
+    $(function () {
+        //  setTimeout(changeState, 1000);  //延迟加载了为了避免点登记查询时默认进入的员工租房的提示变化太快，页面看不到员工租房的提示
+        changeState();
+
+    });
+</script>

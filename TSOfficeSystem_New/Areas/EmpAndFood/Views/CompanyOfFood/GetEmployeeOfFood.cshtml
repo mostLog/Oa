@@ -1,0 +1,147 @@
+﻿@model List<OrderingEmployeeCollectHistory>
+@{
+    ViewBag.Title = "GetEmployeeOfFood";
+    Layout = null;
+}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宿舍订餐统计</title>
+    <link href="~/Css/printCss.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="noPrint"><input type="button" style="margin-top:20px;margin-left:15px" href="javascript:" onclick="preview()" value="打印" /> </div>
+    <div class="container-fluid">
+        <div style="font-size: 12px;">
+            <!--startprint-->
+            <div class="panel-heading">宿舍订餐统计<span style="margin-left: 100px;">日期：@( Model.FirstOrDefault()?.f_Date?.ToString("yyyy-MM-dd"))</span></div>
+            <table class="table table-hover table-striped" border="0" cellspacing="0">
+                <thead style="display: table-header-group; font-weight: bold">
+                    <tr>
+                        <td colspan="3" style="background-color: khaki;" align="center" valign="middle">
+                            ITEM
+                        </td>
+                        <td colspan="4" style="background-color: khaki;" align="center">
+                            LUCH
+                        </td>
+                        <td colspan="4" style="background-color: khaki" align="center">
+                            DINNER
+                        </td>
+                        <td colspan="4" style="background-color: khaki" align="center">
+                            MIDNIGHT
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>COMMUNITY</td>
+                        <td>BLDG</td>
+                        <td>ROOM</td>
+                        <td>Regular</td>
+                        <td>Only Rice<br />(Plastic Bag)</td>
+                        <td>Only Rice(Box)</td>
+                        <td>No Meat</td>
+                        <td>Regular</td>
+                        <td>Only Rice<br />(Plastic Bag)</td>
+                        <td>Only Rice<br />(Box)</td>
+                        <td>No Meat</td>
+                        <td>Regular</td>
+                        <td>Only Rice<br />(Plastic Bag)</td>
+                        <td>Only Rice<br />(Box)</td>
+                        <td>No Meat</td>
+                    </tr>
+                </thead>
+                @{
+                    int iIndex = 1;
+                }
+                @foreach (var item in Model)
+                {
+                    <tr @Html.Raw(iIndex % 22 == 0 ? "style='page-break-after:always;'" : "")>
+                        <td>@item.f_Community</td>
+                        <td>@item.f_Building</td>
+                        <td>@item.f_RoomNo</td>
+                        <td>@item.f_LuchRegular</td>
+                        <td>@item.f_LuchOnlyRicePlasticBag</td>
+                        <td>@item.f_LuchOnlyRiceBox</td>
+                        <td>@item.f_LuchNoMeat</td>
+                        <td>@item.f_DinnerRegular</td>
+                        <td>@item.f_DinnerOnlyRicePlasticBag</td>
+                        <td>@item.f_DinnerOnlyRiceBox</td>
+                        <td>@item.f_DinnerNoMeat</td>
+                        <td>@item.f_MidnightRegular</td>
+                        <td>@item.f_MidnightOnlyRicePlasticBag</td>
+                        <td>@item.f_MidnightOnlyRiceBox</td>
+                        <td>@item.f_MidnightNoMeat</td>
+                    </tr>
+
+                    iIndex++;
+                }
+            </table>
+            <OBJECT classid="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2" height="0" id="wb" name="wb" width="0"></OBJECT>
+            <!--endprint-->
+        </div>
+    </div>
+    @*<object id="factory" style="display:none" viewastext classid="clsid:1663ed61-23eb-11d2-b92f-008048fdd814" codebase="http://www.meadroid.com/scriptx/ScriptX.cab#Version=5,60,0,360"></object>*@
+</body>
+</html>
+<script type="text/javascript">
+    var HKEY_Root, HKEY_Path, HKEY_Key;
+    HKEY_Root = "HKEY_CURRENT_USER";
+    HKEY_Path = "\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
+    //设置网页打印的页眉页脚为空
+    function PageSetup_Null() {
+        try {
+            var Wsh = new ActiveXObject("WScript.Shell");
+            HKEY_Key = "header";
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "");
+            HKEY_Key = "footer";
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "");
+        }
+        catch (e)
+        { }
+    }
+    //设置网页打印的页眉页脚为默认值
+    function PageSetup_Default() {
+        try {
+            var Wsh = new ActiveXObject("WScript.Shell");
+            HKEY_Key = "header";
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "&b页码,&p/&P");
+            HKEY_Key = "footer";
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "&b&d");
+            HKEY_Key = "margin_bottom";
+            //设置下页边距（0）
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "0.229920");
+            HKEY_Key = "margin_left";
+            //设置左页边距（0）
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "0.390160");
+            HKEY_Key = "margin_right";
+            //设置右页边距（0）
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "0.200000");
+            HKEY_Key = "margin_top";
+            //设置上页边距（8）
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "0.390160");
+        } catch (e) {
+        }
+    }
+    function preview() {
+        PageSetup_Default();
+        try {
+            wb.execwb(7, 1);
+        } catch (e) {
+            bdhtml = window.document.body.innerHTML;
+            sprnstr = "<!--startprint-->";
+            eprnstr = "<!--endprint-->";
+            prnhtml = bdhtml.substr(bdhtml.indexOf(sprnstr) + 17);
+            prnhtml = prnhtml.substring(0, prnhtml.indexOf(eprnstr));
+            window.document.body.innerHTML = prnhtml;
+            window.print();
+            window.document.body.innerHTML = bdhtml;
+        }
+    }
+
+</script>
+

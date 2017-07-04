@@ -1,0 +1,310 @@
+﻿@Model MI.Core.Domain.SType
+@using MI.Application
+@{
+    Layout = null;
+    List<MI.Core.Domain.SType> shequ = ViewBag.shequ;
+    string remark = Model.f_Remark ?? "";
+}
+<button type="button" id="btn-quxiao" onclick="closeADDwindow()" class="btn btn-danger closebtn">取消（X）</button>
+<div class="panel panel-default">
+    <div class="panel-heading">系统类型管理</div>
+    <div class="table-responsive">
+        <form id="formTable" method="post">
+            <table class="table table-hover table-striped">
+                <tr>
+                    <td>大类型:</td>
+                    <td height="51px">
+                        <div class="dropdown" style="position:absolute">
+                            <input type="hidden" id="f_type" name="f_type" value="@Model.f_type" correspond="dropdownMenuType" />
+                            <button class="btn btn-default dropdown-toggle" style="width:210px" type="button" id="dropdownMenuType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(STypeGetValue.GetValueByType(Model.f_type.ToString()))
+                                <span class="caret"></span>
+                            </button>
+                            @if (Model.f_tID <= 0)
+                            {
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuType">
+                                    <li><a href="javaScript:" onclick="change('0')" id="0">权限类型</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="1">班次类型</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="2">部门类型</a></li>
+                                    <li><a href="javaScript:" onclick="change('3')" id="3">在职状态类型</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="24">工作类别</a></li>
+                                    <li><a href="javaScript:" onclick="change('4')" id="4">上班地点类型</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="5">订餐类型</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="6">订餐要求类型</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="20">公司用餐统计部门班次类型</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="21">公司用餐时间类型</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="22">房间类型</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="23">车辆类型</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="25">国籍</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="26">航班类型</a></li>
+                                    <li><a href="javaScript:" onclick="change('27')" id="27">社区类型</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="29">签证类型</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="30">证件类型</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="31">办理进度</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="32">床位类型</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="33">银行储值类型</a></li>
+                                    @*<li><a href="javaScript:" onclick="change()" id="36">金流客服等级类型</a></li>*@
+                                    <li><a href="javaScript:" onclick="change()" id="37">金流客服权限控制</a></li>
+                                    <li><a href="javaScript:" onclick="change()" id="57">宿舍维修对接</a></li>
+                                </ul>
+                            }
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>类型文本:</td>
+                    <td>
+                        @if (Model.f_type == (int)sTypeEnum.上车地点配置)
+                        {
+                            <input type="text" class="form-control" readonly="readonly" id="displayValue" value="@(shequ.Where(p => p.f_tID == int.Parse(Model.f_value)).FirstOrDefault()?.f_value ?? "")" />
+                            <input type="hidden" class="form-control" id="f_value" name="f_value" value="@Model.f_value" />
+                        }
+                        else
+                        {
+                            <input type="text" class="form-control" id="f_value" name="f_value" value="@Model.f_value" @((Model.f_type == 36 && ("副组长".Equals(Model.f_value) || "副主任".Equals(Model.f_value))) ? "readonly=readonly" : "") />
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td>类型描述:</td>
+                    <td>
+                        <div class="quanxian" style="width:650px;@(Model.f_type == 0 ? "" : "display:none")">
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("Login,Home")) ? "titleclick" : "titlecheckbox")" value="Login,Home"></div>
+                                &nbsp;登录
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("CarRegister")) ? "titleclick" : "titlecheckbox")" value="CarRegister"></div>
+                                &nbsp;车辆管理
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("Dormitory")) ? "titleclick" : "titlecheckbox")" value="ChangeRoom,Dormitory,DormitoryMaintenance,HostelClean,Outside,DormitorySummary,LaundryPwd"></div>
+                                &nbsp;宿舍管理
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("LatticeD")) ? "titleclick" : "titlecheckbox")" value="LatticeD"></div>
+                                &nbsp;宿舍视图
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("EmpRent")) ? "titleclick" : "titlecheckbox")" value="EmpRent,Grant,Tariff,FlightFee"></div>
+                                &nbsp;费用管理
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("FeeSearch")) ? "titleclick" : "titlecheckbox")" value="FeeSearch"></div>
+                                &nbsp;登记查询
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("CompanyOfFood")) ? "titleclick" : "titlecheckbox")" value="CompanyOfFood"></div>
+                                &nbsp;餐饮管理
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("WorkDistribution")) ? "titleclick" : "titlecheckbox")" value="WorkDistribution,ReturnHandover"></div>
+                                &nbsp;工作交接
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("ModifyRecord")) ? "titleclick" : "titlecheckbox")" value="ModifyRecord"></div>
+                                &nbsp;操作记录
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("employeeInfo")) ? "titleclick" : "titlecheckbox")" value="employeeInfo,StatisticsRide"></div>
+                                &nbsp;员工管理
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("OrderingAndPersonalInfo")) ? "titleclick" : "titlecheckbox")" value="OrderingAndPersonalInfo"></div>
+                                &nbsp;个人资料
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("Notice")) ? "titleclick" : "titlecheckbox")" value="Notice"></div>
+                                &nbsp;公告管理
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("SType")) ? "titleclick" : "titlecheckbox")" value="SType"></div>
+                                &nbsp;类别和权限
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("ReturnTicket")) ? "titleclick" : "titlecheckbox")" value="ReturnTicket"></div>
+                                &nbsp;机票登记
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("SendACar")) ? "titleclick" : "titlecheckbox")" value="SendACar"></div>
+                                &nbsp;派车安排
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("CashRegister")) ? "titleclick" : "titlecheckbox")" value="CashRegister"></div>
+                                &nbsp;现金登记
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("BedLinen")) ? "titleclick" : "titlecheckbox")" value="BedLinen"></div>
+                                &nbsp;床被送洗
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("Department")) ? "titleclick" : "titlecheckbox")" value="Department"></div>
+                                &nbsp;查看其他部门信息
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("IsNewEmpAction")) ? "titleclick" : "titlecheckbox")" value="IsNewEmpAction"></div>
+                                &nbsp;新人新增移走功能
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("Rights1")) ? "titleclick" : "titlecheckbox")" value="Rights1"></div>
+                                &nbsp;修改权限功能
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("Sector1")) ? "titleclick" : "titlecheckbox")" value="Sector1"></div>
+                                &nbsp;修改部门功能
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("CertAgency")) ? "titleclick" : "titlecheckbox")" value="CertAgency"></div>
+                                &nbsp;证件办理
+                            </div>
+                            <div class="titleclickShuoming">
+                                <div onclick="check(this)" class="@((remark.Contains("SectorALL")) ? "titleclick" : "titlecheckbox")" value="SectorALL"></div>
+                                &nbsp;登记查询本部门所有
+                            </div>
+                        </div>
+                        <div class="ShequType" style="@(Model.f_type == 27 || Model.f_type == 4 ? "" : "display:none")">
+                            <div id="Shequ" onclick="check(this)" class="@((remark.Contains((Model.f_type == 4 ? "班车" : "true"))) ? "titleclick" : "titlecheckbox")" value="true"></div>
+                            &nbsp;是否需要统计班车人数
+
+                            <div id="canyin" onclick="check(this)" class="@((remark.Contains("餐饮")) ? "titleclick" : "titlecheckbox") f_type_4" value="true"></div>
+                            <span class="f_type_4">&nbsp;是否需要统计公司餐饮</span>
+                            <div id="xianjin" onclick="check(this)" class="@((remark.Contains("现金")) ? "titleclick" : "titlecheckbox") f_type_4" value="true"></div>
+                            <span class="f_type_4">&nbsp;是否显示[现金登记]据点</span>
+
+                        </div>
+
+                        <div class="isLoginType" style="@(Model.f_type == 3 ? "" : "display:none")">
+                            <div id="DivisLogin" onclick="check(this)" class="@((remark.Contains("true")) ? "titleclick" : "titlecheckbox")" value="true"></div>
+                            &nbsp;是否允许登录
+                        </div>
+
+                        @if (Model.f_type == (int)sTypeEnum.宿舍wifi配置 || Model.f_type == (int)sTypeEnum.行政部联系方式配置 || Model.f_type == (int)sTypeEnum.宿舍订餐领便当处 || Model.f_type == (int)sTypeEnum.宿舍饮水订购方式 || Model.f_type == (int)sTypeEnum.宿舍瓦斯订购方式)
+                        {
+                            <div>
+                                <textarea cols="100" rows="4" class="form-control" name="f_Remark" id="f_Remark">@Model.f_Remark</textarea>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="Noquanxian" style="@((Model.f_type == 0 || Model.f_type == 27 || Model.f_type == 4 || Model.f_type == 3) ? "display:none" : "")">
+                                <input type="text" class="form-control" id="Remark" name="Remark" value="@Model.f_Remark" @((Model.f_type == 36) ? "readonly=readonly" : "") />
+                                <input type="hidden" id="f_Remark" name="f_Remark" value="@Model.f_Remark" />
+                            </div>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <button type="button" onclick="Submit()" class="btn btn-primary  btn-lg">确认</button>
+                        <input type="hidden" value="@Model.f_tID" id="f_tID" name="f_tID" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div><!-- /.panel-default/ table-->
+<script type="text/javascript">
+    function Submit() {
+        var f_value = $("#f_value").val();
+        if (ValidationNull("类型文本", $.trim(f_value))) {
+            return;
+        }
+        var f_Remark = "";
+        if ($("#f_type").val() == "0") {
+            //权限
+            $(".titleclick").each(function () {
+                f_Remark += $(this).attr("value") + ",";
+            })
+        } else if ($("#f_type").val() == "27") {
+            //是否班车统计（社区）
+            f_Remark = ($("#Shequ").hasClass("titleclick")) ? "true" : "fasle";
+        } else if ($("#f_type").val() == "4") {
+            // 上班地点
+            f_Remark = ($("#Shequ").hasClass("titleclick")) ? "班车," : "";
+            f_Remark += ($("#canyin").hasClass("titleclick")) ? "餐饮," : "";
+            f_Remark += ($("#xianjin").hasClass("titleclick")) ? "现金," : "";
+        } else if ($("#f_type").val() == "3") {
+            //是否允许登录
+            f_Remark = ($("#DivisLogin").hasClass("titleclick")) ? "true" : "fasle";
+        } else if ($("#f_type").val() == "55" || $("#f_type").val() == "54" || $("#f_type").val() == "56") {
+            f_Remark = $("#f_Remark").val();
+        }else {
+            //备注
+            f_Remark = $("#Remark").val();
+        }
+        if (f_value != '宿舍wifi配置' && f_value != '行政部联系方式配置' && f_value != '宿舍订餐领便当处' && f_value != '宿舍饮水订购方式' && f_value != '宿舍瓦斯订购方式') {
+            $("#f_Remark").val(f_Remark);
+        }
+        if (ValidationLength("类型文本", $("#f_value").val(), 100) || ValidationLength("类型描述", $("#f_Remark").val(), 500)) {
+            alert(sReturnChar);
+            return;
+        }
+        ajaxSubmit();
+    }
+    //复选框点击事件
+    function check(s) {
+        if ($(s).hasClass("titleclick")) {
+            $(s).attr("class", "titlecheckbox");
+        } else if ($(s).hasClass("titlecheckbox")) {
+            $(s).attr("class", "titleclick");
+        }
+    }
+    function ajaxSubmit() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UptateAndAdd")',
+            data: $("#formTable").serialize(),
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data != null) {
+                    if (data.result == "1") {
+                        alert("操作成功");
+                        location.href = location.href;
+                    } else if (data.result == "500") {
+                        alert("操作异常");
+                    }
+                    else if (data.result == "12") {
+                        alert(data.tips);
+                    } else if (data.result == "11") {
+                        alert("资料无变动");
+                    }
+                }
+            }
+        });
+    }
+    function Cancle() {
+        $("div.addbg").hide();
+    }
+    function change(s) {
+        if (s == "0") {
+            $(".Noquanxian,.ShequType,.isLoginType").hide();
+            $(".quanxian").show();
+        }
+        else if (s == "27" || s == "4") {
+            $(".Noquanxian,.quanxian,.isLoginType").hide();
+            $(".ShequType").show();
+            if (s == "4") {
+                $(".f_type_4").show();
+            } else {
+                $(".f_type_4").hide();
+            }
+
+        } else if (s == "3") {
+            $(".Noquanxian,.quanxian,.ShequType").hide();
+            $(".isLoginType").show();
+        }
+        else {
+            $(".isLoginType,.quanxian,.ShequType").hide();
+            $(".Noquanxian").show();
+        }
+    }
+
+    var type = "@Model.f_type";
+    $(document).ready(function () {
+        if (type != 4) {
+            $(".f_type_4").hide();
+        }
+    });
+</script>

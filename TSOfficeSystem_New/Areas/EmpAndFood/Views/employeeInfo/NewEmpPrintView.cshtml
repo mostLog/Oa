@@ -1,0 +1,217 @@
+﻿@using MI.Application
+@using MI.Core.Domain
+@model List<MI.Core.Domain.Employee>
+@{
+    ViewBag.Title = "新人管理";
+    Layout = null;
+    //社区
+    List<SType> sTypeItem = ViewBag.sTypeItem;
+    int sNumber = 1;
+    //晾衣房
+    List<t_LaundryPwd> LaundryPwdList = ViewBag.LaundryPwdList;
+}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/Css/printCss.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="oacentbox">
+            <div class="oatiaojian container-fluid noPrint">
+                <button type="button" class="btn btn-primary" onclick="Print()">打印数据</button>
+            </div>
+            <div class="panel panel-default">
+                <div class="table-responsive">
+                    @foreach (var item in Model)
+                    {
+                        <div id="@Html.Raw("div_" + sNumber)">
+                            <table class="table table-hover table-striped" style="width:900px;page-break-after:always;height:1100px;font-size:18px;" border="1" cellpadding="0" cellspacing="0">
+                                <caption align="top">新员工报到须知表</caption>
+                                <tbody>
+                                    <tr>
+                                        <td width="200px">员工姓名</td>
+                                        <td colspan="2">@(item.f_chineseName ?? item.f_nickname)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>宿舍地址</td>
+                                        <td colspan="2">
+                                            <pre>社区:@(item.t_Dormitory?.f_Community ?? "")       楼栋: @(item.t_Dormitory?.f_Building ?? "")       房间号:@(item.t_Dormitory?.f_RoomNo ?? "")</pre>
+                                            @{
+                                                SType sType = sTypeItem.FirstOrDefault(p => p.f_type == (int)sTypeEnum.社区类型 && p.f_value.Equals(item.t_Dormitory?.f_Community ?? ""));
+                                                int dormitoryTypeId = sType == null ? 0 : sType.f_tID;
+                                            }
+                                            @if (!string.IsNullOrWhiteSpace(sTypeItem.FirstOrDefault(p => p.f_type == (int)sTypeEnum.上车地点配置 && p.f_value == dormitoryTypeId.ToString())?.f_Remark ?? ""))
+                                            {
+                                                @Html.Raw("乘车地点: " + (sTypeItem.FirstOrDefault(p => p.f_type == (int)sTypeEnum.上车地点配置 && p.f_value == dormitoryTypeId.ToString())?.f_Remark))
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>宿舍wifi</td>
+                                        <td colspan="2">
+                                            <pre>@(sTypeItem.FirstOrDefault(p => p.f_type == (int)sTypeEnum.宿舍wifi配置 && p.f_value == "宿舍wifi配置").f_Remark ?? "")</pre>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>洗衣房／晾衣房</td>
+                                        <td colspan="2">
+                                            @{
+                                                t_LaundryPwd LaundryPwdModel = new t_LaundryPwd();
+                                                if (!string.IsNullOrWhiteSpace(item.t_Dormitory?.f_LaundryAndPwd))
+                                                {
+                                                    LaundryPwdModel = LaundryPwdList.Where(p => p.f_Id == int.Parse(item.t_Dormitory?.f_LaundryAndPwd)).FirstOrDefault();
+                                                }
+                                            }
+                                            <pre>洗衣房:@(LaundryPwdModel?.f_NoAndPwd??"")        晾衣房:@(item.t_Dormitory?.f_ClothesAndPwd ?? "")</pre>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="4">工作地点、部门、报到时间</td>
+                                        <td width="150px">工作地点</td>
+                                        <td>
+                                            @if (item.STypeWorkLocation?.f_value == "ROBINSON")
+                                            {
+                                                @Html.Raw("Robinson Summit Center 25F")
+                                            }
+                                            else if (item.STypeWorkLocation?.f_value == "RCBC")
+                                            {
+                                                @Html.Raw("RCBC 16F")
+                                            }
+                                            else if (item.STypeWorkLocation?.f_value == "PBCOM-34F")
+                                            {
+                                                @Html.Raw("PBCOM Tower 34F")
+                                            }
+                                            else if (item.STypeWorkLocation?.f_value == "PBCOM-35F")
+                                            {
+                                                @Html.Raw("PBCOM Tower 35F")
+                                            }
+                                            else if (item.STypeWorkLocation?.f_value == "6789 tower")
+                                            {
+                                                @Html.Raw("6789 Tower 31F")
+                                            }
+                                            else
+                                            {
+                                                @Html.Raw(item.STypeWorkLocation?.f_value ?? "");
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>报到部门</td>
+                                        <td>@(item.t_sType?.f_value ?? "")</td>
+                                    </tr>
+                                    <tr>
+                                        @{
+                                            string date = "";
+                                        }
+
+                                        <td>报到时间</td>
+                                        <td>
+                                            @if (item.f_rideWorkTime != null)
+                                            {
+                                                @(item.f_rideWorkTime.Value.ToString("yyyy-MM-dd"))
+                                                date = item.f_rideWorkTime.Value.ToString("yyyy-MM-dd");
+                                            }
+                                            @if (item.f_rideOffWorkTime != null)
+                                            {
+                                                @Html.Raw(item.f_rideOffWorkTime.Value.ToString(" HH:mm"))
+                                                date = date + item.f_rideOffWorkTime.Value.ToString(" HH:mm");
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+
+                                        <td>乘车时间</td>
+                                        <td>
+                                            @if (item.f_rideWorkTime > DateTime.MinValue)
+                                            {
+                                                @(Convert.ToDateTime(date).AddHours(-1).ToString("yyyy-MM-dd HH:mm"))
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>行政部联络方式</td>
+                                        <td colspan="2">
+                                            <pre>@(sTypeItem.FirstOrDefault(p => p.f_type == (int)sTypeEnum.行政部联系方式配置 && p.f_value == "行政部联系方式配置").f_Remark ?? "")</pre>
+                                        </td>
+                                    </tr>
+                                    @{
+                                        string[] sCommunityItem = { "ROSEWOOD", "ROYALPLAM", "CEDAR", "VERAWOOD" };
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(item.t_Dormitory?.f_Community) && sCommunityItem.Contains(item.t_Dormitory?.f_Community.Replace(" ", "").ToUpper()))
+                                    {
+                                        <tr>
+                                            <td>宿舍订餐</td>
+                                            <td colspan="2">
+                                                @if (item.t_Dormitory.f_Community.Replace(" ", "").ToUpper() == "Rosewood".Replace(" ", "").ToUpper())
+                                                {
+                                                    @Html.Raw("(1)员工便当领取处：EMERALD - 105房<br/>(2)指定领取时间：【午餐】11：30 AM 【晚餐】05：30 PM 【宵夜】11：00 PM");
+                                                }
+                                                @if (item.t_Dormitory.f_Community.Replace(" ", "").ToUpper() == "Royal Plam".Replace(" ", "").ToUpper())
+                                                {
+                                                    @Html.Raw("(1)员工便当领取处：RAILAY - 106房<br/>(2)指定领取时间：【午餐】11：30 AM 【晚餐】05：30 PM 【宵夜】11：00 PM");
+                                                }
+                                                @if (item.t_Dormitory.f_Community.Replace(" ", "").ToUpper() == "Cedar".Replace(" ", "").ToUpper())
+                                                {
+                                                    @Html.Raw("(1)员工便当领取处：CHAMOMILE-107房<br/>(2)指定领取时间：【午餐】11：30 AM 【晚餐】05：30 PM 【宵夜】11：00 PM");
+                                                }
+                                                @if (item.t_Dormitory.f_Community.Replace(" ", "").ToUpper() == "Verawood".Replace(" ", "").ToUpper())
+                                                {
+                                                    @Html.Raw("(1)员工便当领取处：AQUA-110房<br/>(2)指定领取时间：【午餐】11：30 AM 【晚餐】05：30 PM 【宵夜】11：00 PM");
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td rowspan="2">宿舍饮水及瓦斯订购方式</td>
+                                        <td>饮用水</td>
+                                        <td>
+                                            <pre>@(sTypeItem.FirstOrDefault(p => p.f_type == (int)sTypeEnum.宿舍饮水订购方式 && p.f_value == "宿舍饮水订购方式").f_Remark ?? "")</pre>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>瓦斯订购</td>
+                                        <td>
+                                            <pre>@(sTypeItem.FirstOrDefault(p => p.f_type == (int)sTypeEnum.宿舍瓦斯订购方式 && p.f_value== "宿舍瓦斯订购方式").f_Remark ?? "")</pre>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                                            sNumber++;
+                                        }
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
+<script language="javascript">
+
+    //打印代码
+       function Print()
+        {
+           var printStr = "<html><head><style>td{padding-left:10px;}</style><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head><body >";
+            var content = "";
+            var str ="";
+            for (var i = 1; i < '@sNumber'; i++) {
+                str = document.getElementById('div_'+i).innerHTML;
+                content = content + str;
+            }
+           printStr = printStr + content + "</body></html>";
+            var pwin=window.open();
+            pwin.document.write(printStr);
+            pwin.document.close();
+            pwin.print();
+        }
+</script>
+
+

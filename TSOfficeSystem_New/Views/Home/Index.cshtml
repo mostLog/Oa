@@ -1,0 +1,150 @@
+﻿@model Tuple<List<MI.Core.Domain.Notice>, List<MI.Core.Domain.WorkDistribution>>
+@{
+    List<MI.Core.Domain.SType> typeList = ViewBag.typeList;
+}
+
+<style type="text/css">
+    .tanchubox {
+        position: relative;
+        background-color: #fff;
+        -webkit-background-clip: padding-box;
+        background-clip: padding-box;
+        border: 1px solid #999;
+        border: 1px solid rgba(0,0,0,.2);
+        border-radius: 6px;
+        outline: 0;
+        -webkit-box-shadow: 0 3px 9px rgba(0,0,0,.5);
+        box-shadow: 0 3px 9px rgba(0,0,0,.5);
+        width: 800px;
+        margin: 0 auto;
+        margin-top: 124px;
+        overflow: hidden;
+    }
+
+    .tanchu-title {
+        float: left;
+        font-size: 22px;
+        color: #c9302c;
+        margin-top: 12px;
+        margin-left: 10px;
+    }
+
+    .tanchu-top {
+        border-bottom: 1px solid #e5e5e5;
+        overflow: hidden;
+    }
+
+    .tanchu-close {
+        font-family: sans-serif;
+        float: right;
+        font-size: 21px;
+        font-weight: 700;
+        line-height: 1;
+        margin-top: 15px;
+        margin-right: 10px;
+        color: #000;
+        text-shadow: 0 1px 0 #fff;
+        cursor: pointer;
+    }
+
+        .tanchu-close:hover {
+            color: #c9302c;
+        }
+
+    .tanchu-content {
+        clear: both;
+    }
+
+    .tanchu-closebtn {
+        float: right;
+        margin: 10px;
+    }
+
+    .tipslist {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .tipsli {
+        padding: 6px 20px;
+        border-bottom: 1px solid #e5e5e5;
+    }
+</style>
+@{
+    IList<string> level = ViewBag.levelValue;
+    string passportDate = ViewBag.passportDate;
+    string sICardDate = ViewBag.ICardDate;
+    bool bIsExpired = false;
+    bool bICard = false;
+    if (!string.IsNullOrWhiteSpace(passportDate))
+    {
+        bIsExpired = Convert.ToDateTime(passportDate).AddDays(-60) <= DateTime.Now.Date;
+    }
+    if (!string.IsNullOrWhiteSpace(sICardDate))
+    {
+        bICard = Convert.ToDateTime(sICardDate).AddDays(-30) <= DateTime.Now.Date;
+    }
+}
+
+<div class="tanchubox">
+    <div class="tanchu-top">
+        <h2 class="tanchu-title">紧急公告</h2>
+        <a class="tanchu-close" onclick="Guanbi()">×</a>
+    </div>
+    <div class="tanchu-content">
+        <ul class="tipslist">
+            @if (level.Contains("Notice"))
+            {
+                foreach (var item in Model.Item1)
+                {
+                    <li class="tipsli">@("通知公告" + "：" + item.f_Content)</li>
+                }
+                foreach (var item in Model.Item2)
+                {
+                    if (typeList.FirstOrDefault(p => p.f_tID == item.f_WorkType && "新人订餐管理".Equals(p.f_value)) != null)
+                    {
+                        if (item.f_UrgentDate == null || (item.f_UrgentDate.Value.Date == DateTime.Now.Date && DateTime.Now.Hour >= 17))
+                        {
+                            continue;
+                        }
+                        <li class="tipsli">@("新人餐" + "：")<a href="javascript:" onclick="LinkClick2('@(item.f_Remarks)')">@(item.f_Handover)</a> &nbsp;&nbsp;(@(item.t_employeeInfo?.f_nickname ?? "ALL"))</li>
+                    }
+                    else
+                    {
+                        <li class="tipsli">@("工作交接" + "：")<a href="javascript:" onclick="LinkClick('@item.f_Id')">@(item.f_Handover)</a> &nbsp;&nbsp;(@(item.t_employeeInfo?.f_nickname ?? "ALL"))</li>
+
+                    }
+                }
+            }
+            @if (bIsExpired)
+            {
+                <li class="tipsli">您的签证期限不足2个月，请联系行政人员</li>
+            }@if (bICard)
+            {
+                <li class="tipsli">您的I卡或I卡证明期限不足1个月，请联系行政人员</li>
+            }
+        </ul>
+    </div>
+
+    <div class="tanchu-foot">
+        <a class="tanchu-closebtn btn btn-primary" onclick="Guanbi()">确认</a>
+    </div>
+</div>
+<script type="text/javascript">
+    function Guanbi() {
+        $(".tanchubox").hide();
+    }
+    var WorkDistributionUrl = "@Url.Action("Index", "WorkDistribution", new { Area= "Integrated" })";
+    var EmpUrl = "@Url.Action("NewIndex", "employeeInfo", new { Area= "EmpAndFood" })";
+    function LinkClick(id) {
+        window.open(WorkDistributionUrl + "?f_Id=" + id);
+    }
+    function LinkClick2(id) {
+        window.open(EmpUrl + "?iEid=" + id);
+    }
+</script>
+
+<script src="~/Views/Home/Index.js"></script>
+
+

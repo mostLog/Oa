@@ -1,0 +1,86 @@
+﻿@model IList<MI.Application.Dto.EmpRentDto>
+@{
+    ViewBag.Title = "登记查询";
+    int i = 1;
+    List<MI.Core.Domain.SType> workLocation = ViewBag.listWorkLocation;
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+}
+
+
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">登记查询</a></li>
+        <li class="active">员工租房</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("FeeSearchNavMeuns", "员工租房", ViewData)
+    </ul>
+    <div class="oacentbox">
+        <div class="panel panel-default">
+            <div class="panel-heading">员工租房登记</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序號</th>
+                            <th>員工</th>
+                            <th>宿舍</th>
+                            <th>租金</th>
+                            <th>補貼</th>
+                            <th>應繳費</th>
+                            <th>缴费月份</th>
+                            <th>是否缴费</th>
+                            <th>收款人</th>
+                            <th>收款地点</th>
+                            <th>生效日期</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i </td>
+                                <td>@item.t_employeeInfo.f_chineseName</td>
+                                <td>
+                                    @(item.t_dormitory.f_Community + "/" + item.t_dormitory.f_Building + "/" + item.t_dormitory.f_RoomNo)
+                                </td>
+                                <td>
+                                    @item.f_Rent
+                                </td>
+                                <td>@item.f_Grant</td>
+                                <td>@item.f_Amount </td>
+                                <td>@(item.f_PaymentDate?.ToString("yyyy-MM") ?? "")</td>
+                                <td>@(item.f_IsPayment ? "√" : "×")</td>
+                                <td>@item.f_Payee </td>
+                                <td>@(workLocation.FirstOrDefault(p => p.f_tID == item.f_AddressId)?.f_value ?? "" )</td>
+                                <td>@(item.f_EffectiveDate?.ToString("yyyy-MM-dd") ?? "")</td>
+
+                            </tr>
+                            i++;
+                        }
+
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="11" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageList(iCurrentPage, iPageSize, iTotalCount)
+            </ul>
+        </div><!-- /.fenyediv-->
+
+    </div><!-- /.oacentbox-->
+
+</div>
+
+
+

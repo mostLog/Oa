@@ -1,0 +1,15 @@
+﻿@model string
+@{
+    string[] sNavTab = { "宿舍登记", "员工换房", "宿舍维修", "员工外租", "宿舍打扫", "床被送洗", "住宿汇总", "洗衣房" };
+}
+
+<li role="presentation" @Html.Raw(Model == sNavTab[0] ? "class=\"active\"" : "")><a href="~/Dormitory/Dormitory/Index">@sNavTab[0] </a></li>
+<li role="presentation" @Html.Raw(Model == sNavTab[7] ? "class=\"active\"" : "")><a href="~/Dormitory/LaundryPwd/Index">@sNavTab[7]</a></li>
+<li role="presentation" @Html.Raw(Model == sNavTab[1] ? "class=\"active\"" : "")><a href="~/Dormitory/ChangeRoom/Index">@sNavTab[1] </a></li>
+<li role="presentation" @Html.Raw(Model == sNavTab[2] ? "class=\"active\"" : "")><a href="~/Dormitory/DormitoryMaintenance/Index">@sNavTab[2]</a></li>
+<li role="presentation" @Html.Raw(Model == sNavTab[3] ? "class=\"active\"" : "")><a href="~/Dormitory/Outside/Index">@sNavTab[3]</a></li>
+<li role="presentation" @Html.Raw(Model == sNavTab[4] ? "class=\"active\"" : "")><a href="~/Dormitory/HostelClean/Index">@sNavTab[4]</a></li>
+<li role="presentation" @Html.Raw(Model == sNavTab[5] ? "class=\"active\"" : "")><a href="~/Dormitory/BedLinen/Index">@sNavTab[5]</a></li>
+<li role="presentation" @Html.Raw(Model == sNavTab[6] ? "class=\"active\"" : "")><a href="~/Dormitory/DormitorySummary/Index">@sNavTab[6]</a></li>
+
+

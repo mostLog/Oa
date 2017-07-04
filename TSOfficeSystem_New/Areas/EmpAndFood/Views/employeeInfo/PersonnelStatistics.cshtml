@@ -1,0 +1,114 @@
+﻿@model List<MI.Core.Domain.Employee>
+@{
+    //部门
+    List<MI.Core.Domain.SType> Department = ViewBag.listTypeDepartment;
+    //工作地点
+    List<MI.Core.Domain.SType> WorkLocation = ViewBag.listTypeWorkLocation;
+    //国籍
+    List<MI.Core.Domain.SType> GuoJi = ViewBag.GuoJi;
+    //在职状态
+    List<MI.Core.Domain.SType> listTypeWorkStatus = ViewBag.listTypeWorkStatus;
+    List<string> Community = ViewBag.Community;
+    int[] counts = { Department.Count, WorkLocation.Count, GuoJi.Count, Community.Count, listTypeWorkStatus.Count };
+    int index = counts.Max();
+}
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javaScript:">员工管理</a></li>
+        <li class="active">人员统计</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("emplotyeeInfoNavigation", "人员统计")
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline"></form>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">人员统计</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr id="auto-fixed-top">
+                            <th colspan="2">部门分类(只统计在职的员工)</th>
+                            <th colspan="2">办公地点统计(只统计在职的员工)</th>
+                            <th colspan="2">社区统计(只统计在职的员工)</th>
+                            <th colspan="2">国籍统计(只统计在职的员工)</th>
+                            <th colspan="2">在职状态统计</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < index; i++)
+                        {
+                            <tr>
+                                @if (Department.Count() > i)
+                                {
+                                    <td>@(Department[i].f_value)在职人数</td>
+                                    <td>
+                                        @(Model.Where(u => u.STypeWorkStatus.f_value.Contains("在职") && u.f_department_tID == Department[i].f_tID).ToList().Count())
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                    <td></td>
+                                }
+                                @if (WorkLocation.Count() > i)
+                                {
+                                    <td>@(WorkLocation[i].f_value)办公人数</td>
+                                    <td>
+                                        @(Model.Where(u => u.STypeWorkStatus.f_value.Contains("在职") && u.f_workLocation_tID == WorkLocation[i].f_tID).ToList().Count())
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                    <td></td>
+                                }
+                                @if (Community.Count() > i)
+                                {
+                                    <td>@(Community[i])人数</td>
+                                    <td>
+                                        @(Model.Where(u => u.STypeWorkStatus.f_value.Contains("在职") && u.t_Dormitory?.f_Community == Community[i]).ToList().Count())
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                    <td></td>
+                                }
+                                @if (GuoJi.Count() > i)
+                                {
+                                    <td>@(GuoJi[i].f_value)人数</td>
+                                    <td>
+                                        @(Model.Where(u => u.STypeWorkStatus.f_value.Contains("在职") && u.f_international == GuoJi[i].f_value).ToList().Count())
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                    <td></td>
+                                }
+                                @if (listTypeWorkStatus.Count() > i)
+                                {
+                                    <td>@(listTypeWorkStatus[i].f_value)人数</td>
+                                    <td>
+                                        @(Model.Where(u => u.f_workStatus_tID == listTypeWorkStatus[i].f_tID).ToList().Count())
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                    <td></td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,554 @@
+﻿@*控制器返回的类型  List<string> *@
+@model IList<MI.Application.ContentServerce.Dto.t_LatticeContentDto>
+@{
+    ViewBag.Title = "宿舍视图";
+    //社区集合
+    IEnumerable<SelectListItem>
+      listItemCommunity = ViewBag.listItemCommunity;
+    //楼栋集合
+    IEnumerable<SelectListItem>
+      listItemsfloor = ViewBag.listItemFloor;
+
+    //当前选择的社区
+    SelectListItem currentComm = listItemCommunity.FirstOrDefault(p => p.Selected);
+    //当前选择的楼栋
+    SelectListItem currentFloor = listItemsfloor.FirstOrDefault(p => p.Selected);
+
+    //获取有多多少个房间
+    int maxRoomLength = Model != null && Model.Count > 0 ? Model.Max(p => p.f_room).ToString().Length : 1;
+
+    //部门
+    List<MI.Core.Domain.SType>
+      listTypeSector = ViewBag.listTypeSector;
+
+    //楼栋规模，高*宽
+    string[] ArrSCALE = ViewBag.sVal;
+    //是否房间号有字母
+    bool isA = false;
+    if (ArrSCALE.Length == 3)
+    {
+        bool.TryParse(ArrSCALE[2], out isA);
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<body>
+    <div>
+        <a href="javaScript:void(0)" style="font-size:15px;">宿舍视图</a>
+    </div>
+    <div style="overflow:hidden">
+        <lable style="float:left;height:30px;line-height:30px;padding-left:15px;font-size:15px;">社区:</lable>
+        <div style="float:left" id="community">
+            @*下拉框帮值*@
+            @*@Html.DropDownList("DivisionName", ViewBag.listItemCommunity as IEnumerable<SelectListItem>)*@
+            @Html.Hidden("onchangeCommunity", currentComm, new { @correspond = "dropdownMenuComm" })
+            <button class="btn btn-default dropdown-toggle" style="width:auto; margin-left:8px;" type="button" id="dropdownMenuComm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                @currentComm.Text
+                <span class="caret"></span>
+            </button>
+            @*将下列表绑定到button下*@
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuComm" id="communityShow">
+                @foreach (var item in listItemCommunity)
+                {
+                    <li><a href="javaScript:changeCommunity()" id="@(item.Value)">@item.Text </a></li>
+                }
+            </ul>
+        </div>
+
+        @*楼栋*@
+        <div id="floordong" style="overflow:hidden; padding-left:10px; float:left;">
+            @foreach (var item in listItemsfloor)
+            {
+                //加载所选社区里的楼栋
+                <div style=" margin-left:0px; float:left">
+                    <label class="btn btn-info @(item.Selected ? " active":"" )" style="position:static; left:0px; border-radius:0px;" onclick="javascript: document.location.href=('@(Url.Action("Index",new { sCommunity=currentComm.Text, sBuilding=item.Value }))')">
+                        @item.Text
+                    </label>
+                </div>
+            }
+        </div>
+        <div id="modal" style="overflow:hidden; display:block; padding-left:500px;">
+            <div class="taiojianli_right" style="float:left">
+                <button type="button" onclick="aKeyUnlocked()" class="btn btn-primary">一键解锁</button>
+            </div>
+            <div class="taiojianli_right" style="float:left; padding-left:20px;">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">设 置</button>
+            </div>
+        </div>
+        @*部门筛选*@
+        <div id="SectorScre" style="margin-top:15px;">
+            <b style="padding-left:15px">部门筛选：</b>
+            <label style="margin-right:10px;"><input type="checkbox" class="alldptCheckbox" checked="checked" value="0">全选</label>
+            @foreach (var item in listTypeSector)
+            {
+                <label style="margin-right:10px"><input type="checkbox" name="dptCheckbox" checked="checked" value="@item.f_tID">@item.f_value</label>
+            }
+        </div>
+        <div id="floordongshow" style="background-color:#ebeaea; border:1px solid #808080">
+            <div style="text-align:center; height:66px; font-size:21px;line-height:66px;">
+                楼栋:
+                @currentFloor.Text
+            </div>
+        </div>
+        @*加载房间*@
+        <div id="random">
+            @if (Model != null && Model.Count > 0)
+            {
+                string sFloor = string.Empty;
+                string sRoom = string.Empty;
+                //控制楼层
+                foreach (var item in Model.GroupBy(j => j.f_floor))
+                {
+                    sFloor = item.Key.ToString();
+                    while (sFloor.Length < maxRoomLength)
+                    {
+                        sFloor = string.Concat("0", sFloor);
+                    }
+                    <div id="floorCommunity">
+                        <div style='margin:15px auto;' id="floorDiv">
+                            楼层 @sFloor ：
+                            @*控制房间*@
+                            @foreach (var items in Model.Where(p => p.f_floor == item.Key))
+                            {
+                                if (isA)
+                                {
+                                    sRoom = AOUnity.NunberToChar(items.f_room);
+                                }
+                                else
+                                {
+                                    sRoom = items.f_room < 10 ? "0" + items.f_room : items.f_room.ToString();
+
+                                    while (sRoom.Length < maxRoomLength)
+                                    {
+                                        sRoom = string.Concat("0", sRoom);
+                                    }
+                                }
+
+                                <div style="position:relative;display:inline-block" class="@(items.f_isUnlock? "insomnia":"")">
+
+                                    @*用于显示鼠标悬停信息*@
+                                    <div class="mouseOverhover">
+                                        <ul style="padding-top:10px; margin-left:-20px;">
+                                            <li>序号:@items.f_roomNo</li>
+                                            <li>房型:@items.f_roomType</li>
+                                            <li>双人床:@items.SumDoublesBed 架</li>
+                                            <li>部门:@items.department</li>
+                                            <li>以住:@Html.Raw(items.getNameHtml)</li>
+                                            <li>共住@(items.f_sumPeople)人:
+                                                @if (ViewBag.bIsDormitory ?? false)
+                                                {
+                                                    <a href="javascript:goToDormitory('@(items.f_roomNo)')">宿舍详情</a>
+                                                }
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <span class="spanJT caret"></span>
+                                    @*房间0，1，2，3*@   @*如果房间已解锁则给btn添加divUnlock样式，否则添加divLock样式*@
+                                    <button style="width:35px;" class="btn btn-default btn-sm btnMouserOver @Html.Raw(items.getClassName + " dpt_"+items.f_department_tID) @(items.f_isUnlock? "divUnlock" : "divLock")" sClassName="@items.getClassName" id="room_@(items.f_LId)" onclick="clickRoom(this)" role="button">
+                                        @if ((int)(items.SumDoublesBed) > 0)
+                                        {
+                                            <font style="position:relative;top:-6px;left:-8px;font-size:9px;">★</font>
+                                            <font style="position:relative;left:-10px;">@sRoom</font>
+                                        }
+                                        else
+                                        {
+                                            @sRoom
+                                        }
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    @*图例说明*@
+    <div id="legend" style="@(Model == null || Model.Count == 0?" display:none":"")">
+        <div id="divTop" style="padding-top:7px; margin-left:18px;">
+            <div>
+                当前社区:@(currentComm.Value)
+            </div>
+            <div>
+                当前楼栋:@(currentFloor.Value)
+            </div>
+        </div>
+        <div id="divCenter" style="padding-top:18px;">
+            <ul>
+                <li><button id="kss"></button><label>空宿舍</label></li>
+                <li><button id="mzm"></button><label>没住满</label></li>
+                <li><button id="yzm"></button><label>以住满</label></li>
+                <li><button id="ccsx"></button><label>超出上限</label></li>
+                <li><button id="bmwxz"></button><label>部门未选择</label></li>
+                <li><button id="ysrc"></button><label>★:有双人床</label></li>
+                <li style="margin-top:3.5px;"><a href="javascript:closeDiv()">关闭</a></li>
+            </ul>
+        </div>
+    </div>
+    @*设置框*@
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" style="top:80px" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="@Url.Action("SetSCALE")" method="post">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">楼栋 @(currentFloor.Text) 规模设置</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="tID" value="@(currentFloor.Value)" />@*楼栋*@
+                        <input type="hidden" id="tID2" value="@(currentComm.Value)" />@*社区*@
+                        <div class="input-group">
+                            <span class="input-group-addon" id="sizing-addon1">楼栋有几层</span>
+                            <input type="text" id="val1" class="form-control" placeholder="@ArrSCALE[0]" value="@ArrSCALE[0]" onkeyup="checkNumber(this)" aria-describedby="sizing-addon2" />
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon" id="sizing-addon2">每层多少间</span>
+                            <input type="text" id="val2" class="form-control" placeholder="@ArrSCALE[1]" value="@ArrSCALE[1]" onkeyup="checkNumber(this)" aria-describedby="sizing-addon2" />
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon" id="sizing-addon3">是否含字母</span>
+                            <input type="checkbox" id="val3" @(Html.Raw(isA ? "checked='checked'" : "")) name="val3" class="form-control" value="true" style="margin-top: 0px;width:20px;margin-left:12px" title="如果宿舍房间号包含字母,请勾选.">
+                            <span class="text-danger" style="height:34px;line-height:34px;margin-left:12px">如果宿舍房间号以字母显示,请勾选.</span>
+                        </div>
+                        <div class="text-success" id="divxxxx" style="text-align:left;padding-top:5px;padding-left:97px;display:none">消息</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" onclick="SaveSCALE()" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
+<style>
+    .spanJT {
+        position: absolute;
+        display: none;
+        font-size: 18px;
+        top: -2px;
+        left: 13px;
+    }
+
+    .divLock {
+        background-color: #d7d7d7;
+    }
+
+    .mouseOverhover {
+       
+        border-radius: 5px;
+        border: none;
+        width: 180px;
+        display: none;
+        position: absolute;
+        bottom: 30px;
+        left: -70px;
+        border-radius: 6px;
+        border-style: solid;
+        border-width: 1px;
+        width: 180px;
+    }
+
+        .mouseOverhover ul li {
+            text-align: left;
+            display: list-item;
+        }
+
+    #legend {
+        border-radius:6px;
+        height: 270px;
+        width: 150px;
+        background-color: #abe9fb;
+        position: fixed;
+        top: 310px;
+        left: 250px;
+        text-align: left;
+        padding: 8px 10px;
+    }
+
+    #kss {
+        background-color: #5cb85c;
+        border-color: #4cae4c;
+    }
+
+    #mzm {
+        background-color: #5bc0de;
+        border-color: #46b8da;
+    }
+
+    #yzm {
+        background-color: #d9534f;
+        border-color: #d43f3a;
+    }
+
+    #ccsx {
+        background-color: #f0ad4e;
+        border-color: #eea236;
+    }
+
+    #bmwxz {
+        background-color: #fff;
+        border-color: #ccc;
+    }
+
+    #divCenter ul li {
+        display: block;
+        margin-left: -20px;
+    }
+
+    ul li {
+        list-style: none;
+    }
+
+        ul li button {
+            height: 15px;
+            width: 25px;
+            border-radius: 3.5px;
+            border: none;
+        }
+
+    a {
+        text-decoration: none;
+    }
+
+    #random {
+        width: 100%;
+    }
+
+    #floorCommunity {
+        text-align: center;
+    }
+
+    #communityShow {
+        position: absolute;
+        top: initial;
+    }
+</style>
+<script type="text/javascript">
+    var IndexUrl = "@Url.Action("Index")";
+    //一键解锁
+    var aKeyaKeyUnlockedUrl = "@Url.Action("AkeyaKeyUnlocked")";
+    var SetSCALEUrl = "@Url.Action("SetSCALE")";//设置
+    var SetUnlockUrl = "@Url.Action("SetUnlock")";//格子解锁
+    var DormitoryUrl = "@Url.Action("Index", "Dormitory",new { area= "Dormitory", @f_Community=currentComm.Value ?? "".Trim(), @f_Building= currentFloor.Value??"".Trim() })";
+
+    window.onload = function () {
+        BinAllDptCheckbox();
+        BinDptCheckbox();
+        btnHover();
+    }
+
+    //社区的onclick事件
+    function changeCommunity() {
+        var sCommunity = $("#onchangeCommunity").val();
+        if (sCommunity == null || $.trim(sCommunity) == "" || $.trim(sCommunity) == "请选择社区") {
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetFloorDong")",
+            data: { community: sCommunity },
+            error: function (data) {
+                alert('发生错误');
+            },
+            success: function (data) {
+                if (data != null) {
+                    var str = "";
+                    for (var i = 0; i < data.length; i++) {
+                        str += "<label class=\"btn btn-info\" style=\"position:static;left:0px; border-radius:0px;\" onclick=\"javascript: document.location.href='" + IndexUrl + "?sCommunity=" + sCommunity + "&sBuilding=" + data[i] + "' \" >" + data[i] + "</label>";
+                    }
+                    $("#floordong").html(str);
+                }
+            }
+        });
+    }
+    function closeDiv() {
+        $("#legend").hide();
+    }
+    //部门全选事件
+    function BinAllDptCheckbox() {
+        var $dpt = $(".alldptCheckbox");
+        $dpt.click(function () {
+            //找到已解锁的btn
+            var $divButtons = $(".divUnlock");
+            var AllChe = $dpt.prop("checked");
+            $("input[name=dptCheckbox]").prop("checked", AllChe);
+            if (AllChe) {
+                $divButtons.each(function () {
+                    $(this).addClass($(this).attr("sClassName"));
+                });
+            } else {
+                $divButtons.removeClass("RoomLocking noBinDormitory btn-success btn-info btn-danger btn-warning");
+            }
+        });
+    }
+    //单个部门事件
+    function BinDptCheckbox() {
+        var $dpts = $("input[name=dptCheckbox]");
+        $dpts.click(function () {
+            var isChecked = $(this).prop("checked");
+            //siblings遍历兄妹元素
+            var $thisValueBtn = $(".divUnlock").siblings(".dpt_" + $(this).val());
+            //parent(父节点) 遍历每个label
+            if ($(this).parent("label").text().indexOf("未定") != -1) {
+                $thisValueBtn = $(".divUnlock").siblings(".dpt_0,.dpt_" + $(this).val());
+            }
+            if (isChecked) {
+                $thisValueBtn.each(function () {
+                    $(this).addClass($(this).attr("sClassName"));
+                });
+            } else {
+                $thisValueBtn.removeClass("RoomLocking noBinDormitory btn-success btn-info btn-danger btn-warning");
+            }
+        });
+    }
+    //悬浮事件
+    function btnHover()
+    {
+        $(".insomnia").hover(
+            function () {
+                var $butObj = $(this).find("button");
+                var $divObj = $(this).find("div");
+                var $spanObj = $(this).find("span");
+                var bgClassName = "";
+                var brColor = $butObj.css("background-color");
+                if ($butObj.hasClass("btn-success")) {
+                    bgClassName = "bg-success";
+                } else if ($butObj.hasClass("btn-info")) {
+                    bgClassName = "bg-info";
+                } else if ($butObj.hasClass("btn-danger")) {
+                    bgClassName = "bg-danger";
+                } else if ($butObj.hasClass("btn-warning")) {
+                    bgClassName = "bg-warning";
+                } else {
+                    bgClassName = "bg-baise";
+                    brColor = "#808080";
+                }
+                if (!$divObj.hasClass(bgClassName)) {
+                    $divObj.addClass(bgClassName);
+                }
+                $divObj.css({ "border-color": brColor }).show();
+                $spanObj.show();
+            },
+            function () {
+                $(this).find("div,span").hide();
+            });
+    }
+    //一键解锁
+    function aKeyUnlocked() {
+        $.ajax({
+            type: "POST",
+            url: aKeyaKeyUnlockedUrl,
+            data: {
+                sBuilding: $("#tID").val(),
+                sCommunity: $("#tID2").val(),
+            },
+            dataType: "json",
+            error: function (data) {
+                alert("异常");
+            },
+            success: function (data) {
+                if (data == "操作成功") {
+                    alert("一键解锁成功，请等待刷新。");
+                    RefreshF5();
+                }
+                else {
+                    alert(data.replace("#", "\r\n"));
+                }
+            }
+        });
+    }
+    //验证只能输入【-】+数字
+    function checkNumber(obj) {
+        var t = obj.value.replace(/[^0-9]/g, "");
+        if (obj.value != t) {
+            obj.value = t;
+        }
+    }
+    //保持设置
+    function SaveSCALE() {
+        var v1 = parseInt($("#val1").val(), 10); //数字以 10 为基础来解析
+        var v2 = parseInt($("#val2").val(), 10);
+        var v3 = $("input[name='val3']:checked").val() == "true" ? true : false;
+        if (isNaN(v1) || isNaN(v2)) {
+            alert("请输入数字!");
+            return false;
+        }
+        if (v1 < 0 || v2 < 0 || v1 > 100 || v2 > 30) {
+            alert("楼层必须为正数且不能超过100，层间数必须为正数且不能超过30");
+            return false;
+        }
+        if (v3 && v2 > 26) {
+            alert("如果房间号以字母显示,每层不能超过26.\r\n如需特殊情况请联系工程师！");
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: SetSCALEUrl,
+            async: false,
+            data: {
+                tID: $("#tID").val(),
+                tID2: $("#tID2").val(),
+                val1: v1,
+                val2: v2,
+                val3: v3,
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data == "1") {
+                    $("#divxxxx").text("设置成功!点击关闭返回页面。").show();
+                    $('#myModal').unbind("hidden.bs.modal");
+                    $('#myModal').on('hidden.bs.modal', function (e) {
+                        RefreshF5();
+                    })
+                } else {
+                    $("#divxxxx").removeClass("text-success").addClass("text-danger").text("设置失败!").show();
+                }
+            }
+        });
+    }
+   //格子解锁
+    function clickRoom(obj) {
+        //如果是锁定状态点击之后 触发解锁事件 反之
+        if ($(obj).hasClass("RoomLocking")) {
+            setUnlock(obj.id, true);
+        } else if (confirm("是否确认锁定该房间!")) {
+            setUnlock(obj.id, false);
+        }
+    }
+    function setUnlock(lid, val) {
+        $.ajax({
+            type: "POST",
+            url: SetUnlockUrl,
+            data: {
+                iLID: lid.split("_")[1],
+                val: val
+            },
+            dataType: "json",
+            error: function (data) {
+                alert("异常");
+            },
+            success: function (data) {
+                if (data == 1) {
+                    divMessageInOut(val ? "解锁成功!如需查看概括,请刷新页面!" : "锁定成功!");
+                    removeALLsClassName(lid, val, data.tips);
+                } else if (data == 401) {
+                    alert("此宿舍已经入住,无法锁定.")
+                } else if (data == 402) {
+                    alert("宿舍登记中找不到此房间,无法解锁.")
+                }
+                else {
+                    alert("操作失败！");
+                }
+            }
+        });
+    }
+    //详情
+    function goToDormitory(room) {
+        window.open(DormitoryUrl.replace("&amp;", "&") + "&f_RoomNo=" + room);
+    }
+</script>

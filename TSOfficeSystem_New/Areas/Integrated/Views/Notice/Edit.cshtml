@@ -1,0 +1,103 @@
+﻿@model MI.Core.Domain.Notice
+    @{ Layout = null;}
+    @Styles.Render("~/Content/datetimepicker")
+    @Scripts.Render("~/bundles/datetimepicker")
+    <button type="button" id="btn-quxiao" class="btn btn-danger closebtn">取消（X）</button>
+    <div class="panel panel-default">
+        <div class="panel-heading">公告信息-@(Model.f_Id > 0 ? "修改" : "新增")</div>
+        <div class="table-responsive">
+            @using (Html.BeginForm("", "", FormMethod.Post, new { id = "NOticeEditForm" }))
+            {
+                <table class="table table-hover table-striped">
+                    <tr>
+                        <td>公告类型：</td>
+                        <td>
+                            <input type="radio" name="f_Type" value="false" @(Model.f_Type ? "" : "checked='checked'") />一般公告
+                            <input type="radio" name="f_Type" value="true" @(Model.f_Type ? "checked='checked'" : "") />紧急通知
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>内容：</td>
+                        <td>
+                            <textarea cols="100" rows="5" class="form-control" name="f_Content" id="f_Content">@Model.f_Content</textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>有效开始日期：</td>
+                        <td><input type="text" class="form-control" name="f_StartDate" id="f_StartDate" value="@(Model.f_StartDate == DateTime.MinValue? "" :Model.f_StartDate.ToString("yyyy-MM-dd"))" /></td>
+                    </tr>
+                    <tr>
+                        <td>有效结束日期：</td>
+                        <td><input type="text" class="form-control" name="f_EndDate" id="f_EndDate" value="@(Model.f_EndDate == DateTime.MinValue? "" :Model.f_EndDate.ToString("yyyy-MM-dd"))" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: center;">
+                            <input type="hidden" name="f_Id" id="f_Id" value="@Model.f_Id" />
+                            <input type="button" onclick="Submit('@Model.f_Id')" class="btn btn-primary  btn-lg" value="确定" />
+                        </td>
+                    </tr>
+                </table>
+            }
+        </div>
+    </div><!-- /.panel-default/ table-->
+    <script type="text/javascript">
+    //确定
+    function Submit(id) {
+        if (ValidationNull("内容", $("#f_Content").val())) {
+            return;
+        }
+        if (ValidationLength("内容", $("#f_Content").val(), 1500)) {
+            return;
+        }
+        if (ValidationNull("开始时间", $("#f_StartDate").val().trim()) || ValidationNull("开始时间", $("#f_EndDate").val().trim())) {
+            return;
+        }
+        var startNum = parseInt($("#f_StartDate").val().replace(/-/g, ''), 10);
+        var endNum = parseInt($("#f_EndDate").val().replace(/-/g, ''), 10);
+        if (startNum > endNum) {
+            alert("结束时间不能在开始时间之前！");
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("UptateAndAdd")',
+            data: $("#NOticeEditForm").serialize(),
+            reeoe: function () {
+            },
+            success: function (data) {
+                if (data != null) {
+                    if (data == "1") {
+                        alert("操作成功！");
+                        location.href = location.href;
+                    }
+                    else if (data == "500") {
+                        alert("操作异常");
+                    }
+                    else if (data == "8") {
+                        alert("您的个人信息昵称为空，请先填写昵称");
+                    }
+                    else if (data == "11") {
+                        alert("资料无变动");
+                    }
+                    else if (data == "12") {
+                        alert("公告内容超出长度!")
+                    }
+                }
+            }
+        });
+    }
+    //取消
+    $(function () {
+        $("#btn-quxiao").click(function () {
+            $("div.addbg").hide();
+        });  //截止日期
+
+        $.datetimepicker.setLocale('zh');
+        $("#f_AddDate,#f_StartDate,#f_EndDate").datetimepicker({
+            lang: 'zh',
+            timepicker: false,
+            format: 'Y-m-d',
+            formatDate: 'Y-m-d'
+        });
+    });
+    </script>

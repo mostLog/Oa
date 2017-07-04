@@ -1,0 +1,34 @@
+
+2017.06.27 13:45:01
+	URL：http://localhost:2414/EmpAndFood/OrderingAndPersonalInfo/EditEmp
+	錯誤信息：未将对象引用设置到对象的实例。
+		 ***
+		 **
+	錯誤源：MI.Application
+	異常方法：System.Collections.Generic.List`1[System.String] CompareType[T](T, T, System.String[])
+	堆棧信息：   在 MI.Application.EmployeeService.CompareType[T](T oOdlData, T oNewData, String[] oNoCompare) 位置 C:\Temp\project\ym_project\TFSmain_55OAOfficeSystem_CODE\TSOfficeSystem_New\MI.Application\EmployeeService\EmployeeService.cs:行号 569
+   在 MI.Application.EmployeeService.UpdateEmployeeInfo(AllEmployeeInfoViewModel allEmployeeInfoViewModel, Boolean bType, Boolean isJLKF) 位置 C:\Temp\project\ym_project\TFSmain_55OAOfficeSystem_CODE\TSOfficeSystem_New\MI.Application\EmployeeService\EmployeeService.cs:行号 269
+   在 TSOfficeSystem_New.Areas.EmpAndFood.Controllers.OrderingAndPersonalInfoController.EditEmp(AllEmployeeInfoViewModel model) 位置 C:\Temp\project\ym_project\TFSmain_55OAOfficeSystem_CODE\TSOfficeSystem_New\TSOfficeSystem_New\Areas\EmpAndFood\Controllers\OrderingAndPersonalInfoController.cs:行号 81
+--------------------------------------------------------------------------------------------------
+2017.06.27 13:45:24
+	URL：http://localhost:2414/EmpAndFood/OrderingAndPersonalInfo/EditEmp
+	錯誤信息：未将对象引用设置到对象的实例。
+		 ***
+		 **
+	錯誤源：MI.Application
+	異常方法：System.Collections.Generic.List`1[System.String] CompareType[T](T, T, System.String[])
+	堆棧信息：   在 MI.Application.EmployeeService.CompareType[T](T oOdlData, T oNewData, String[] oNoCompare) 位置 C:\Temp\project\ym_project\TFSmain_55OAOfficeSystem_CODE\TSOfficeSystem_New\MI.Application\EmployeeService\EmployeeService.cs:行号 569
+   在 MI.Application.EmployeeService.UpdateEmployeeInfo(AllEmployeeInfoViewModel allEmployeeInfoViewModel, Boolean bType, Boolean isJLKF) 位置 C:\Temp\project\ym_project\TFSmain_55OAOfficeSystem_CODE\TSOfficeSystem_New\MI.Application\EmployeeService\EmployeeService.cs:行号 269
+   在 TSOfficeSystem_New.Areas.EmpAndFood.Controllers.OrderingAndPersonalInfoController.EditEmp(AllEmployeeInfoViewModel model) 位置 C:\Temp\project\ym_project\TFSmain_55OAOfficeSystem_CODE\TSOfficeSystem_New\TSOfficeSystem_New\Areas\EmpAndFood\Controllers\OrderingAndPersonalInfoController.cs:行号 81
+--------------------------------------------------------------------------------------------------
+2017.06.27 13:45:37
+	URL：http://localhost:2414/EmpAndFood/OrderingAndPersonalInfo/EditEmp
+	錯誤信息：未将对象引用设置到对象的实例。
+		 ***
+		 **
+	錯誤源：MI.Application
+	異常方法：System.Collections.Generic.List`1[System.String] CompareType[T](T, T, System.String[])
+	堆棧信息：   在 MI.Application.EmployeeService.CompareType[T](T oOdlData, T oNewData, String[] oNoCompare) 位置 C:\Temp\project\ym_project\TFSmain_55OAOfficeSystem_CODE\TSOfficeSystem_New\MI.Application\EmployeeService\EmployeeService.cs:行号 569
+   在 MI.Application.EmployeeService.UpdateEmployeeInfo(AllEmployeeInfoViewModel allEmployeeInfoViewModel, Boolean bType, Boolean isJLKF) 位置 C:\Temp\project\ym_project\TFSmain_55OAOfficeSystem_CODE\TSOfficeSystem_New\MI.Application\EmployeeService\EmployeeService.cs:行号 269
+   在 TSOfficeSystem_New.Areas.EmpAndFood.Controllers.OrderingAndPersonalInfoController.EditEmp(AllEmployeeInfoViewModel model) 位置 C:\Temp\project\ym_project\TFSmain_55OAOfficeSystem_CODE\TSOfficeSystem_New\TSOfficeSystem_New\Areas\EmpAndFood\Controllers\OrderingAndPersonalInfoController.cs:行号 81
+--------------------------------------------------------------------------------------------------

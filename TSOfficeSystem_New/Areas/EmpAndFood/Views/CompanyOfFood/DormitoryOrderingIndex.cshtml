@@ -1,0 +1,128 @@
+﻿@model PageListDto<DorOrderListDto>
+@{
+    ViewBag.Title = "宿舍订餐";
+    var input = ViewBag.InputSearch as DorOrderPagedInputDto;
+    var orderType = ViewBag.OrderType as IList<SType>;
+    var statDate = ViewBag.StatDate as IList<string>;
+}
+
+<div class="addbg" style="display:none;">
+    <div class="addtable" style="margin-top: 30px">
+        <button type="button" id="btn-quxiao" onclick="closeADDwindow()" class="btn btn-danger closebtn">取消（X）</button>
+        <div class="panel panel-default">
+            <div class="panel-heading">添加需要有效的日期</div>
+            <div class="table-responsive">
+                <form id="formTable" method="post">
+                    <table class="table table-hover table-striped">
+                        <tr>
+                            <td>到什么日期有效:</td>
+                            <td><input type="text" class="form-control" id="f_EffectiveDate" name="f_EffectiveDate" autocomplete="off" data-provide="typeahead" value="@(DateTime.Now.ToString("yyyy-MM-dd"))"> </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align: center;">
+                                <button type="button" onclick="Submit()" class="btn btn-primary  btn-lg">确认</button>
+                            </td>
+                        </tr>
+
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)"></a>餐饮管理</li>
+        <li class="active">宿舍订餐</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        <li role="presentation"><a href="/EmpAndFood/CompanyOfFood">公司用餐</a></li>
+        <li role="presentation" class="active"><a href="/EmpAndFood/CompanyOfFood/DormitoryOrderingIndex">宿舍订餐</a></li>
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName">筛选名字：</label>
+                            <input type="text" class="form-control" id="sName" name="Name" value="@input.Name" placeholder="中文名/护照名/昵称">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputName">筛选宿舍：</label>
+                            <input type="text" class="form-control" id="sRoom" name="Dormitory" value="@input.Dormitory" placeholder="社区or楼栋or房号">
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>
+                    </div><!-- /.taiojianli_left-->
+                </form>
+            </div>
+            <div class="taiojianli_right">
+                @foreach (string str in statDate)
+                {
+                    <a href="javascript:" class="btn btn-primary" data-date="@str">宿舍订餐 [@str]</a>
+                }
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">宿舍订餐</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <tr>
+                        <th>序号</th>
+                        <th>中文名(昵称)</th>
+                        <th>是否新人</th>
+                        <th>社区</th>
+                        <th>楼栋</th>
+                        <th>房号</th>
+                        @foreach (var item in orderType)
+                        {
+                            <th>@item.f_value</th>
+                        }
+                        <th title="点击可对其修改">当前是否有效</th>
+                    </tr>
+                    @{ int count = 0;}
+                    @if (Model.Count() == 0 || !Model.Any())
+                    {
+                        <tr>
+                            <td colspan="10" align="center">无数据</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        for (int i = 0; i < Model.Count; i++)
+                        {
+                            var item = Model[i];
+                            <tr>
+                                <td>@(i+1)</td>
+                                <td>@item.Name</td>
+                                <td>@(item.IsNewEmployee?"新人":"")</td>
+                                <td>@item.Community</td>
+                                <td>@item.Building</td>
+                                <td>@item.RoomNo</td>
+                                @foreach (var order in item.Ordings)
+                                {
+                                    <td>@order</td>
+                                }
+                                <td title="当前状态为@(item.IsValid ? "有效" : "无效"),点击变为@(item.IsValid ? "无效" : "有效")">
+                                    <a style="color: red;" href="javascript:" >@(item.IsValid ? "有效" : "无效")</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                </table>
+            </div>
+        </div>
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageList(Model.PageIndex, 30, Model.TotalCount)
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Areas/EmpAndFood/Views/CompanyOfFood/DormitoryOrderingIndex.js"></script>
+}

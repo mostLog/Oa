@@ -1,0 +1,269 @@
+﻿@model List<MI.Core.Domain.DormitorySummaryViewModel>
+@{
+    ViewBag.Title = "宿舍管理";
+    int i = 1;
+    IEnumerable<SelectListItem> listItemCommunity = ViewBag.listItemCommunity;
+    IEnumerable<SelectListItem> listItemBui = ViewBag.listItemBui;
+    List<MI.Core.Domain.SType> listTypeDepartment = ViewBag.listTypeDepartment;
+    List<MI.Core.Domain.t_CoupleRegister> listCoupleRegister = ViewBag.listCoupleRegister;
+    ///当前选择的楼栋
+    SelectListItem currentBAN = listItemBui.FirstOrDefault(p => p.Selected);
+    //当前选择的社区
+    SelectListItem currentComm = listItemCommunity.FirstOrDefault(p => p.Selected);
+}
+<link href="~/Css/datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/Scripts/datetimepicker/jquery.datetimepicker.full.js"></script>
+<div class="addbg">
+    <div class="addtable" style="margin-top:30px">
+    </div><!-- /.addtable-->
+</div><!-- /.addbg-->
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="#">宿舍管理</a></li>
+        <li class="active">住宿汇总</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("DormitoryNavTabs", "住宿汇总")
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div class="taiojianli_left">
+                <label style="float:left;height:30px;line-height:30px;padding-left:15px">社区：</label>
+                <div class="dropdown" style="float:left">
+                    @Html.Hidden("onchangeCommunity", currentComm, new { @correspond = "dropdownMenu0" })
+                    <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenu0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        @currentComm.Text
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu0">
+                        @foreach (var item in listItemCommunity)
+                        {
+                            <li><a href="javaScript:changeCommunity()" id="@(item.Value)">@item.Text </a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div id="searchbox">
+                <div class="taiojianli_left">
+                    <div class="btn-group" id="listItemBui" data-toggle="buttons">
+                        @foreach (var item in listItemBui)
+                        {
+                            <label class="btn btn-info @(item.Selected ? " active":"" )" style="position:static" onclick="javascript: document.location.href=('@(Url.Action("Index", new { sCommunity=currentComm.Text, sBuilding=item.Value }))')">
+                                @item.Text
+                            </label>
+                        }
+                    </div>
+                </div><!-- /.taiojianli_left-->
+            </div>
+            <div class="taiojianli_right">
+                <button type="button" id="btn-ManageCoupleRegister" class="btn btn-primary">情侣/夫妻关系管理</button>
+                <button type="button" id="btn-ADDCoupleRegister" class="btn btn-primary">情侣/夫妻关系登记+</button>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading"> 楼栋： @currentBAN.Text</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>宿舍所属部门</th>
+                            <th>社区</th>
+                            <th>楼栋</th>
+                            <th>房间号</th>
+                            <th>住户</th>
+                            <th>房型</th>
+                            <th>住宿上限(人)</th>
+                            <th>房租差额合计(房)</th>
+                            <th>备注</th>
+                            <th class="caozuotd">@*操&nbsp;&nbsp;作*@ </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ToList())
+                        {
+                            //去情侣登记表中联查到 当前所有住户的的情侣登记ID
+                            var temp = (from name in item.Names
+                                        join cp1 in listCoupleRegister on name.Key equals cp1.f_eId1 into tcp1
+                                        from cp11 in tcp1.DefaultIfEmpty()
+                                        join cp2 in listCoupleRegister on name.Key equals cp2.f_eId2 into tcp2
+                                        from cp22 in tcp2.DefaultIfEmpty()
+                                        select new
+                                        {
+                                            name = name.Value,   //姓名
+                                            t = cp11?.f_cId ?? (cp22?.f_cId ?? 999999), //情侣登记ID
+                                        }).OrderBy(p => p.t).ToList();
+
+                            string sNames = string.Empty;
+                            int iIndex = 0;
+                            string[] sColor = { "", "red", "blue", "mediumorchid", "greenyellow", "green", "greenyellow" };
+                            int old = 0;
+                            //循环住户的 集合，如果他们的情侣登记ID一样表示是一对。
+                            foreach (var variable in temp)
+                            {
+                                //t=999999 表示单身狗
+                                if (variable.t == 999999)
+                                {
+                                    sNames += "<a href=\"javascript:goToEmployeeInfo('" + variable.name + "')\">" + variable.name.Split('&')[0] + "</a>&nbsp;&nbsp;";
+                                }
+                                else
+                                {
+                                    //对比前一次的t，如果不一样，表示另外一对异性恋 改变颜色下标。
+                                    if (old != variable.t)
+                                    {
+                                        iIndex++;
+                                        sNames += "&nbsp;&nbsp;";
+                                    }
+                                    if (temp.Count(u => u.t == variable.t) == 2)
+                                    {
+                                        sNames += $"&nbsp;&nbsp;<a style='color:{sColor[iIndex]}' href=\"javascript:goToEmployeeInfo('" + variable.name + "')\">" + variable.name.Split('&')[0] + "</a>&nbsp;&nbsp;";
+                                    }
+                                    else
+                                    {
+                                        sNames += $"&nbsp;<a href=\"javascript:goToEmployeeInfo('" + variable.name + "')\">" + variable.name.Split('&')[0] + "</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+                                    }
+                                }
+                                old = variable.t;
+                            }
+
+                            <tr>
+                                <td>@i </td>
+                                <td>@item.Department</td>
+                                <td>@item.Community</td>
+                                <td>@item.Building</td>
+                                <td>@item.RoomNo</td>
+                                <td>@Html.Raw(sNames)</td>
+                                <td>@item.RoomType</td>
+                                <td>@item.TotalOfPeople </td>
+                                <td>@item.Balance </td>
+                                <td>@item.Remarks</td>
+                                <td>
+                                    @*<button type="button" class="btn btn-info btn-sm" onclick="UpdateSel('@item.ID')">修改</button>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="Delete('@item.ID')">删除</button>*@
+                                </td>
+                            </tr>
+                            i++;
+                        }
+
+                        @if (Model == null || !Model.Any())
+                        {
+                            <tr>
+                                <td colspan="10" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+    </div><!-- /.oacentbox-->
+</div>
+<script type="text/javascript">
+    var configure = {};
+    configure.IndexUrl = "@Url.Action("Index")";
+    configure.CommunityUrl = "@Url.Action("Community")";
+    configure.EditUrl = "@Url.Action("Edit")";
+    configure.ManageUrl = "@Url.Action("ManageCP")";
+    configure.DeleteUrl = "@Url.Action("DeleteCP")";
+    configure.UpdateUrl = "@Url.Action("UpdateCP")";
+    configure.GetNamesUrl = "@Url.Action("GetNames")";
+    configure.name2Id = {};
+    configure.publicFunction = {
+        checkNull: function (data, txt) {
+            if (data == null || $.trim(data) == "" || $.trim(data) == txt) {
+                return false;
+            }
+            return true;
+        },
+        binTypeahead: function (data) {
+            var options = {
+                source: function (query, process) {
+                    var parameter = { query: query };
+                    $.post(configure.GetNamesUrl,
+                        parameter,
+                        function (e) {
+                            if (e.success) {
+                                var array = [];
+                                $.each(e.data,
+                                    function (index, ele) {
+                                        configure.name2Id[ele.name] = ele.id; //键值对保存下来
+                                        array.push(ele.name);
+                                    });
+                                process(array);
+                            }
+                        });
+                },
+                items: 8,
+                afterSelect: function (item, e) {
+                    console.log(configure.name2Id[item]); //打印对应的id
+                    // $(this).val(name2Id[item]);
+                    data.parent().find("input[type=hidden]").val(configure.name2Id[item]);
+                },
+                delay: 500 //延迟时间;
+            };
+            data.typeahead(options);
+        },
+        goToPage: function (url, data) {
+            OpenADDwindow();
+            loadingTips();
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data, //参数
+                error: function () {
+                    alert("发生错误");
+                },
+                success: function (data) {
+                    if (data != null) {
+                        $(".addtable").html(data);
+                    }
+                }
+            });
+        }
+    };
+</script>
+<script type="text/javascript">
+    function changeCommunity() {
+        var sCommunity = $("#onchangeCommunity").val();
+        if (!configure.publicFunction.checkNull(sCommunity, "请选择社区"))
+        { return false }
+        $.ajax({
+            type: "POST",
+            url: configure.CommunityUrl,
+            data: { community: sCommunity },
+            error: function (data) {
+                alert('发生错误');
+            },
+            success: function (data) {
+                //切换社区的时候 根据选中的社区获取到楼栋 并重新列出楼栋信息。
+                if (data != null) {
+                    var str = "";
+                    for (var i = 0; i < data.length; i++) {
+                        str += "<label class=\"btn btn-info\" style=\"position:static\" onclick=\"javascript: document.location.href='" + configure.IndexUrl + "?sCommunity=" + sCommunity + "&sBuilding=" + data[i] + "' \" >" + data[i] + "</label>";
+                    }
+                    $("#listItemBui").html(str);
+                }
+            }
+        });
+    }
+    var EmployeeInfoUrl = "@Url.Action("Index", "employeeInfo", new { Area= "EmpAndFood" })";
+    var NewEmployeeInfoUrl = "@Url.Action("NewIndex", "employeeInfo", new { Area= "EmpAndFood" })";
+    function goToEmployeeInfo(name) {
+        var strName = name.split('&');
+        if (strName[1] == "False") {
+            window.open(EmployeeInfoUrl + "?iEid=" + strName[2]);
+        } else {
+            window.open(NewEmployeeInfoUrl + "?iEid=" + strName[2]);
+        }
+
+    }
+    //绑定初始化事件
+    jQuery(function () {
+        $("#btn-ADDCoupleRegister").click(function () {
+            configure.publicFunction.goToPage(configure.EditUrl, null);
+        });
+        $("#btn-ManageCoupleRegister").click(function () {
+            configure.publicFunction.goToPage(configure.ManageUrl, null);
+        });
+    });
+</script>

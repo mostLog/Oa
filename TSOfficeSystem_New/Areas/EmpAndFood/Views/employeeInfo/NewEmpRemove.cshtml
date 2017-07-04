@@ -1,0 +1,217 @@
+﻿@model List<MI.Core.Domain.Employee>
+@{
+    
+    ViewBag.Title = "已移走新人";
+    ViewBag.current = "员工管理";
+    int i = 1;
+    //部门
+    List<MI.Core.Domain.SType> listDepartment = ViewBag.listTypeDepartment;
+    //航班
+    List<MI.Core.Domain.SType> listTypeFlight = ViewBag.listTypeFlight;
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+    string[] level = ViewBag.levelValue ?? "";//权限
+    MI.Application.Dto.EmployeeDto employedto = ViewBag.employee;
+}
+<script src="~/Scripts/editable/bootstrap-editable.js"></script>
+@Styles.Render("~/Content/datetimepicker")
+@Scripts.Render("~/bundles/datetimepicker")
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("td,th").css("padding", "4px");
+        $.datetimepicker.setLocale('zh');
+        $("#StartDate,#EndDate").datetimepicker({
+            timepicker: false,
+            format: 'Y-m-d',
+            step: 5
+        });
+    });
+</script>
+<style>
+    pre {
+        border: none;
+        font-family: 'Microsoft JhengHei';
+        font-size: 14px;
+        background: none;
+    }
+
+    .remarkTd {
+        word-wrap: break-word;
+        word-break: break-all;
+        width: 10%;
+    }
+</style>
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javaScript:">员工管理</a></li>
+        <li class="active">已移走新人</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("emplotyeeInfoNavigation", "已移走新人")
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline">
+                    @if (level.Contains("Department"))
+                    {
+                        <div class="taiojianli_left">
+                            <div class="dropdown">
+                                @Html.Hidden("f_department_tID", "", new { @correspond = "dropdownMenuSelectDep" })
+                                <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenuSelectDep" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @( employedto.f_department_tID == -1 ? "全部" : listDepartment.FirstOrDefault(p => p.f_tID == employedto.f_department_tID)?.f_value ?? "部门筛选" )
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuSelectDep">
+                                    <li><a href="javaScript:" id="-1">全部</a></li>
+                                    @foreach (var item in listDepartment)
+                                    {
+                                        <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    }
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputDate">到菲日期：</label>
+                            <input type="text" class="form-control" id="StartDate" name="StartDate" value="@(employedto.StartDate==DateTime.MinValue?"":employedto.StartDate.ToString("yyyy-MM-dd"))" placeholder="">&nbsp;到&nbsp;<input type="text" class="form-control" id="EndDate" name="EndDate" value="@(employedto.EndDate==DateTime.MinValue?"":employedto.EndDate.ToString("yyyy-MM-dd"))" placeholder="">
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">名字：</label>
+                            <input type="text" style="width:200px;" class="form-control" id="Name" name="Name" value="@employedto.Name" placeholder="中文名/护照名/昵称/账户">
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>
+                    </div>
+                </form>
+            </div>
+            <div class="taiojianli_right">
+                <button onclick="Export()" type="button" class="btn btn-success">导出Excel</button>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">已移走新人</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号 </th>
+                            <th>国籍</th>
+                            <th>部门 </th>
+                            <th>姓名 </th>
+                            <th>OA帐号/密码</th>
+                            <th>性别 </th>
+                            <th>类型</th>
+                            <th width="135px">航班日期</th>
+                            <th>报到地址</th>
+                            <th width="135px">报到日期</th>
+                            <th>社区/楼栋/房号</th>
+                            <th>新人餐</th>
+                            <th>借款金额</th>
+                            <th>储值卡</th>
+                            <th>电话卡</th>
+                            <th>确认签字</th>
+                            <th>保关</th>
+                            <th>备注</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i </td>
+                                <td>@item.f_international </td>
+                                <td>@(item.STypeDepartment?.f_value)</td>
+                                <td id="@("tips"+item.f_eid)">@($"{item.f_chineseName}({item.f_passportName})")</td>
+                                <td>@(item.f_AccountName)<br />(@(item.f_pwd))</td>
+                                <td>@(item.f_sex == 1 ? "男" : "女")</td>
+                                <td>
+                                    @(listTypeFlight.FirstOrDefault(p => p.f_tID == item.NewEmployee?.f_flightTypt_tID)?.f_value)
+                                </td>
+                                <td>
+                                    @Html.Raw(item.NewEmployee?.f_flightDate == null ? "" : item.NewEmployee?.f_flightDate.Value.ToString("yyyy-MM-dd") + "&nbsp;&nbsp;&nbsp;" + item.NewEmployee?.f_flightDate.Value.ToString("HH:mm"))
+                                    <br />@Html.Raw(item.NewEmployee?.f_flightArrivalTime == null ? "" : item.NewEmployee?.f_flightArrivalTime.Value.ToString("yyyy-MM-dd") + "&nbsp;&nbsp;&nbsp;" + item.NewEmployee?.f_flightArrivalTime.Value.ToString("HH:mm"))
+                                </td>
+                                <td>@(item.STypeWorkLocation?.f_value)</td>
+                                <td>@(item.NewEmployee?.f_RegistrationTime?.ToString("yyyy-MM-dd HH:mm"))</td>
+                                <td>@(item.t_Dormitory?.f_Community + "/ " + @item.t_Dormitory?.f_Building + "/ " + @item.t_Dormitory?.f_RoomNo)</td>
+                                <td><pre>@(item.f_OldReservation)</pre></td>
+                                <td>@(item.NewEmployee?.f_LoanAmount) </td>
+                                <td>@(item.NewEmployee?.f_GiftCard) </td>
+                                <td>@(item.NewEmployee?.f_TelCatd)</td>
+                                <td>@(item.NewEmployee?.f_signature ?? false ? "已确认" : "")</td>
+                                <td>
+                                    @(item.NewEmployee?.f_TrainingDirector)
+                                    @if (item.NewEmployee?.f_isInform ?? false)
+                                    {
+                                        <span>√</span>
+                                    }
+                                </td>
+                                <td class="remarkTd">@(item.NewEmployee?.f_Remark )</td>
+                            </tr>
+                            i++;
+                        }
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="18" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageListFor(iCurrentPage, iPageSize, iTotalCount, employedto)
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $.datetimepicker.setLocale('zh');
+        jQuery('#StartDate').datetimepicker({
+            lang: 'zh',
+            format: 'Y-m-d',
+            onShow: function (ct) {
+                this.setOptions({
+                    maxDate: jQuery('#EndDate').val() ? jQuery('#EndDate').val() : false
+                })
+            },
+            timepicker: false
+        });
+        jQuery('#EndDate').datetimepicker({
+            lang: 'zh',
+            format: 'Y-m-d',
+            onShow: function (ct) {
+                this.setOptions({
+                    minDate: jQuery('#StartDate').val() ? jQuery('#StartDate').val() : false
+                })
+            },
+            timepicker: false
+        });
+    })
+    //导出
+    function Export() {
+        //查询条件
+        var data = "EndDate=" + encodeURI($('#EndDate').val())
+            + "&StartDate=" + encodeURI($('#StartDate').val())
+            + "&Name=" + encodeURI($('#Name').val())
+            + "&iPageIndex=" + '@iCurrentPage'
+            + "&iPageSize=" + '@iPageSize'
+        +"&department_f_tid=" + encodeURI($("#department_f_tid").val());
+        //跳转页面(直接打开 Excel)
+        location.href = '/EmpAndFood/employeeInfo/ExportRemoveNewEmp?' + data;
+    }
+</script>

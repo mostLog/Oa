@@ -1,0 +1,13 @@
+﻿@{
+    IList<string> level = ViewBag.levelValue ?? new List<string>();
+}
+<h2 id="oatilte" class="navbar-left">行政OA管理系统</h2>
+<ul id="navtop" class="nav navbar-nav">
+    @if (level.Contains("CheckTimeByEmp"))
+    {
+        <li><a href="/Accounting/CheckTimeByEmp/Index">考勤打卡</a></li>
+    }
+    <li><a href="/EmpAndFood/OrderingAndPersonalInfo/ModifyPwd">修改密码</a></li>
+    <li><a href="javaScript:">@ViewBag.UserName </a></li>
+    <li><a href="~/Login/Layout">登出</a></li>
+</ul>

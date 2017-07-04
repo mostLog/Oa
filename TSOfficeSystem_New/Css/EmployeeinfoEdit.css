@@ -1,0 +1,158 @@
+﻿
+.addtable table tr td:first-child {
+    width: 20%;
+}
+
+.addtable table tr td:nth-child(2) {
+    width: 30%;
+}
+
+.addtable table tr td:nth-child(3) {
+    text-align: right;
+    width: 18%;
+}
+
+.addtable table tr td:nth-child(4) {
+    /*width: 30%;*/
+}
+/*yuangognguanli--start*/
+.zhongwenming {
+    width: 180px;
+    float: left;
+}
+
+.photo-staff {
+    float: right;
+    position: relative;
+    width: 50px;
+    height: 50px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 3px;
+    border: solid 3px #d6d6d6;
+    cursor: pointer;
+    background-color: #b0b0b0;
+}
+
+.photo-add {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    background: url('/images/photo-add.png') no-repeat center center;
+}
+
+.photos {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: hidden;
+    position: relative;
+    background-size: cover;
+    background: url('/images/photo1.png') no-repeat center center;
+}
+
+.zoominicon {
+    position: absolute;
+    bottom: 0px;
+    right: 3px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #c9302c;
+}
+
+.photobig-staff {
+    position: fixed;
+    top: 200px;
+    left: auto;
+    border: solid 3px #5BC0DE;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    display: none;
+    z-index: 1111;
+    background-color: #b0b0b0;
+    min-width: 406px;
+    min-height: 306px;
+}
+
+    .photobig-staff > img {
+        min-width: 400px;
+        min-height: 300px;
+        max-height: 865px;
+        max-width: 1612px;
+    }
+
+.closephoto {
+    position: absolute;
+    top: -5px;
+    right: 1px;
+    color: #c9302c;
+    font-size: 30px;
+    display: inline-block;
+    z-index: 888;
+    font-weight: bold;
+}
+
+    .closephoto:hover {
+        color: #09C;
+        text-decoration: none;
+    }
+
+.downloadbtn {
+    position: absolute;
+    display: inline-block;
+    bottom: 2px;
+    right: 60px;
+    color: #c9302c;
+    font-size: 30px;
+}
+
+    .downloadbtn:hover {
+        color: #09C;
+        text-decoration: none;
+    }
+
+.rephotobtn {
+    position: absolute;
+    display: inline-block;
+    bottom: 2px;
+    right: 20px;
+    color: #c9302c;
+    font-size: 30px;
+}
+
+    .rephotobtn:hover {
+        color: #09C;
+        text-decoration: none;
+    }
+
+#coor {
+    width: 10px;
+    height: 10px;
+    overflow: hidden;
+    cursor: se-resize;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    background-color: #09C;
+}
+
+#repeat {
+    position: absolute;
+    display: inline-block;
+    top: auto;
+    bottom: 50%;
+    right: 50%;
+    color: #c9302c;
+    font-size: 28px;
+    filter: alpha(opacity=50);
+    -moz-opacity: 0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+    display:none;
+}
+
+    #repeat:hover {
+        color: #09C;
+        text-decoration: none;
+    }

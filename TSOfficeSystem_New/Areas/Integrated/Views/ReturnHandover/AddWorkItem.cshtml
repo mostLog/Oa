@@ -1,0 +1,163 @@
+﻿@model MI.Core.Domain.ReturnHandover
+@{
+    Layout = null;
+    List<MI.Core.Domain.Employee> emp = ViewBag.Emp;
+}
+
+<link href="~/Css/datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/Scripts/typeahead/bootstrap3-typeahead.js"></script>
+<script src="~/Scripts/datetimepicker/jquery.datetimepicker.full.js"></script>
+
+<button type="button" id="btn-quxiao" onclick="closeADDwindow()" class="btn btn-danger closebtn">取消（X）</button>
+<div class="panel panel-default">
+    <div class="panel-heading">添加返乡交接记录</div>
+    <div class="table-responsive">
+        <form id="formTable" method="post">
+            <table class="table table-hover table-striped">
+                <tr>
+                    <td>返乡員工:</td>
+                    <td>
+                        <input type="text" class="form-control" id="f_chineseName" autocomplete="off" data-provide="typeahead" placeholder="请输入中文名/昵称/护照名" name="f_chineseName" value="@ViewBag.nickname " readonly="readonly" />
+                        <input type="hidden" id="f_eid" name="f_eid" value="@Model.f_eid" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>起始時間:</td>
+                    <td><input type="text" class="form-control" id="f_StartDate" name="f_StartDate" value="@(Model.f_StartDate?.ToString("yyyy-MM-dd"))" readonly="readonly" /></td>
+                </tr>
+                <tr>
+                    <td>結束時間:</td>
+                    <td><input type="text" class="form-control" id="f_EndDate" name="f_EndDate" value="@(Model.f_EndDate?.ToString("yyyy-MM-dd"))" readonly="readonly" /></td>
+                </tr>
+
+                <tr>
+                    <td>工作任務:</td>
+                    <td>
+                        <textarea cols="100" rows="4" class="form-control" name="f_WorkItem" id="f_WorkItem"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>当前移交进度:</td>
+                    <td><input type="text" class="form-control" id="f_CurrentProgress" name="f_CurrentProgress" /></td>
+                </tr>
+                <tr>
+                    <td style="width:120px;">代理人:</td>
+                    <td>
+                        <div class="dropdown" style="float:left;">
+                            <input type="hidden" id="f_AgentEid" name="f_AgentEid" value="@Model.f_AgentEid" correspond="dropdownMenuAgents" />
+                            <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuAgents" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(emp.FirstOrDefault(u => u.f_eid == Model.f_AgentEid)?.f_nickname ?? emp.FirstOrDefault(u => u.f_eid == Model.f_AgentEid)?.f_chineseName ?? "请选择")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuAgents">
+                                @foreach (var item in emp)
+                                {
+                                    <li><a id="@(item.f_eid)">@(item.f_nickname ?? item.f_chineseName)</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>代理人处理进度及结果:</td>
+                    <td><input type="text" class="form-control" id="f_AgentProcess" name="f_AgentProcess" /></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <button type="button" onclick="Submit()" class="btn btn-primary  btn-lg">确认</button>
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+</div><!-- /.panel-default/ table-->
+
+<script type="text/javascript">
+
+    function Submit() {
+        var f_eid = $("#f_eid").val();
+        if (ValidationNullOr0("员工", f_eid)) {
+            return;
+        }
+        if (ValidationNull("起始时间", $("#f_StartDate").val()) || ValidationNull("结束时间", $("#f_EndDate").val()) || ValidationNull("工作任务", $("#f_WorkItem").val()) || ValidationNull("代理人", $("#f_AgentEid").val())) {
+            return;
+        }
+        if (ValidationLength("工作任务", $("#f_WorkItem").val(), 1500) || ValidationLength("当前移交进度", $("#f_CurrentProgress").val(), 100) || ValidationLength("处理进度及结果", $("#f_AgentProcess").val(), 500)) {
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("AddSubmit")',
+            data: $("#formTable").serialize(),
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data != null) {
+                    if (data.result == "1") {
+                        alert("操作成功");
+                        location.href = location.href;
+                    }
+                    else if (data.result == "12") {
+                        alert(data.tips);
+                    } else {
+                        alert("操作异常");
+                    }
+                }
+            }
+        })
+    }
+
+    $.datetimepicker.setLocale('zh');
+    //起始時間
+    $("#f_StartDate").datetimepicker({
+        yearOffset: 0,
+        lang: 'zh',
+        timepicker: false,
+        format: 'Y-m-d',
+        formatDate: 'Y-m-d'
+    });
+    //結束時間
+    $("#f_EndDate").datetimepicker({
+        yearOffset: 0,
+        lang: 'zh',
+        timepicker: false,
+        format: 'Y-m-d',
+        formatDate: 'Y-m-d'
+    });
+
+    function Cancle() {
+        $("div.addbg").hide();
+    }
+
+    $(document).ready(function ($) {
+        var name2Id = {}; //姓名对应的id
+        $('#f_chineseName').typeahead({
+
+            source: function (query, process) {
+                var parameter = { query: query };
+                $.post('@Url.Action("GetNames")', parameter, function (e) {
+                    if (e.success) {
+                        var array = [];
+                        $.each(e.data, function (index, ele) {
+                            name2Id[ele.name] = ele.id; //键值对保存下来
+                            array.push(ele.name);
+                        });
+                        process(array);
+                    }
+                });
+            },
+            items: 8,
+            afterSelect: function (item) {
+                console.log(name2Id[item]);//打印对应的id
+                $('#f_eid').val(name2Id[item]);
+            },
+            delay: 500//延迟时间
+
+        });
+
+    })
+
+</script>
+

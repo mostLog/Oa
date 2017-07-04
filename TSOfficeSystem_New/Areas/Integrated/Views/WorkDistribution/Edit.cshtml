@@ -1,0 +1,165 @@
+﻿@model MI.Core.Domain.WorkDistribution
+@{
+    Layout = null;
+    List<MI.Core.Domain.Employee> emp = ViewBag.Emp;
+    List<MI.Core.Domain.SType> WorkType = ViewBag.WorkType;
+}
+@Styles.Render("~/Content/datetimepicker")
+@Scripts.Render("~/bundles/datetimepicker")
+<button type="button" id="btn-quxiao" onclick="closeADDwindow()" class="btn btn-danger closebtn">取消（X）</button>
+<div class="panel panel-default">
+    <div class="panel-heading">工作交接</div>
+    <div class="table-responsive">
+        <form id="formTable" method="post">
+            <table class="table table-hover table-striped">
+                <tr>
+                    <td>登记时间:</td>
+                    <td>
+                        <input type="text" class="form-control" id="f_RegisterDate" name="f_RegisterDate" value="@Model.f_RegisterDate.ToString("yyyy-MM-dd")" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>登记人:</td>
+                    <td>
+                        <input type="text" class="form-control" id="f_Registered" name="f_Registered" value="@Model.f_Registered" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>工作类别:</td>
+                    <td>
+                        <div class="dropdown" style="float:left;">
+                            <input type="hidden" id="f_WorkType" name="f_WorkType" value="@Model.f_WorkType" correspond="dropdownMenuWTE" />
+                            <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuWTE" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @((WorkType.FirstOrDefault(u => u.f_tID == Model.f_WorkType)?.f_value) ?? "请选择")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuWTE">
+                                <li><a id="0">请选择</a></li>
+                                @foreach (var item in WorkType)
+                                {
+                                    <li><a id="@(item.f_tID)">@item.f_value</a></li>
+                                }
+                            </ul>
+                        </div>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>交接事项:</td>
+                    <td>
+                        <textarea cols="100" rows="5" class="form-control" name="f_Handover" id="f_Handover">@Model.f_Handover</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>待处理人:</td>
+                    <td style="height:51px;">
+                        <div class="dropdown" style="position:absolute;">
+                            <input type="hidden" id="f_Treat" name="f_Treat" value="@Model.f_Treat" correspond="dropdownMenuTre" />
+                            <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuTre" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(emp.FirstOrDefault(u => u.f_eid == Model.f_Treat)?.f_nickname ?? emp.FirstOrDefault(u => u.f_eid == Model.f_Treat)?.f_chineseName ?? "ALL")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuTre">
+                                <li><a id="ALL">ALL</a></li>
+                                @foreach (var item in emp)
+                                {
+                                    <li><a id="@(item.f_eid)">@(item.f_nickname ?? item.f_chineseName)</a></li>
+                                }
+                            </ul>
+                        </div>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>紧急事项处理期限:</td>
+                    <td>
+                        <input type="text" class="form-control" id="f_UrgentDate" name="f_UrgentDate" value="@(Model.f_UrgentDate?.ToString(" yyyy-MM-dd"))" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>完成时间:</td>
+                    <td>
+                        <input type="text" class="form-control" id="f_CompleteDate" name="f_CompleteDate" onblur="IsComplete(this)" value="@(Model.f_CompleteDate?.ToString(" yyyy-MM-dd"))" />
+                        <input type="hidden" id="f_IsComplete" name="f_IsComplete" value="@Model.f_IsComplete" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>备注:</td>
+                    <td>
+                        <input type="text" class="form-control" id="f_Remarks" name="f_Remarks" value="@Model.f_Remarks" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <button type="button" onclick="Submit()" class="btn btn-primary  btn-lg">确认</button>
+                        <input type="hidden" value="@Model.f_Id" id="f_Id" name="f_Id" />
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    function Submit() {
+        var f_Registered = $("#f_Registered").val();
+        var f_Handover = $("#f_Handover").val();
+        if (ValidationNull("登记人", f_Registered) || ValidationNull("交接事项", f_Handover)) {
+            return;
+        }
+        if (ValidationLength("登记人", f_Registered, 20) || ValidationLength("交接事项", f_Handover, 1500)) {
+            return;
+        }
+        var f_Treat = $("#f_Treat").val();
+        if (f_Treat == "ALL") {
+            $("#f_Treat").val(null);
+        }
+        var f_WorkType = $("#f_WorkType").val();
+        if (ValidationNullOr0("工作类型", $.trim(f_WorkType))) {
+            return;
+        }
+        if (ValidationLength("备注信息", $("#f_Remarks").val(), 200)) {
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UptateAndAdd")',
+            data: $("#formTable").serialize(),
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data != null) {
+                    if (data.result == "1") {
+                        alert("操作成功");
+                        location.href = location.href;
+                    } else if (data.result == "500") {
+                        alert("操作异常");
+                    } else if (data.result == "12") {
+                        alert(data.tips);
+                    } else if (data.result == "11") {
+                        alert("资料无变动");
+                    }
+                }
+            }
+        });
+    }
+    function Cancle() {
+        $("div.addbg").hide();
+    }
+    $.datetimepicker.setLocale('zh');
+    //紧急事项处理期限
+    $("#f_UrgentDate,#f_CompleteDate,#f_RegisterDate").datetimepicker({
+        yearOffset: 0,
+        lang: 'zh',
+        timepicker: false,
+        format: 'Y-m-d',
+        formatDate: 'Y-m-d'
+    });
+    function IsComplete(s) {
+        if (s.value == "") {
+            $("#f_IsComplete").val('false');
+        } else {
+            $("#f_IsComplete").val('true');
+        }
+    }
+</script>

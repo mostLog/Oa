@@ -1,0 +1,30 @@
+﻿@{
+}
+
+<div class="addbg">
+    <div class="addtable" style="margin-top:30px">
+    </div><!-- /.addtable-->
+</div><!-- /.addbg-->
+<script type="text/javascript">
+    $(function () {
+        OpenADDwindow();
+        loadingTips();
+        $.ajax({
+            type: 'post',
+            url: '@Url.Action("PersonalProfile", "OrderingAndPersonalInfo")',
+            success: function (data) {
+                if (data != null) {
+                    $(".addtable").html(data);
+                     //ajax请求的html 需要重新绑定下拉框的动作事件
+                    setDropdownChangeValue();
+                    $(".addbg").css({ "z-index": "0", "background-color": "#fff" });
+                } else {
+                    alert("加载内容失败");
+                }
+            },
+            error: function (data) {
+                alert("系统异常");
+            }
+        })
+    });
+</script>

@@ -1,0 +1,257 @@
+﻿@model MI.Core.Domain.t_ChangeRoom
+@{
+    Layout = null;
+}
+
+<link href="~/Css/datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/Scripts/typeahead/bootstrap3-typeahead.js"></script>
+<script src="~/Scripts/datetimepicker/jquery.datetimepicker.full.js"></script>
+
+<button type="button" id="btn-quxiao" onclick="closeADDwindow()" class="btn btn-danger closebtn">取消（X）</button>
+<div class="panel panel-default">
+    <div class="panel-heading">员工换房</div>
+    <div class="table-responsive">
+        <form id="formTable" method="post" autocomplete="off">
+            <table class="table table-hover table-striped">
+                <tr>
+                    <td>员工:</td>
+                    <td>
+                        <input type="text" class="form-control" id="f_chineseName" autocomplete="off" data-provide="typeahead" placeholder="请输入中文名/昵称/护照名" name="f_chineseName" value="@Model.t_employeeInfo.f_chineseName" @Html.Raw(Model.f_Id == 0 ? "" : "readOnly=true") />
+                        <input type="hidden" id="f_eid" name="f_eid" value="@Model.f_eid" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>申请日期:</td>
+                    <td><input type="text" class="form-control" id="f_FilingDate" name="f_FilingDate" value="@(Model.f_FilingDate == DateTime.MinValue? "":Model.f_FilingDate.ToString("yyyy-MM-dd"))" /></td>
+                </tr>
+                <tr>
+                    <td>原房间:</td>
+                    <td>
+                        <input type="text" class="form-control" id="RoomNoLaundry" name="RoomNoLaundry" readonly="readonly" value="@ViewBag.RoomNoLaundry" />
+                        <input type="hidden" class="val_Laundry" id="f_OldRoomID" name="f_OldRoomID" value="@Model.f_OldRoomID" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>新房间:</td>
+                    <td>
+                        <div class="dropdown" style="float:left;">
+                            <input type="hidden" value="@(Model.t_dormitory?.f_Community)" id="CClothes" correspond="dropdownMenuCom" />
+                            <button class="btn btn-default dropdown-toggle" style="width:auto" type="button" id="dropdownMenuCom" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(Model.t_dormitory?.f_Community ?? "请选择")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" id="CommunityClothes" aria-labelledby="dropdownMenuCom">
+                                @foreach (var item in (List<string>)ViewBag.CCommunity)
+                                {
+                                    <li><a onclick="Community(this, 'Clothes')" id="@item">@item </a></li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="dropdown" style="float:left;">
+                            <input type="hidden" value="@(Model.t_dormitory?.f_Building)" id="BClothes" correspond="dropdownMenuBui" />
+                            <button class="btn btn-default dropdown-toggle" style="width:auto" type="button" id="dropdownMenuBui" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(Model.t_dormitory?.f_Building ?? "请选择")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" id="BuildingClothes" aria-labelledby="dropdownMenuBui">
+                                @foreach (var item in (List<string>)ViewBag.Cbuilding)
+                                {
+                                    <li><a id="@item" onclick='javascript: $("#RoomNoClothes").val(""); $("#f_NewRoomId").val(""); RoomNo($("#RoomNoClothes"), "Clothes");'>@item</a></li>
+                                }
+                            </ul>
+                        </div>
+                        <div id="T-div" style="margin-bottom:0px;float:left;">
+                            <input type="text" placeholder="请输入房间号" id="RoomNoClothes" name="RoomNoClothes" class="form-control" onblur="RoomNo(this, 'Clothes')" value="@Model.t_dormitory.f_RoomNo" style="width:410px" />
+                            <span id="Ticon"></span>
+                        </div>
+                        <input type="hidden" class="val_Clothes" id="f_NewRoomId" name="f_NewRoomId" value="@Model.f_NewRoomId" />
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>备注:</td>
+                    <td><input type="text" class="form-control" id="f_Remarks" name="f_Remarks" value="@Model.f_Remarks" /></td>
+                </tr>
+                <tr>
+                    <td>处理进度:</td>
+                    <td>
+                        <div class="dropdown" style="float:left;">
+                            <input type="hidden" value="@(Model.f_Progress)" name="f_Progress" id="f_Progress" correspond="dropdownMenuProgress" />
+                            <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuProgress" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(Model.f_Progress ?? "请选择")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" id="CommunityClothes" aria-labelledby="dropdownMenuProgress">
+                                <li><a id="申请中">申请中</a></li>
+                                <li><a id="排队等候">排队等候</a></li>
+                                <li><a id="已换房">已换房</a></li>
+                            </ul>
+                        </div>
+                        <div style="float:left;margin-left:50px">
+                            <label>生效月份：</label><input type="text" class="form-control" style="display:inline;width:auto;" value="@(Model.f_EffectiveMonths == null?"":Model.f_EffectiveMonths.Value.ToString("yyyy-MM"))" name="f_EffectiveMonths" id="f_EffectiveMonths" />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>登记人:</td>
+                    <td>
+                        <input type="text" class="form-control" id="f_Registrant" name="f_Registrant" value="@Model.f_Registrant" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>补房租:</td>
+                    <td><input type="text" class="form-control" id="f_SewRent" name="f_SewRent" value="@Model.f_SewRent" /></td>
+                </tr>
+                <tr>
+                    <td>承租日期:</td>
+                    <td>
+                        <input type="text" class="form-control" id="f_RentDate" name="f_RentDate" value="@(Model.f_RentDate == DateTime.MinValue? "" : Model.f_RentDate.ToString("yyyy-MM-dd"))" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <button type="button" onclick="Submit()" class="btn btn-primary  btn-lg">确认</button>
+                        <input type="hidden" value="@Model.f_Id" id="f_Id" name="f_Id" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div><!-- /.panel-default/ table-->
+
+
+<script type="text/javascript">
+    $(function () {
+        $.datetimepicker.setLocale('zh');
+        $('#f_EffectiveMonths').datetimepicker({
+            lang: 'zh',
+            timepicker: false,
+            format: 'Y-m',
+            formatDate: 'Y-m'
+        });
+    });
+
+    //选择社区
+    function Community(s, type) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Community")',
+            data: { community: $.trim($(s).text()) },
+            error: function (data) {
+                alert("异常");
+            },
+            success: function (data) {
+                if (data != null) {
+                    var str = "<li><a href=\"javaScript:\" id=''>请选择社区</a></li>";
+                    for (var i = 0; i < data.length; i++) {
+                        str += "<li><a  id='" + data[i] + "'>" + data[i] + "</a></li>";
+                    }
+                    $("#Building" + type).html(str);
+                    //加载之后 重新绑定下拉框事件
+                    setDropdownChangeValue();
+                    $(s).parents("div.dropdown").next().find("button").text("请选择");
+                }
+            }
+        });
+        $("#RoomNoClothes").val("");
+        $("#f_NewRoomId").val("");
+        RoomNo($("#RoomNoClothes"), 'Clothes');
+    }
+
+    //选择房间号
+    function RoomNo(s, type) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("RoomNo")',
+            data: { community: $.trim($("#C" + type).val()), building: $.trim($("#B" + type).val()), roomno: $.trim($(s).val()) },
+            error: function (data) {
+                alert("异常");
+            },
+            success: function (data) {
+                if (data != null && data != 0 && data != '0') {
+                    $(".val_" + type).val(data);
+                } else {
+                    s.value = '';
+                }
+                RoomNoTextSwitchStyle(data);
+            }
+        });
+    }
+
+    $.datetimepicker.setLocale('zh');
+    //申请日期
+    $("#f_FilingDate").datetimepicker({
+        yearOffset: 0,
+        lang: 'zh',
+        timepicker: false,
+        format: 'Y-m-d',
+        formatDate: 'Y-m-d'
+    });
+    //承租日期
+    $("#f_RentDate").datetimepicker({
+        yearOffset: 0,
+        lang: 'zh',
+        timepicker: false,
+        format: 'Y-m-d',
+        formatDate: 'Y-m-d'
+    });
+    function Cancle() {
+        $("div.addbg").hide();
+    }
+
+    //选择原宿舍
+    function GetDormityId(eid) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetDormityId")',
+            data: { eid: eid },
+            error: function (data) {
+                alert("网络异常");
+            },
+            success: function (e) {
+                if (e.success) {
+                    if (e.data.id != 0) {
+                        $('#f_OldRoomID').val(e.data.id);
+                        $('#RoomNoLaundry').val(e.data.name);
+                    } else {
+                        $('#f_OldRoomID').val('');
+                        $('#RoomNoLaundry').val('无');
+                    }
+                    console.log(e.data.name);
+                }
+            }
+        });
+    }
+
+    $(document).ready(function ($) {
+        var name2Id = {}; //姓名对应的id
+        $('#f_chineseName').typeahead({
+            source: function (query, process) {
+                var parameter = { query: query };
+                $.post('@Url.Action("GetNames")', parameter, function (e) {
+                    if (e.success) {
+                        var array = [];
+                        $.each(e.data, function (index, ele) {
+                            // console.log(ele);
+                            name2Id[ele.name] = ele.id; //键值对保存下来
+                            array.push(ele.name);
+                        });
+                        process(array);
+                    }
+                });
+            },
+            items: 8,
+            afterSelect: function (item) {
+                console.log(name2Id[item]);//打印对应的id
+                $('#f_eid').val(name2Id[item]);
+                GetDormityId(name2Id[item]);
+            },
+            delay: 500//延迟时间
+        });
+    })
+    $("#T-div").click(function () {
+        $(this).attr("class", "form-group has-warning has-feedback");
+        $("#Ticon").attr("class", "glyphicon glyphicon-warning-sign form-control-feedback");
+    })
+</script>

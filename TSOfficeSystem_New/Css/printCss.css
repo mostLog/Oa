@@ -1,0 +1,35 @@
+﻿        @media print {
+            .noPrint {
+                display: none;
+            }
+        }
+        .panel-heading {
+            border: 1px solid #000000;
+            border-bottom: none;
+            padding-left: 20px;
+            padding-top: 5px;
+            height: 30px;
+            line-height: 30px;
+        }
+
+        .table {
+            width: 100%;
+            border: 1px solid #000000;
+            border-bottom: none;
+            border-left: none;
+            font-size: 12px;
+        }
+
+            .table tr {
+                height: 25px;
+                line-height: 25px;
+                border: none;
+            }
+
+                .table tr td {
+                    border-bottom: 1px solid #000000;
+                    border-left: 1px solid #000000;
+                    border-top: none;
+                    border-right: none;
+                    padding: 0 0 0 10px;
+                }

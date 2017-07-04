@@ -1,0 +1,346 @@
+﻿@model MI.Core.Domain.t_Dormitory
+@{
+    Layout = null;
+    List<MI.Core.Domain.SType> listTypeDepartment = ViewBag.listTypeDepartment;
+    List<MI.Core.Domain.t_LaundryPwd> NoandPwd = ViewBag.NoandPwd;
+}
+@*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
+<link href="~/Css/datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/Scripts/datetimepicker/jquery.datetimepicker.full.js"></script>
+<script src="~/Scripts/typeahead/bootstrap3-typeahead.js"></script>
+<button type="button" id="btn-quxiao" onclick="closeADDwindow()" class="btn btn-danger closebtn">取消（X）</button>
+<div class="panel panel-default">
+    <div class="panel-heading">宿舍登记</div>
+    <div class="table-responsive">
+        <form id="formTable" method="post">
+            <table class="table table-hover table-striped">
+                <tr>
+                    <td><span style="color:#d43f3a">*</span>社区:</td>
+                    <td>
+                        <div style="position:relative;">
+                            <span style="margin-left:100px;width:18px;overflow:hidden;">
+                                @Html.DropDownList("sel_Community", ViewBag.Community as IEnumerable<SelectListItem>, "-请选择-", new { onchange = "this.parentNode.nextSibling.value=this.value;Community()", @style = "width:228px;height:34px;margin-left:-100px" })
+                            </span><input id="f_Community" name="f_Community" value="@Model.f_Community" style="width:212px;height:34px;position:absolute;left:0px;">
+                        </div>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td><span style="color:#d43f3a">*</span>楼栋:</td>
+                    <td>
+                        <div style="position:relative;">
+                            <span style="margin-left:100px;width:18px;overflow:hidden;">
+                                @Html.DropDownList("sel_Building", ViewBag.building as IEnumerable<SelectListItem>, "-请选择-", new { onchange = "this.parentNode.nextSibling.value=this.value;Building()", @style = "width:228px;height:34px;margin-left:-100px" })
+                            </span><input id="f_Building" name="f_Building" value="@Model.f_Building" style="width:212px;height:34px;position:absolute;left:0px;">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span style="color:#d43f3a">*</span>房间号:</td>
+                    <td>
+                        <input type="text" class="form-control" id="f_RoomNo" name="f_RoomNo" onkeyup="checkABC123(this)" value="@Model.f_RoomNo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>所属部门:</td>
+                    <td>
+                        <div class="dropdown">
+                            @Html.Hidden("f_department_tID", Model.f_department_tID, new { @correspond = "dropdownMenuBMs" })
+                            <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenuBMs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(listTypeDepartment.Where(p => p.f_tID == Model.f_department_tID).FirstOrDefault()?.f_value ?? "请选择部门")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuBMs">
+                                @foreach (var item in (List<MI.Core.Domain.SType>)ViewBag.listTypeDepartment)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>签约日期:</td>
+                    <td><input type="text" class="form-control" id="f_ContractDate" name="f_ContractDate" value="@(Model.f_ContractDate == DateTime.MinValue ? "" : Model.f_ContractDate.ToString("yyyy-MM-dd"))" /></td>
+                </tr>
+                <tr>
+                    <td><span style="color:#d43f3a">*</span>期限（月）：</td>
+                    <td>
+                        <input type="text" class="form-control" id="f_Term" name="f_Term" value="@Model.f_Term" onblur="Month(this, '@Model.f_Term')" />
+                        <input type="hidden" class="form-control" id="f_DueDate" name="f_DueDate" value="@Model.f_DueDate.ToString("yyyy-MM-dd")" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><span style="color:#d43f3a">*</span>中介：</td>
+                    <td><input type="text" class="form-control" id="f_Landlady" name="f_Landlady" value="@Model.f_Landlady" /></td>
+                </tr>
+                <tr>
+                    <td>租金：</td>
+                    <td><input type="text" class="form-control" id="f_Rent" name="f_Rent" value="@Model.f_Rent" /></td>
+                </tr>
+                <tr>
+                    <td>停车位：</td>
+                    <td>
+                        <div style="float:left;height:34px;line-height:34px;margin-right:8px">
+                            <input type="radio" name="IsBerth" onchange="Change()" value="0" id="IsBerth" @(Model.f_IsBerth ? "" : "checked='checked'") />否
+                            <input type="radio" name="IsBerth" onchange="Change()" value="1" id="IsBerth" @(Model.f_IsBerth ? "checked='checked'" : "") />是
+                            <input type="hidden" id="f_IsBerth" name="f_IsBerth" value="@(Model.f_IsBerth.ToString())" />
+                        </div>
+                        <input type="text" style="float:left;width:160px;@Html.Raw(Model.f_IsBerth ? "" : "display:none;")" class="form-control erthNo" id="f_erthNo" placeholder="请输入停车位号" name="f_erthNo" value="@Model.f_erthNo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><span style="color:#d43f3a">*</span>房间类型：</td>
+                    <td style="width: 557.3px;">
+                        <div class="dropdown" style="float:left;">
+                            <input type="hidden" id="f_RoomType" name="f_RoomType" value="@Model.f_RoomType" correspond="dropdownMenuRoomType" />
+                            <button class="btn btn-default dropdown-toggle" style="width:150px" type="button" id="dropdownMenuRoomType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(string.IsNullOrWhiteSpace(Model.f_RoomType) ? "请选择" : Model.f_RoomType)
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuRoomType">
+                                @foreach (var item in (List<MI.Core.Domain.SType>)ViewBag.listTypeDormitory)
+                                {
+                                    <li><a id="@(item.f_value)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                        <div style="float:left; margin-left:10px;margin-right:8px">预算入住人数:</div>
+                        <div style="float:left;">
+                            <input type="text" style="float:left;width:70px;" class="form-control" id="f_totalOfPeople" placeholder="人数" name="f_totalOfPeople" value="@Model.f_totalOfPeople" />
+                        </div>
+                        <div style="float:left; margin-left:10px;margin-right:8px">双人床位:</div>
+                        <div style="float:left;">
+                            <input type="text" style="float:left;width:100px;" class="form-control" id="f_DoublesBed" placeholder="床位数量" name="f_DoublesBed" value="@Model.f_DoublesBed" />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    @{
+                        int roomNo = 0;
+                        int.TryParse(Model.f_LaundryAndPwd, out roomNo);
+                    }
+                    <td>洗衣房/密码:</td>
+                    <td>
+                        <div class="dropdown" style="float:left;margin-left:8px">
+                            @Html.Hidden("f_LaundryAndPwd", Model.f_LaundryAndPwd, new { @correspond = "dropdownMenula" })
+                            <button class="btn btn-default dropdown-toggle" style="width:auto" type="button" id="dropdownMenula" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(NoandPwd.Where(u => u.f_Id == roomNo).FirstOrDefault()?.f_NoAndPwd ?? "请先选择社区")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" id="NoAndPwd" aria-labelledby="dropdownMenula">
+                                @foreach (var item in NoandPwd)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_Id)">@item.f_NoAndPwd </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>晾衣房/密码:</td>
+                    <td>
+                        <input type="text" class="form-control" id="f_ClothesAndPwd" name="f_ClothesAndPwd" placeholder="請輸入晾衣房/密码" value="@Model.f_ClothesAndPwd">
+                    </td>
+                </tr>
+                <tr>
+                    <td>备注:</td>
+                    <td><input type="text" class="form-control" id="f_Remark" name="f_Remark" value="@Model.f_Remark"> </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <button type="button" onclick="Submit()" class="btn btn-primary  btn-lg">确认</button>
+                        <input type="hidden" value="@Model.f_DormitoryId" id="f_DormitoryId" name="f_DormitoryId" />
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+</div><!-- /.panel-default/ table-->
+<script type="text/javascript">
+    function Submit() {
+        var f_Community = $("#f_Community").val();
+        var f_Building = $("#f_Building").val();
+        var f_RoomNo = $("#f_RoomNo").val();
+        var f_Term = $("#f_Term").val();
+        var f_Landlady = $("#f_Landlady").val();
+        var f_RoomType = $("#f_RoomType").val();
+        var f_LaundryAndPwd = $("#f_LaundryAndPwd").val();
+        var f_ClothesAndPwd = $("#f_ClothesAndPwd").val();
+        var f_remark = $("#f_Remark").val();
+        //验证不为空
+        if (ValidationNull("房间类型", f_RoomType) || ValidationNull("中介", f_Landlady) || ValidationNull("期限", f_Term) || ValidationNull("房间号", f_RoomNo) || ValidationNull("社区", f_Community) || ValidationNull("楼栋", f_Building)) {
+            return;
+        }
+        //验证长度
+        if (ValidationLength("楼栋长度", f_Building, 100) || ValidationLength("社区长度", f_Community, 100) || ValidationLength("停车位", $("#f_erthNo").val(), 50) || ValidationLength("房间号", f_RoomNo, 5) || ValidationLength("备注", f_remark, 100) || ValidationLength("晾衣房/密码", f_ClothesAndPwd, 50)) {
+            return;
+        }
+        var reg = new RegExp("^[0-9]{1,5}[A-Z]{0,1}$");
+        if (!reg.test(f_RoomNo))
+        {
+            alert("房间号只能由数字和大写字母组成");
+            return;
+        }
+        if (f_RoomNo.length<2) {
+            alert("房间号长度不能小于2位!");
+            return;
+        }
+        if ($("#f_Term").val() == "0") {
+            alert("期限月份不为0");
+            return;
+        }
+
+        var f_Rent = $("#f_Rent").val();
+        reg = new RegExp("^[0-9]*$");
+        if (!reg.test(f_Rent)) {
+            alert("请输入正确的租金");
+            return;
+        }
+        if (!reg.test($("#f_totalOfPeople").val()) || $("#f_totalOfPeople").val().length > 3) {
+            alert("请输入正确的预算入住人数");
+            return;
+        }
+        if (!reg.test($("#f_DoublesBed").val()) || $("#f_DoublesBed").val().length > 3) {
+            alert("请输入正确的双人床数量");
+            return;
+        }
+        var formdata = $("#formTable").serialize();
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UptateAndAdd")',
+            data: formdata,
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data != null) {
+                    if (data == "1") {
+                        alert("操作成功");
+                        location.href = location.href;
+                    }
+                    else if (data == "500") {
+                        alert("操作异常");
+                    } else {
+                        alert(data.tips);
+                    }
+                }
+            }
+        })
+    }
+    //是否有特殊牌照
+    function Change() {
+        var isissued = $("input[name='IsBerth']:checked").val();
+        if (isissued == "0") {
+            $(".erthNo").hide();
+            $("#f_erthNo").val(null);
+            $("#f_IsBerth").val("false");
+        } else {
+            $(".erthNo").show();
+            $("#f_IsBerth").val("true");
+        }
+    }
+
+    $.datetimepicker.setLocale('zh');
+    //签约日期
+    $("#f_ContractDate").datetimepicker({
+        yearOffset: 0,
+        lang: 'zh',
+        timepicker: false,
+        format: 'Y-m-d',
+        formatDate: 'Y-m-d'
+    });
+    //截止日期
+    $("#f_DueDate").datetimepicker({
+        yearOffset: 0,
+        lang: 'zh',
+        timepicker: false,
+        format: 'Y-m-d',
+        formatDate: 'Y-m-d'
+    });
+    function Cancle() {
+        $("div.addbg").hide();
+    }
+
+    //验证期限（月）
+    function Month(s, val) {
+        var ContractDate = $("#f_ContractDate").val();//签约日期
+        var re = new RegExp("^([0-9][0-9]*)$");
+        if (re.test(s.value) && parseInt(s.value) > 0) {
+            var newdate = addmulMonth(ContractDate, parseInt(s.value));
+            $("#f_DueDate").val(newdate);
+            return true;
+        }
+        else {
+            alert("必须是有效的不为零的整数！")
+            $(s).val(val);
+        }
+    }
+    //求两个时间的天数差 日期格式为 YYYY-MM-dd
+    function GetDateDiff(startDate, endDate) {
+        var startTime = new Date(Date.parse(startDate.replace(/-/g, "/"))).getTime();
+        var endTime = new Date(Date.parse(endDate.replace(/-/g, "/"))).getTime();
+        var dates = Math.abs((startTime - endTime)) / (1000 * 60 * 60 * 24);
+        return dates;
+    }
+    //日期加上N个月后新的日期
+    function addmulMonth(dtstr, n) {   // n个月后
+        var s = dtstr.split("-");
+        var yy = parseInt(s[0]);
+        var mm = parseInt(s[1] - 1);
+        var dd = parseInt(s[2]);
+        var dt = new Date(yy, mm, dd);
+        dt.setMonth(dt.getMonth() + n);
+        dt = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate() - 1);
+        if ((dt.getYear() * 12 + dt.getMonth()) > (yy * 12 + mm + n)) {
+            dt = new Date(dt.getYear(), dt.getMonth(), 0);
+        }
+        return dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate();
+    }
+
+    //选择社区
+    function Community() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Community")',
+            data: { community: $("#sel_Community  option:selected").text() },
+            error: function (data) {
+                alert("异常");
+            },
+            success: function (data) {
+                if (data != null) {
+                    var str = "<option value='请选择'>-请选择-</option> ";
+                    for (var i = 0; i < data.length; i++) {
+                        str += "<option value='" + data[i] + "'>" + data[i] + "</option>";
+                    }
+                    $("#sel_Building").html(str);
+                    $("#f_Building").val("请选择");
+                }
+            }
+        });
+
+    }
+    function Building() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Buildings")',
+            data: { sCommunity: $("#sel_Community  option:selected").text(), sBuilding: $("#sel_Building  option:selected").text() },
+            error: function (data) {
+                alert("发生异常，请联系工程师");
+            },
+            success: function (data) {
+                if (data != null) {
+                    var str = "<li><a href=\"javaScript:\" id='请选择社区'>请选择社区</a></li>";
+                    for (var i = 0; i < data.length; i++) {
+                        str += "<li><a href=\"javaScript:\" id='" + data[i].f_Id + "'>" + data[i].f_NoAndPwd + "</a></li>";
+                    }
+                    $("#NoAndPwd").html(str);
+                    setDropdownChangeValue();
+                    $("#f_LaundryAndPwd").val("0");
+                }
+            }
+        })
+    }
+
+</script>

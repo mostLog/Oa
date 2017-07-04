@@ -1,0 +1,180 @@
+﻿@model List<MI.Core.Domain.CoupLeManageView>
+
+@{
+    Layout = null;
+    int iIndex = 1;
+}
+
+<script src="~/Scripts/typeahead/bootstrap3-typeahead.js"></script>
+
+<button type="button" id="btn-quxiao" onclick="RefreshF5()" class="btn btn-danger closebtn">关闭（X）</button>
+<div class="panel panel-default">
+    <div class="panel-heading"> 管理情侣/夫妻关系</div>
+    <div class="table-responsive">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>对象1</th>
+                    <th>对象2</th>
+                    <th class="caozuotd">操&nbsp;&nbsp;作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+            {
+                    <tr>
+                        <td>@iIndex </td>
+                        <td>
+                            <label>@item.ChineseName1</label>
+                            <input type="text" class="form-control" style="display: none;width:190px" autocomplete="off" data-provide="typeahead" placeholder="请输入中文名/昵称/护照名" name="f_chineseName" value="" />
+                            <input type="hidden" id="[@(iIndex-1)].f_eId1" name="[@(iIndex-1)].f_eId1" value="@item.iEid1" />
+                        </td>
+                        <td>
+                            <label>@item.ChineseName2</label>
+                            <input type="text" class="form-control" style="display: none;width:190px" autocomplete="off" data-provide="typeahead" placeholder="请输入中文名/昵称/护照名" name="f_chineseName" value="" />
+                            <input type="hidden" id="[@(iIndex-1)].f_eId2" name="[@(iIndex-1)].f_eId2" value="@item.iEid2" />
+                        </td>
+                        <td>
+                            <input type="button" class="btn btn-info btn-sm btnXG" onclick="UpdateByCss(this)" value="修改" />
+                            <input type="button" class="btn btn-info btn-sm btnGX" style="display: none;" onclick="UpdateCP(this, '@item.iCid')" value="更新" />
+                            <input type="button" class="btn btn-info btn-sm btnGX" style="display: none;" onclick="RestituteByCss(this)" value="取消" />
+                            <button type="button" class="btn btn-danger btn-sm" onclick="DeleteCP('@item.iCid')">删除</button>
+                        </td>
+                    </tr>
+                    iIndex++;
+                }
+
+                @if (Model == null || !Model.Any())
+                {
+                    <tr>
+                        <td colspan="4" align="center">没有数据</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="notText">
+                        <td colspan="4" style="text-align: center;">
+                            <div class="fenyediv">
+                                <ul class="pagination">
+                                    @Html.PageList((int)ViewBag.iPageIndex, (int)ViewBag.iPageSize, (int)ViewBag.iCount, ViewBag.sKeyWords as string, "csPagelist")
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    function csPagelist(url, PageIndex, PageSize, sKeyWords) {
+        configure.publicFunction.goToPage(url, { iPageIndex: PageIndex, iPageSize: PageSize, keyWords: sKeyWords });
+    }
+
+    function DeleteCP(cid) {
+        if (confirm("确定是否删除当前关系?")) {
+            $.ajax({
+                type: "POST",
+                url: configure.DeleteUrl,
+                data: { cID: cid },
+                error: function (data) {
+                    alert('发生错误');
+                },
+                success: function (data) {
+                    if (data == 1) {
+                        alert("删除成功");
+                        configure.publicFunction.goToPage(configure.ManageUrl, null); //从新加载
+                    } else {
+                        alert("删除失败");
+                    }
+                }
+            });
+        }
+    }
+
+    function UpdateByCss(t) {
+        var $tr = $(t).parents("td").parents("tr");
+        var $label = $tr.find("label");
+        var $text = $tr.find(":text");
+
+        $text.eq(0).val($label.eq(0).text());
+        $text.eq(1).val($label.eq(1).text());
+        $label.hide();
+        $text.show();
+        $(t).parents("td").find(".btnGX").show();
+        $(t).hide();
+
+    }
+    function RestituteByCss(t) {
+        var $tr = $(t).parents("td").parents("tr");
+        var $label = $tr.find("label");
+        var $text = $tr.find(":text");
+        //$label.eq(0).text($text.eq(0).val());
+        //$label.eq(1).text($text.eq(1).val());
+        $label.show();
+        $text.hide();
+        $(t).parents("td").find(".btnGX").hide();
+        $(t).parents("td").find(".btnXG").show();
+    }
+
+    function UpdateCP(t,cid) {
+        var $tr = $(t).parents("td").parents("tr");
+        var $label = $tr.find("label");
+        var $text = $tr.find(":text");
+        var eid1 = $tr.find("input[name$='f_eId1']").val();
+        var eid2 = $tr.find("input[name$='f_eId2']").val();
+        if (!configure.publicFunction.checkNull(eid1, "0") ||
+            !configure.publicFunction.checkNull(eid2, "0")) {
+            alert("数据异常,请麻烦刷新页面重新尝试更新！");
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: configure.UpdateUrl,
+            data: { f_cId: cid, f_eId1: eid1, f_eId2: eid2 },
+            error: function (data) {
+                alert('发生错误');
+            },
+            success: function (data) {
+                if (data == "OK" || data == 1) {
+                    alert("更新成功");
+                    $label.eq(0).text($text.eq(0).val());
+                    $label.eq(1).text($text.eq(1).val());
+                    $text.hide();
+                    $label.show();
+                    $(t).parents("td").find(".btnGX").hide();
+                    $(t).parents("td").find(".btnXG").show();
+                } else {
+                    alert("更新失败！原因：" + data);
+                    $text.eq(0).val($label.eq(0).text())
+                    $text.eq(1).val($label.eq(1).text())
+                }
+            }
+        });
+    }
+
+    $(document).ready(function ($) {
+        //为每个文本框绑定自动补充功能
+        $('input[name=f_chineseName]')
+            .each(function () {
+                configure.publicFunction.binTypeahead($(this));
+            });
+
+        //当文本框获取到焦点之后把颜色状态改回默认
+        $("#tableNameList tr td input")
+            .focus(function () {
+                var $thisTr = $(this).parent().parent();
+                if ($thisTr.hasClass("has-success")) {
+                    $thisTr.find("input").val("");
+                }
+                $thisTr.removeClass("has-error has-success");
+            }).blur(function () {
+                if (!configure.publicFunction.checkNull($(this).val(), "")) {
+                    $(this).parent().find("input").val("");
+                }
+            });
+
+    });
+
+</script>

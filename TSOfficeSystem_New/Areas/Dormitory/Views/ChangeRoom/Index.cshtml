@@ -1,0 +1,248 @@
+﻿@model List<MI.Core.Domain.t_ChangeRoom>
+@{
+    ViewBag.Title = "宿舍管理";
+    int i = 1;
+    MI.Core.Domain.ChangeRoomWhere cw = ViewBag.CW;
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+}
+<link href="~/Css/datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/Scripts/datetimepicker/jquery.datetimepicker.full.js"></script>
+<div class="addbg">
+    <div class="addtable">
+    </div><!-- /.addtable-->
+</div><!-- /.addbg-->
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="#">宿舍管理</a></li>
+        <li class="active">员工换房</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("DormitoryNavTabs", "员工换房")
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">员工：</label>
+                            <input type="text" class="form-control" value="@cw.Name" id="Name" name="Name" placeholder="中文名/护照名/昵称">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <div class="dropdown" style="float:left;">
+                                <label for="exampleInputName2">处理进度：</label>
+                                <input type="hidden" value="@(cw.Progress)" name="Progress" id="Progress" correspond="dropdownMenuProg" />
+                                <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuProg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @(cw.Progress ?? "全部")
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" id="CommunityClothes" aria-labelledby="dropdownMenuProg" style="margin-left:75px;">
+                                    <li><a id="全部">全部</a></li>
+                                    <li><a id="申请中">申请中</a></li>
+                                    <li><a id="排队等候">排队等候</a></li>
+                                    <li><a id="已换房">已换房</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">承租日期：</label>
+                            <input type="text" class="form-control" value="@(cw.f_RentDateST == DateTime.MinValue ? "":cw.f_RentDateST.ToString("yyyy-MM-dd"))" id="date_timepicker_start" name="f_RentDateST">
+                            <label for="exampleInputName2">--</label>
+                            <input type="text" class="form-control" value="@(cw.f_RentDateED == DateTime.MinValue? "":cw.f_RentDateED.ToString("yyyy-MM-dd"))" id="date_timepicker_end" name="f_RentDateED">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>
+                    </div><!-- /.taiojianli_left-->
+                </form>
+            </div>
+            <div class="taiojianli_right">
+                <button type="button" onclick="Update('0')" id="btn-xinzeng" class="btn btn-primary">新增+</button>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">员工换房</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>员工</th>
+                            <th>申请日期</th>
+                            <th>原房间</th>
+                            <th>新房间</th>
+                            <th style="width:180px;">备注</th>
+                            <th style="width:180px;">处理进度</th>
+                            <th>登记人</th>
+                            <th>补房租</th>
+                            <th>承租日期</th>
+                            <th>生效月份</th>
+                            <th>操作人</th>
+                            <th>最后操作时间</th>
+                            <th class="caozuotd">操&nbsp;&nbsp;作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i </td>
+                                <td>@item.t_employeeInfo.f_chineseName</td>
+                                <td>@(item.f_FilingDate == DateTime.MinValue ? "" : item.f_FilingDate.ToString("yyyy-MM-dd"))</td>
+                                <td>
+                                    @(item.t_dormitory1?.f_Community + "/" + item.t_dormitory1?.f_Building + "/" + item.t_dormitory1?.f_RoomNo)
+                                </td>
+                                <td>
+                                    @(item.t_dormitory?.f_Community + "/" + item.t_dormitory?.f_Building + "/" + item.t_dormitory?.f_RoomNo)
+                                </td>
+
+                                <td>@item.f_Remarks</td>
+                                <td>@item.f_Progress</td>
+                                <td>@item.f_Registrant </td>
+                                <td>@item.f_SewRent </td>
+                                <td>@(item.f_RentDate == DateTime.MinValue ? "" : item.f_RentDate.ToString("yyyy-MM-dd"))</td>
+                                <td>@((item.f_EffectiveMonths == null || item.f_EffectiveMonths.Value == DateTime.MinValue) ? "" : item.f_EffectiveMonths.Value.ToString("yyyy-MM"))</td>
+                                <td>@item.f_operator</td>
+                                <td>@item.f_operatorTime</td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" onclick="Update('@item.f_Id')">修改</button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="Delete('@item.f_Id')">删除</button>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="13" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageListFor(iCurrentPage, iPageSize, iTotalCount, cw)
+            </ul>
+        </div><!-- /.fenyediv-->
+
+    </div><!-- /.oacentbox-->
+
+</div>
+
+<script type="text/javascript">
+    function Update(id) {
+        OpenADDwindow();
+        loadingTips();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Edit")',
+            data: { Id: id },
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data != null) {
+                    $(".addtable").html(data);
+                    //ajax请求的html 需要重新绑定下拉框的动作事件
+                    setDropdownChangeValue();
+                }
+            }
+        })
+        $("div.addbg").show(200);
+    }
+    function Delete(id) {
+        if (confirm("是否确定删除？")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                data: { Id: id },
+                error: function (data) {
+                    //location.href = '@Url.Action("Error", "Login")'
+                }, success: function (data) {
+                    if (data != null) {
+                        if (data == "1") {
+                            alert("删除成功");
+                            location.href = location.href;
+                        }
+                        else if (data == "500") {
+                            alert("删除异常");
+                        }
+                    }
+                }
+            })
+        }
+    }
+    //承租日期
+    jQuery(function () {
+        $.datetimepicker.setLocale('zh');
+        jQuery('#date_timepicker_start').datetimepicker({
+            lang: 'zh',
+            format: 'Y-m-d',
+            onShow: function (ct) {
+                this.setOptions({
+                    maxDate: jQuery('#date_timepicker_end').val() ? jQuery('#date_timepicker_end').val() : false
+                })
+            },
+            timepicker: false
+        });
+        jQuery('#date_timepicker_end').datetimepicker({
+            lang: 'zh',
+            format: 'Y-m-d',
+            onShow: function (ct) {
+                this.setOptions({
+                    minDate: jQuery('#date_timepicker_start').val() ? jQuery('#date_timepicker_start').val() : false
+                })
+            },
+            timepicker: false
+        });
+    });
+    function Submit() {
+        var f_eid = $("#f_eid").val();
+        if (ValidationNullOr0("员工", f_eid)) {
+            return;
+        }
+        var f_Remarks = $("#f_Remarks").val();
+        var f_Progress = $("#f_Progress").val();
+        var f_Registrant = $("#f_Registrant").val();
+        var f_OldRoomID = $('#f_OldRoomID').val();
+        var f_NewRoomId = $('#f_NewRoomId').val();
+        var f_SewRent = $("#f_SewRent").val();
+        if (ValidationNull("登记人", f_Registrant) || ValidationNull("处理进度", f_Progress) || ValidationNull("备注", f_Remarks) || ValidationNull("新房间", f_NewRoomId)) {
+            return;
+        }
+        if (ValidationLength("备注", f_Remarks, 250) || ValidationLength("登记人", f_Registrant, 25) || ValidationMoney("补房租", f_SewRent)) {
+            return;
+        }
+        if (f_NewRoomId == 0 || f_NewRoomId == '0') {
+            alert('新房间不能为空');
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UptateAndAdd")',
+            data: $("#formTable").serialize(),
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data != null) {
+                    if (data.result == 1) {
+                        alert("操作成功");
+                        location.href = location.href;
+                    }
+                    else if (data.result == 500) {
+                        alert(data.tips);
+                    }
+                }
+            }
+        })
+    }
+</script>

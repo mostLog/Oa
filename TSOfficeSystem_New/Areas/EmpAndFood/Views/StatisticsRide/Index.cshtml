@@ -1,0 +1,123 @@
+﻿@model List<MI.Core.Domain.Employee>
+@{
+    ViewBag.Title = "员工班车资讯表";
+    ViewBag.current = "员工管理";
+    int i = 1;
+    //部门
+    List<MI.Core.Domain.SType> listDepartment = ViewBag.listDepartment;
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+    //部门id
+    string sValue_department = ViewBag.department ?? "";
+    int iTID_keyWords = 0;
+    int.TryParse(ViewBag.department, out iTID_keyWords);
+
+    string sDepartment = listDepartment.FirstOrDefault(p => p.f_tID == iTID_keyWords || p.f_value == sValue_department)?.f_value;
+}
+<div class="addbg">
+    <div class="addtable" style="margin-top:30px">
+    </div>
+</div>
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li>
+            <a href="javaScript:">员工管理</a>
+        </li>
+        <li class="active">班车统计</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("emplotyeeInfoNavigation", "班车统计")
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="dropdown">
+                            @Html.Hidden("f_department_Id", sDepartment, new { @correspond = "dropdownMenu" })
+                            <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(sValue_department== "-" ? "全部" : listDepartment.FirstOrDefault(p => p.f_tID == Convert.ToInt32(sValue_department))?.f_value ?? "部门筛选" )
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                                <li>
+                                    <a href="javaScript:" id="-">全部</a>
+                                </li>
+                                @foreach (var item in listDepartment)
+                                {
+                                    <li>
+                                        <a href="javaScript:" id="@(item.f_tID)">@item.f_value </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>
+                    </div>
+                </form>
+            </div>
+            <div class="taiojianli_right">
+                <button type="button" onclick="GetOpenWindow('N')" class="btn btn-primary">汇总统计</button>&nbsp;&nbsp;&nbsp;
+                <a href="/EmpAndFood/StatisticsRide/Export?isY=N" class="btn btn-success">导出Excel</a>&nbsp;&nbsp;&nbsp;
+                <button type="button" onclick="GetOpenWindow('Y')" class="btn btn-primary">汇总统计(包括返乡)</button>&nbsp;&nbsp;&nbsp;
+                <a href="/EmpAndFood/StatisticsRide/Export?isY=Y" class="btn btn-success">导出Excel(包括返乡)</a>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">员工班车统计资讯表</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号 </th>
+                            <th>部门 </th>
+                            <th>名字(QQ昵称)</th>
+                            <th>上班搭车时间</th>
+                            <th>下班搭车时间</th>
+                            <th>上班地点</th>
+                            <th>社区</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        { 
+                            <tr @Html.Raw(item.t_Dormitory?.f_Community == null ? " class='danger'" : "")>
+                                <td>@i </td>
+                                <td>@(item.STypeDepartment?.f_value)</td>
+                                <td>@(item.f_chineseName + (!string.IsNullOrWhiteSpace(item.f_nickname) ? "(" + item.f_nickname + ")" : ""))</td>
+                                <td>@(item.f_rideWorkTime?.ToString("HH:mm"))</td>
+                                <td>@(item.f_rideOffWorkTime?.ToString("HH:mm"))</td>
+                                <td>@(item.STypeWorkLocation?.f_value) </td>
+                                <td>@Html.Raw((item.t_Dormitory?.f_Community) ?? "<font style='color:red'>外宿</font>") </td>
+                            </tr>
+                            i++;
+                        }
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="20" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="fenyediv" style="">
+            <ul class="pagination">
+                @Html.PageList(iCurrentPage, iPageSize, iTotalCount, sDepartment ?? "")
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    function GetOpenWindow(isY) {
+        window.open("@Url.Action("Satistics")" + "?isY=" + isY, "员工班车资料汇总表" + isY, "status=no,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,width=1500,height=800");
+    }
+</script>

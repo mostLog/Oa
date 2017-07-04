@@ -1,0 +1,73 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.9
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MI.Application", "MI.Application\MI.Application.csproj", "{E7EBFCBE-C004-495B-BD12-1D4EB7A655D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MI.Core", "MI.Core\MI.Core.csproj", "{F29FB79A-61C3-4DB3-9523-C7849F88CA21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MI.Data", "MI.Data\MI.Data.csproj", "{DF2FAF7B-EF0E-4E6B-9A53-4F37FB9CBB58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSOfficeSystem_New", "TSOfficeSystem_New\TSOfficeSystem_New.csproj", "{3F81D79C-C571-488B-9C22-68F5B9FEEBC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MI.Application.Test", "MI.Application.Test\MI.Application.Test.csproj", "{8EDF4429-251A-416D-BB68-93F227191BCF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{CB77FA60-6593-421F-961C-2456E6478BC2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E7EBFCBE-C004-495B-BD12-1D4EB7A655D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7EBFCBE-C004-495B-BD12-1D4EB7A655D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7EBFCBE-C004-495B-BD12-1D4EB7A655D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7EBFCBE-C004-495B-BD12-1D4EB7A655D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F29FB79A-61C3-4DB3-9523-C7849F88CA21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F29FB79A-61C3-4DB3-9523-C7849F88CA21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F29FB79A-61C3-4DB3-9523-C7849F88CA21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F29FB79A-61C3-4DB3-9523-C7849F88CA21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF2FAF7B-EF0E-4E6B-9A53-4F37FB9CBB58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF2FAF7B-EF0E-4E6B-9A53-4F37FB9CBB58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF2FAF7B-EF0E-4E6B-9A53-4F37FB9CBB58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF2FAF7B-EF0E-4E6B-9A53-4F37FB9CBB58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F81D79C-C571-488B-9C22-68F5B9FEEBC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F81D79C-C571-488B-9C22-68F5B9FEEBC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F81D79C-C571-488B-9C22-68F5B9FEEBC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F81D79C-C571-488B-9C22-68F5B9FEEBC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EDF4429-251A-416D-BB68-93F227191BCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EDF4429-251A-416D-BB68-93F227191BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EDF4429-251A-416D-BB68-93F227191BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EDF4429-251A-416D-BB68-93F227191BCF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8EDF4429-251A-416D-BB68-93F227191BCF} = {CB77FA60-6593-421F-961C-2456E6478BC2}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 6
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://119.81.201.155:8080/tfs/tfs_code
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = MI.Application\\MI.Application.csproj
+		SccProjectName1 = MI.Application
+		SccLocalPath1 = MI.Application
+		SccProjectUniqueName2 = MI.Core\\MI.Core.csproj
+		SccProjectName2 = MI.Core
+		SccLocalPath2 = MI.Core
+		SccProjectUniqueName3 = MI.Data\\MI.Data.csproj
+		SccProjectName3 = MI.Data
+		SccLocalPath3 = MI.Data
+		SccProjectUniqueName4 = TSOfficeSystem_New\\TSOfficeSystem_New.csproj
+		SccProjectName4 = TSOfficeSystem_New
+		SccLocalPath4 = TSOfficeSystem_New
+		SccProjectUniqueName5 = MI.Application.Test\\MI.Application.Test.csproj
+		SccProjectTopLevelParentUniqueName5 = TSOfficeSystem_New.sln
+		SccProjectName5 = MI.Application.Test
+		SccLocalPath5 = MI.Application.Test
+	EndGlobalSection
+EndGlobal

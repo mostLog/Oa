@@ -1,0 +1,149 @@
+﻿
+@model MI.Core.Domain.t_LaundryPwd
+@{ Layout = null;
+    List<MI.Core.Domain.SType> CommunityType = ViewBag.CommunityType;
+    List<string> Buildings = ViewBag.Buildings;
+}
+<button type="button" id="btn-quxiao" class="btn btn-danger closebtn">取消（X）</button>
+<div class="panel panel-default">
+    <div class="panel-heading">洗衣房-@(Model.f_Id > 0 ? "修改" : "新增")</div>
+    <div class="table-responsive">
+        @using (Html.BeginForm("", "", FormMethod.Post, new { id = "NOticeEditForm" }))
+            {
+            <table class="table table-hover table-striped">
+                <tr>
+                    <td>社区：</td>
+                    <td style="height:51px;">
+                        <div class="dropdown" style="position:absolute;margin-left:8px;">
+                            @Html.Hidden("f_Community", Model.f_Community, new { @correspond = "dropdownMenu10" })
+                            <button class="btn btn-default dropdown-toggle" style="width:auto;min-width:130px;" type="button" id="dropdownMenu10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(Model.f_Community ?? "请选择")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu10">
+                                @foreach (var item in CommunityType)
+                                {
+                                    <li><a href="javaScript:changeCommunity()" id="@(item.f_value)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>楼栋：</td>
+                    <td>
+                        <div class="dropdown" style="float:left;margin-left:8px">
+                            @Html.Hidden("f_Building", Model.f_Building, new { @correspond = "dropdownMenu5" })
+                            <button class="btn btn-default dropdown-toggle" style="width:auto;min-width:130px;" type="button" id="dropdownMenu5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(Model.f_Building ?? "请先选择社区")
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" id="DropdownBuilding" aria-labelledby="dropdownMenu5">
+                                @foreach (var item in Buildings)
+                                {
+                                    <li><a href="javaScript:" id="@item">@item</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>类别：</td>
+                    <td>
+                        <div class="dropdown" style="float:left;margin-left:8px">
+                            @Html.Hidden("f_RoomType", Model.f_RoomType, new { @correspond = "dropdownMenu2" })
+                            <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(Model.f_RoomType == 0 ? "请选择类别" : Model.f_RoomType == 1 ? "晾衣房" : Model.f_RoomType == 2 ? "洗衣房" : "请选择类别" )
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <li><a href="javaScript:" id="0">请选择类别</a></li>
+                                <li><a href="javaScript:" id="2">洗衣房</a></li>
+                                <li><a href="javaScript:" id="1">晾衣房</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>房间号密码：</td>
+                    <td>
+                        <input type="text" class="form-control" name="f_NoAndPwd" id="f_NoAndPwd" value="@Model.f_NoAndPwd" placeholder="请以/隔开" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>备注：</td>
+                    <td>
+                        <input type="text" class="form-control" name="f_Remark" id="f_Remark" value="@Model.f_Remark" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <input type="hidden" name="f_Id" id="f_Id" value="@Model.f_Id" />
+                        <input type="button" onclick="Submit('@Model.f_Id')" class="btn btn-primary  btn-lg" value="确定" />
+                    </td>
+                </tr>
+            </table>
+        }
+    </div>
+</div><!-- /.panel-default/ table-->
+<script type="text/javascript">
+    //确定
+    function Submit(id) {
+        if (ValidationNull("社区", $("#f_Community").val()) || ValidationNull("楼栋", $("#f_Building").val()) || ValidationNull("房间号密码", $("#f_NoAndPwd").val()) || ValidationNullOr0("类型", $("#f_RoomType").val())) {
+            return;
+        }
+        //验证长度
+        if (ValidationLength("备注", $("#f_Remark").val(), 100) || ValidationLength("房间号密码", $("#f_NoAndPwd").val(), 50)) {
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("UptateAndAdd")',
+            data: $("#NOticeEditForm").serialize(),
+            success: function (data) {
+                if (data != null) {
+                    if (data == "1") {
+                        alert("操作成功！");
+                        location.href = location.href;
+                    }
+                    else if (data == "500") {
+                        alert("操作异常");
+                    }
+                }
+            }
+        });
+    }
+    //取消
+    $(function () {
+        $("#btn-quxiao").click(function () {
+            $("div.addbg").hide();
+        });  //截止日期
+    });
+    //切换社区 加载楼栋
+    function changeCommunity() {
+        var sCommunity = $("#f_Community").val();
+        if (sCommunity == null || $.trim(sCommunity) == "" || $.trim(sCommunity) == "请选择") {
+            $("#f_Community").val("");
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Community")',
+            data: { community: sCommunity },
+            error: function (data) {
+                location.href = '@Url.Action("Index","Login")'
+            },
+            success: function (data) {
+                if (data != null) {
+                    var str = "";
+                    for (var i = 0; i < data.length; i++) {
+                        str += "<li><a href=\"javaScript:\" id='" + data[i] + "'>" + data[i] + "</a></li>";
+                    }
+                    $("#DropdownBuilding").html(str);
+                    //加载之后 重新绑定下拉框事件
+                    setDropdownChangeValue();
+                }
+            }
+        });
+    }
+</script>

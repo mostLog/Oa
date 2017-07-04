@@ -1,0 +1,125 @@
+﻿@model IList<CompanyOfFood>
+@{
+    ViewBag.Title = "Index";
+}
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)"></a>餐饮管理</li>
+        <li class="active">公司用餐</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="/EmpAndFood/CompanyOfFood/GetCompanyOfFood">公司用餐</a></li>
+        <li role="presentation"><a href="/EmpAndFood/CompanyOfFood/DormitoryOrderingIndex">宿舍订餐</a></li>
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div class="taiojianli_right">
+                <a href="javascript:" class="btn btn-primary" id="btnPrint">打印数据</a>&nbsp;&nbsp;&nbsp;
+                <a href="javascript:" class="btn btn-primary" id="btnStat">统计公司用餐</a>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">公司用餐统计表</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <tr>
+                        <td rowspan="2" style="line-height:84px;" align="center" valign="middle">
+                            用餐时间
+                        </td>
+                        <td colspan="@((Model.Count) - (ViewBag.WorkAddressCount)-1)" align="center">
+                            部  门
+                        </td>
+                        <td colspan="@((ViewBag.WorkAddressCount)+1)" align="center">
+                            总汇(TOTAL)
+                        </td>
+                    </tr>
+                    <tr>
+                        @{ int a = 1;}
+                        @foreach (var item in Model)
+                        {
+
+                            if (a == Model.Count)
+                            {
+                                <td>
+                                    @(item.SType.f_value)
+                                    <a href="javascript:" id="heguan" data-parameters="@item.f_cID,@item.f_type_tID">修改</a>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>@item.SType.f_value</td>
+                            }
+                            a++;
+                        }
+                    </tr>
+                    <tr>
+                        <td>早餐</td>
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            var item = Model[i];
+                            if (i == Model.Count - 1)
+                            {
+                                <td><input type="text" class="form-control" id="f_breakfast" value="@item.f_breakfast" /></td>
+                            }
+                            else
+                            {
+                                <td>@item.f_breakfast</td>
+                            }
+                        }
+                    </tr>
+                    <tr>
+                        <td>中餐</td>
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            var item = Model[i];
+                            if (i == Model.Count - 1)
+                            {
+                                <td><input type="text" class="form-control" id="f_lunch" value="@item.f_lunch" /></td>
+                            }
+                            else
+                            {
+                                <td>@item.f_lunch</td>
+                            }
+                        }
+                    </tr>
+                    <tr>
+                        <td>晚餐</td>
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            var item = Model[i];
+                            if (i == Model.Count - 1)
+                            {
+                                <td><input type="text" class="form-control" id="f_dinner" value="@item.f_dinner" /></td>
+                            }
+                            else
+                            {
+                                <td>@item.f_dinner</td>
+                            }
+                        }
+                    </tr>
+                    <tr>
+                        <td>宵夜</td>
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            var item = Model[i];
+                            if (i == Model.Count - 1)
+                            {
+                                <td><input type="text" class="form-control" id="f_Midnight" value="@item.f_Midnight" /></td>
+                            }
+                            else
+                            {
+                                <td>@item.f_Midnight</td>
+                            }
+                        }
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+
+    <script src="~/Areas/EmpAndFood/Views/CompanyOfFood/Index.js"></script>
+}
+

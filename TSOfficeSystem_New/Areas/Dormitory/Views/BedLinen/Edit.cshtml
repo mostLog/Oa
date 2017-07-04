@@ -1,0 +1,200 @@
+﻿@model MI.Core.Domain.BedLinen
+@{
+    Layout = null;
+    List<MI.Core.Domain.SType> typeBedLinen = ViewBag.typeBedLinenlist;//床位类型
+
+}
+<style type="text/css">
+    div.input-group-addon {
+        width: 150px;
+    }
+</style>
+<button type="button" id="btn-quxiao" class="btn btn-danger closebtn">取消（X）</button>
+<div class="panel panel-default">
+    <div class="panel-heading">床单送洗-@(Model.f_Id > 0 ? "修改" : "新增")</div>
+    <div class="table-responsive">
+        @using (Html.BeginForm("", "", FormMethod.Post, new { id = "BedLinenEditForm" }))
+            {
+            <table class="table table-hover table-striped">
+                <tr>
+                    <td>床位类型：</td>
+                    <td>
+                        <div class="dropdown">
+                            @Html.Hidden("f_tID", Model.f_tID, new { @correspond = "dropdownMenuCWLX" })
+                            <button class="btn btn-default dropdown-toggle" style="width:160px" type="button" id="dropdownMenuCWLX" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(typeBedLinen.FirstOrDefault(p => p.f_tID == Model.f_tID)?.f_value ?? "请选择" )
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuCWLX">
+                                <li><a href="javaScript:" id="0">全部</a></li>
+                                @foreach (var item in typeBedLinen)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>送洗项目：</td>
+                    <td>
+                        <div class="input-group-addon">
+                            床单数量：
+                            <input class="btn btn-xs btn-info jianhaoBtn" type="button" value="-" />
+                            <input type="text" op="count" BedLinen="count" name="f_BunkNo" id="f_BunkNo" class="_Quantity" style="width: 30px; text-align: center;" maxlength="2" value="@(Model.f_BunkNo)" />
+                            <input class="btn btn-xs btn-info jiahaoBtn" type="button" value="+" />
+                        </div>
+                        <div class="input-group-addon">
+                            被单数量：
+                            <input class="btn btn-xs btn-info jianhaoBtn" type="button" value="-" />
+                            <input type="text" op="count" BedLinen="count" name="f_SheetsNo" id="f_SheetsNo" class="_Quantity" style="width: 30px; text-align: center;" maxlength="2" value="@(Model.f_SheetsNo)" />
+                            <input class="btn btn-xs btn-info jiahaoBtn" type="button" value="+" />
+                        </div>
+                        <br />
+                        <div class="input-group-addon">
+                            被子数量：
+                            <input class="btn btn-xs btn-info jianhaoBtn" type="button" value="-" />
+                            <input type="text" op="count" BedLinen="count" name="f_QuiltNo" id="f_QuiltNo" class="_Quantity" style="width: 30px; text-align: center;" maxlength="2" value="@(Model.f_QuiltNo)" />
+                            <input class="btn btn-xs btn-info jiahaoBtn" type="button" value="+" />
+                        </div>
+                        <div class="input-group-addon">
+                            枕套数量：
+                            <input class="btn btn-xs btn-info jianhaoBtn" type="button" value="-" />
+                            <input type="text" op="count" BedLinen="count" name="f_PillowcaseNo" id="f_PillowcaseNo" class="_Quantity" style="width: 30px; text-align: center;" maxlength="2" value="@(Model.f_PillowcaseNo)" />
+                            <input class="btn btn-xs btn-info jiahaoBtn" type="button" value="+" />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>当月送洗次数：</td>
+                    <td>
+                        <div class="input-group-addon">
+                            <input class="btn btn-xs btn-info jianhaoBtn" type="button" value="-" />
+                            <input type="text" BedLinen="count" name="f_Cont" id="f_Cont" Cont="f_Cont" class="_Quantity" style="width: 30px; text-align: center;" maxlength="2" value="@(Model.f_Cont)" />
+                            <input class="btn btn-xs btn-info jiahaoBtn" type="button" value="+" />
+                        </div>
+                    </td>
+                </tr>
+                <tr style="background-color: #f2dede;">
+                    <td style="color: red;">加送项目：</td>
+                    <td>
+                        <div class="input-group-addon">
+                            加送床单数量：
+                            <input class="btn btn-xs btn-info jianhaoBtn" type="button" value="-" />
+                            <input type="text" BedLinen="count" name="f_AddBunkNo" id="f_AddBunkNo" class="_Quantity" style="width: 30px; text-align: center;" maxlength="2" value="@(Model.f_AddBunkNo)" />
+                            <input class="btn btn-xs btn-info jiahaoBtn" type="button" value="+" />
+                        </div>
+                        <div class="input-group-addon">
+                            加送被子数量：
+                            <input class="btn btn-xs btn-info jianhaoBtn" type="button" value="-" />
+                            <input type="text" BedLinen="count" name="f_AddSheetsNo" id="f_AddSheetsNo" class="_Quantity" style="width: 30px; text-align: center;" maxlength="2" value="@(Model.f_AddSheetsNo)" />
+                            <input class="btn btn-xs btn-info jiahaoBtn" type="button" value="+" />
+                        </div>
+                        <br />
+                        @*<div class="input-group-addon">
+                                加送枕头数量：
+                                <input class="btn btn-xs btn-info jianhaoBtn" type="button" value="-" />
+                                <input type="text" BedLinen="count" name="f_AddQuiltNo" id="f_AddQuiltNo" class="_Quantity" style="width: 30px; text-align: center;" maxlength="2" value="@(Model.f_AddQuiltNo)" />
+                                <input class="btn btn-xs btn-info jiahaoBtn" type="button" value="+" />
+                            </div>*@
+                        <div class="input-group-addon">
+                            加送枕头套数量：
+                            <input class="btn btn-xs btn-info jianhaoBtn" type="button" value="-" />
+                            <input type="text" BedLinen="count" name="f_AddPillowcaseNo" id="f_AddPillowcaseNo" class="_Quantity" style="width: 30px; text-align: center;" maxlength="2" value="@(Model.f_AddPillowcaseNo)" />
+                            <input class="btn btn-xs btn-info jiahaoBtn" type="button" value="+" />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>备注：</td>
+                    <td><input type="text" class="form-control" name="f_Remarks" id="f_Remarks" value="@Model.f_Remarks" /></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <input type="hidden" name="f_RegistrationDate" id="f_RegistrationDate" value="@Model.f_RegistrationDate" />
+                        <input type="hidden" name="f_eid" id="f_eid" value="@Model.f_eid" />
+                        <input type="hidden" name="f_Id" id="f_Id" value="@Model.f_Id" />
+                        <input type="button" onclick="Submit()" class="btn btn-primary  btn-lg" value="确定" />
+                    </td>
+                </tr>
+            </table>
+        }
+    </div>
+</div><!-- /.panel-default/ table-->
+<script type="text/javascript">
+    //确定
+    function Submit() {
+        if (ValidationNullOr0("床位类型", $("#f_tID").val())) {
+            return;
+        }
+        var Remarks = $("#f_Remarks").val();
+        if (ValidationLength("备注信息", Remarks, 30)) {
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("UptateAndAdd")',
+            data: $("#BedLinenEditForm").serialize(),
+            reeoe: function () {
+            },
+            success: function (data) {
+                if (data != null) {
+                    if (data.result == "1") {
+                        alert("操作成功！");
+                        location.href = location.href;
+                    } else if (data.result == "500") {
+                        alert("操作异常");
+                    } else if (data.result == "8") {
+                        alert("您的个人信息昵称为空，请先填写昵称");
+                    } else if (data.result == "12") {
+                        alert(data.tips);
+                    }
+                }
+            }
+        });
+    }
+    //数量改变事件
+    function ContChange() {
+        if (parseInt($("#f_BunkNo").val()) > 0 || parseInt($("#f_SheetsNo").val()) > 0 || parseInt($("#f_QuiltNo").val()) > 0 || parseInt($("#f_PillowcaseNo").val()) > 0) {
+            $("#f_Cont").val('1');
+        } else {
+            $("#f_Cont").val('0');
+        }
+    }
+    //取消
+    $(function () {
+        $("#btn-quxiao").click(function () {
+            $("div.addbg").hide();
+        });
+        //加号按钮
+        $(".jiahaoBtn").click(function () {
+            var oV = $(this).parent().find("input[BedLinen='count']").val();
+            if (!isNaN(oV)) {
+                oV = parseInt(oV, 10);
+                if ($(this).parent().find("input[BedLinen='count']").attr("Cont") == "f_Cont") {
+                    $(this).parent().find("input[BedLinen='count']").val(oV == 2 ? 2 : oV + 1);
+                } else {
+                    $(this).parent().find("input[BedLinen='count']").val(oV == 99 ? 99 : oV + 1);
+                }
+            } else {
+                $(this).parent().find("input[BedLinen='count']").val(1);
+            }
+            if ($(this).parent().find("input[BedLinen='count']").attr("op") == "count") {
+                ContChange();
+            }
+        });
+        //减号按钮
+        $(".jianhaoBtn").click(function () {
+            var oV = $(this).parent().find("input[BedLinen='count']").val();
+            if (!isNaN(oV)) {
+                oV = parseInt(oV, 10);
+                $(this).parent().find("input[BedLinen='count']").val(oV == 0 ? 0 : oV - 1);
+            } else {
+                $(this).parent().find("input[BedLinen='count']").val(0);
+            }
+            if ($(this).parent().find("input[BedLinen='count']").attr("op") == "count") {
+                ContChange();
+            }
+        });
+    });
+</script>

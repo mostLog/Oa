@@ -1,0 +1,260 @@
+﻿@model IList<MI.Core.Domain.CertAgency>
+@{
+    ViewBag.Title = "证件办理";
+    MI.Application.Dto.CertAgencyWhereDto caw = ViewBag.CWD;
+    List<MI.Core.Domain.SType> department = ViewBag.listTypeDepartment; //所有部门
+    List<MI.Core.Domain.SType> workLocation = ViewBag.listWorkLocation;
+    List<MI.Core.Domain.SType> certType = ViewBag.listCertType;
+    List<MI.Core.Domain.SType> process = ViewBag.listProcess;
+    List<MI.Core.Domain.Employee> employee = ViewBag.listEmployee;
+    int i = 1;
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+}
+
+<div class="addbg">
+    <div class="addtable">
+    </div><!-- /.addtable-->
+</div><!-- /.addbg-->
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">人力资源</a></li>
+        <li class="active">证件办理</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        <li class="active" role="presentation"><a href="~/EmpAndFood/CertAgency/Index">证件办理</a></li>
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="dropdown">
+                            <input type="hidden" name="FDepartmentId" id="FDepartmentId" value="@(caw.FDepartmentId)" correspond = "dropdownMenuFdep" /> 
+                            <button class="btn btn-default dropdown-toggle" style="width: 160px" type="button" id="dropdownMenuFdep" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(department.FirstOrDefault(p => p.f_tID == caw.FDepartmentId)?.f_value ?? "部门筛选" )
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuFdep">
+                                <li><a href="javaScript:" id="0">全部</a></li>
+                                @foreach (var item in department)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="Name">姓名：</label>
+                            <input type="text" class="form-control" value="@caw.Name" id="Name" name="Name">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="dropdown">
+                            <input type="hidden" name="WorkLocationId" id="WorkLocationId" value="@caw.WorkLocationId" correspond = "dropdownMenuSelWorkL" />
+                            <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenuSelWorkL" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(workLocation.FirstOrDefault(p => p.f_tID == caw.WorkLocationId)?.f_value ?? "工作地点" )
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuSelWorkL">
+                                <li><a href="javaScript:" id="-1">全部</a></li>
+                                @foreach (var item in workLocation)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>
+                    </div><!-- /.taiojianli_left-->
+                </form>
+            </div>
+            <div class="taiojianli_right">
+                <button type="button" onclick="Update('0')" id="btn-xinzeng" class="btn btn-primary">新增+</button>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">证件办理</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>员工</th>
+                            <th>护照英文名</th>
+                            <th>部门</th>
+                            <th>昵称</th>
+                            <th>工作地点</th>
+                            <th>证件类型</th>
+                            <th>办理进度</th>
+                            <th>处理人</th>
+                            <th>操作时间</th>
+                            <th>备注</th>
+                            <th class="caozuotd" style="width: 220px;">操&nbsp;&nbsp;作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            if (Model == null || Model.Count <= 0)
+                            {
+                                <tr>
+                                    <td colspan="12" align="center">没有数据</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                foreach (var item in Model)
+                                {
+                                    if (!employee.Any(m => m.f_eid == item.f_eId))
+                                    {
+                                        continue;
+                                    }
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@(employee.FirstOrDefault(u => u.f_eid == (item.f_eId ?? 0))?.f_chineseName ?? "" )</td>
+                                        <td>@(employee.FirstOrDefault(u => u.f_eid == (item.f_eId ?? 0))?.f_passportName ?? "" )</td>
+                                        <td>@(department.FirstOrDefault(p => p.f_tID == (employee.FirstOrDefault(u => u.f_eid == (item.f_eId ?? 0))?.f_department_tID ?? 0))?.f_value ?? "" )</td>
+                                        <td>@(employee.FirstOrDefault(u => u.f_eid == (item.f_eId ?? 0))?.f_nickname ?? "" )</td>
+                                        <td>@(workLocation.FirstOrDefault(p => p.f_tID == (employee.FirstOrDefault(u => u.f_eid == (item.f_eId ?? 0))?.f_workLocation_tID ?? 0))?.f_value ?? "" )</td>
+                                        <td>@(certType.FirstOrDefault(u => u.f_tID == item.f_CertificateTypeId)?.f_value ?? "")</td>
+                                        <td>@(process.FirstOrDefault(u => u.f_tID == item.f_ProgressId)?.f_value ?? "")</td>
+                                        <td>@item.f_Operator</td>
+                                        <td>@item.f_OperatorTime </td>
+                                        <td>@item.f_Remark </td>
+                                        <td>
+                                            <button type="button" class="btn btn-info btn-sm" onclick="Update('@item.f_Id')">修改</button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="Delete('@item.f_Id')">删除</button>
+                                            <input type="button" id="UpFileTo" name="UpFileTo" value="上传" onclick="FileUp('f_fileName', '@item.f_Id')" class="btn btn-success btn-sm">
+                                            @if (string.IsNullOrEmpty(item.f_FileName))
+                                            {
+                                                <input type="button" value="下载" disabled="disabled" class="btn btn-danger btn-sm">
+                                            }
+                                            else
+                                            {
+                                                <input type="button" value="下载" onclick="Filedown('@(item.f_FileName)')" class="btn btn-danger btn-sm">
+                                            }
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageListFor(iCurrentPage, iPageSize, iTotalCount, caw)
+            </ul>
+        </div><!-- /.fenyediv-->
+    </div><!-- /.oacentbox-->
+</div>
+
+<form id="fileForm" method="post" enctype="multipart/form-data" action="@Url.Action("FileSave")">
+    <input type="file" id="imgFile" name="imgFile" style="display:none" />
+    <input type="hidden" name="f_Id" id="f_Id" value="" />
+    <input type="hidden" name="hidFile" id="hidFile" value="" />
+</form>
+
+
+<script type="text/javascript">
+    function Update(id) {
+        OpenADDwindow();
+        loadingTips();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Edit")',
+            data: { iId: id },
+            success: function(data) {
+                if (data != null) {
+                    $(".addtable").html(data);
+                    //ajax请求的html 需要重新绑定下拉框的动作事件
+                    setDropdownChangeValue();
+                }
+            },
+            error: function (data) {
+            }
+        });
+        $("div.addbg").show(200);
+    }
+
+    function Delete(id) {
+        if (confirm("是否确定删除？")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                data: { Id: id },
+                success: function(data) {
+                    if (data != null) {
+                        if (data == "1") {
+                            alert("删除成功");
+                            location.href = location.href;
+                        } else if (data == "500") {
+                            alert("删除异常");
+                        }
+                    }
+                },
+                error: function (data) {
+                }
+            });
+        }
+    }
+
+    //上传 s=资料
+    function FileUp(s,id) {
+        $("#hidFile").val(s);
+        $("#f_Id").val(id);
+        $("#imgFile").click();
+    }
+
+    //选中图片提交
+    $("#imgFile").change(function (e) {
+        var $file = $(this);
+        var fileObj = $file[0];
+        var windowUrl = window.URL || window.webkitURL;
+        var dataUrl;
+        if (fileObj && fileObj.files && fileObj.files[0]) {
+            dataUrl = windowUrl.createObjectURL(fileObj.files[0]);
+        } else {
+            dataUrl = $file.val();
+        }
+        fileSumbit(dataUrl);
+    });
+
+    //上传图片
+    function fileSumbit(objUrl) {
+        $("#fileForm").ajaxSubmit({
+            dataType: "json",    // html（默认）、xml、script、json接受服务器端返回的类型
+            success: function (data) {
+                if (data != null) {
+                    if (data == "5") {
+                        alert("资料格式必须为图片、压缩文件、word、PDF、excel");
+                    }
+                    else if (data == "500") {
+                        alert("上传异常，请稍后再试！");
+                    } else if (data == "1") {
+                        alert("上传成功！")
+                        location.href = location.href;
+                    } else if (data.indexOf("<title>系統錯誤</title>") > -1) {
+                        location.href = "http://" + location.host + "/Login/Error";
+                    }
+
+                }
+            }    // 提交后的回调函数
+        });
+    }
+
+    //下载
+    function Filedown(filename) {
+        if (filename == "") {
+            alert("暂时未上传文件！");
+            return;
+        }
+        location.href = '@Url.Action("FileDown")?fileName=' + filename;
+    }
+</script>

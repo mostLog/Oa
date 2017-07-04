@@ -1,0 +1,366 @@
+﻿@model List<MI.Core.Domain.Employee>
+@{
+    ViewBag.Title = "人事报表";
+    ViewBag.current = "员工管理";
+    //序号
+    int i = 1;
+    int iCurrentPage = ViewBag.iPageIndex;
+    int iPageSize = ViewBag.iPageSize;
+    int iTotalCount = ViewBag.iCount;
+    //部门
+    List<MI.Core.Domain.SType> listTypeSector = ViewBag.listTypeSector;
+    //在职状态
+    List<MI.Core.Domain.SType> listTypeworkStatus = ViewBag.listTypeworkStatus;
+    //权限等级
+    List<MI.Core.Domain.SType> listPrivilegeLevel = ViewBag.listPrivilegeLevel;
+    //订餐类型
+    List<MI.Core.Domain.SType> listorderType = ViewBag.listorderType;
+
+    MI.Core.Domain.Employee employeeData = ViewBag.employeeData;
+    MI.Application.Dto.EmployeeDto employedto = ViewBag.employee;
+}
+<link href="~/Css/editable/bootstrap-editable.css" rel="stylesheet" />
+<script src="~/Scripts/editable/bootstrap-editable.js"></script>
+@Styles.Render("~/Content/datetimepicker")
+@Scripts.Render("~/bundles/datetimepicker")
+<div class="addbg">
+    <div class="addtable" style="margin-top:30px">
+        @*加载js特效*@
+    </div>
+</div>
+<div>
+    <div id="divTitle">
+        <ol class="breadcrumb">
+            <li><a href="javaScript:">员工管理</a></li>
+            <li class="active">人事报表</li>
+        </ol>
+        <ul class="nav nav-tabs">
+            @Html.Partial("emplotyeeInfoNavigation", "人事报表")
+        </ul>
+    </div>
+</div>
+<div>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline">
+                    <div class="taiojianli_left">
+                        <div class="dropdown">
+                            @Html.Hidden("f_department_tID", "", new { @correspond = "dropdownMenuSelectDep" })
+                            <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenuSelectDep" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @( employedto.f_department_tID == -1 ? "全部" : listTypeSector.FirstOrDefault(p => p.f_tID == employedto.f_department_tID)?.f_value ?? "部门筛选" )
+                                <span class="caret"></span>
+                            </button>
+                            @*将下列表绑定到button下*@
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuSelectDep" id="communityShow">
+                                <li><a href="javaScript:" id="-1">全部</a></li>
+                                    @foreach (var item in listTypeSector)
+                                    {
+                                        <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value</a></li>
+                                    }
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="dropdown">
+                            @Html.Hidden("workStatus_f_tid", "", new { @correspond = "dropdownMenuSelectWs" })
+                            <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenuSelectWs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(employedto.workStatus_f_tid == -1 ? "全部" : (employedto.workStatus_f_tid == -2 ? "空白" : (listTypeworkStatus.FirstOrDefault(p => p.f_tID == employedto.workStatus_f_tid)?.f_value ?? "在职状态")))
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuSelectWs">
+                                <li><a href="javaScript:" id="-1">全部</a></li>
+                                <li><a href="javaScript:" id="-2">空白</a></li>
+                                @foreach (var item in listTypeworkStatus)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="dropdown">
+                            @Html.Hidden("level_f_tid", "", new { @correspond = "dropdownMenuSelectLevel" })
+                            <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenuSelectLevel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(employedto.level_f_tid == -1 ? "全部" : (listPrivilegeLevel.FirstOrDefault(p => p.f_tID == employedto.level_f_tid)?.f_value ?? "权限等级"))
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuSelectLevel">
+                                <li><a href="javaScript:" id="-1">全部</a></li>
+                                @foreach (var item in listPrivilegeLevel)
+                                {
+                                    <li><a href="javaScript:" id="@(item.f_tID)">@item.f_value </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">名字：</label>
+                            <input type="text" style="width:200px;" class="form-control" id="Name" name="Name" value="@employedto.Name" placeholder="中文名/护照名/昵称/账户">
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">电话：</label>
+                            <input type="text" style="width:100px;" class="form-control" id="TelNoPH" name="TelNoPH" value="@employedto.TelNoPH" placeholder="菲律宾电话">
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">创建时间：</label>
+                            <input type="text" style="width:150px;" class="form-control" id="StartDate" name="StartDate" value="@(employedto.StartDate==DateTime.MinValue?"":employedto.StartDate.ToString("yyyy-MM-dd"))" placeholder="">&nbsp;到&nbsp;<input type="text" style="width:150px;" class="form-control" id="EndDate" name="EndDate" value="@(employedto.EndDate==DateTime.MinValue?"":employedto.EndDate.ToString("yyyy-MM-dd"))" placeholder="">
+                        </div>
+                    </div>
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="exampleInputName2">楼栋或房间：</label>
+                            <input type="text" style="width:100px;" class="form-control" id="BuildingOrRoomNo" name="BuildingOrRoomNo" value="@employedto.BuildingOrRoomNo" placeholder="楼栋/房间号">
+                        </div>
+                    </div>
+                    <div class="taiojianli_right">
+                        <button type="button" class="btn btn-primary" onclick="AddHtml()">新增+</button>
+                    </div>
+                    <br />
+                    <div id="excelselect">
+                        <div class="taiojianli_right" style="margin-top:10px;">
+                            <button type="submit" class="btn btn-primary">查 询</button>&nbsp;&nbsp;&nbsp;
+                            <button style="width:83px" id="a_export" type="button" class="btn btn-success" onclick="Export()">导出Excel</button>
+                            <button style="width:85px" id="downloadImg" type="button" class="btn btn-success" onclick="DownloadImg()">下载图片</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">人事报表</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr id="auto-fixed-top">
+                            <th>序号</th>
+                            <th>部门</th>
+                            <th>班别</th>
+                            <th>姓名</th>
+                            <th>性别</th>
+                            <th>国籍</th>
+                            <th>OA帐号/密码</th>
+                            <th>昵称</th>
+                            <th>蘭卡到期日</th>
+                            <th>QQ号码</th>
+                            <th>菲线电话</th>
+                            <th>国内电话</th>
+                            <th>社区</th>
+                            <th>楼栋</th>
+                            <th>房号</th>
+                            <th>宿舍订餐</th>
+                            <th>上班地点</th>
+                            <th>搭车时间</th>
+                            <th>在职状态</th>
+                            <th>权限等级</th>
+                            <th class="caozuotd">操&nbsp;&nbsp;作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            //订餐
+                            int[] orderTypes = item.OrderingEmployees.Select(p => p.f_LDM_tID.Value).ToArray();
+                            <tr @Html.Raw(item.t_Dormitory?.f_Community == null ? " class='danger'" : "")>
+                                <td>@i</td>
+                                <td>@(item.STypeDepartment?.f_value)</td>
+                                <td>@(item.t_sType?.f_value) </td>
+                                <td id="@("tips"+item.f_eid)">@($"{item.f_chineseName}({item.f_passportName})")</td>
+                                <td>@(item.f_sex == 1 ? "男" : "女")</td>
+                                <td>@item.f_international </td>
+                                <td>@(item.f_AccountName)<br />(@(item.f_pwd))</td>
+                                <td>@item.f_nickname </td>
+                                <td>@(item.f_passportDate?.ToString("yyyy-MM-dd")) </td>
+                                <td>@item.f_QQNumber</td>
+                                <td>@item.f_TelNoPH</td>
+                                <td>@item.f_TelNoCN</td>
+                                <td>@(item.t_Dormitory?.f_Community) </td>
+                                <td>@(item.t_Dormitory?.f_Building) </td>
+                                <td>@(item.t_Dormitory?.f_RoomNo) </td>
+                                <td>
+                                    @foreach (var one in listorderType.Where(p => orderTypes.Contains(p.f_tID)))
+                                    {
+                                        <span>@(one.f_value + ",")</span>
+                                    }
+                                </td>
+                                <td>@(item.STypeWorkLocation?.f_value)</td>
+                                <td>上班: @(item.f_rideWorkTime?.ToString("HH:mm") ?? "") <br />下班: @(item.f_rideOffWorkTime?.ToString("HH:mm") ?? "") </td>
+                                <td>@(item.STypeWorkStatus?.f_value)</td>
+                                <td>@(item.STypeLevel?.f_value)</td>
+                                <td>
+                                    <button type="button" onclick="Update(@item.f_eid)" class="btn btn-info btn-sm">修改</button>
+                                    <input type="button" title="请输入删除口令" eid="@item.f_eid" class="btn btn-danger btn-sm btn_Del" placeholder="密码" value="删除" style="color:white;font-style:inherit" />
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="20" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="fenyediv">
+            <ul class="pagination">
+                @Html.PageListFor(iCurrentPage, iPageSize, iTotalCount, employedto)
+            </ul>
+        </div>
+    </div>
+    <style>
+        .taiojianli_right {
+            margin-right: -210px;
+        }
+
+        #communityShow li span a {
+            text-decoration: none;
+            color: #000000;
+            height: 13px;
+        }
+
+        #communityShow li span {
+            margin-left: 19px;
+        }
+
+        #communityShow li:hover {
+            color: #262626;
+            text-decoration: none;
+            background-color: #f5f5f5;
+        }
+    </style>
+</div>
+    <script type="text/javascript">
+        $(function () {
+            $.datetimepicker.setLocale('zh');//日期格式设置为北京日期
+            jQuery('#StartDate').datetimepicker({
+                lang: 'zh',
+                format: 'Y-m-d',
+                onShow: function (ct) {
+                    this.setOptions({
+                        maxDate: jQuery('#EndDate').val() ? jQuery('#EndDate').val() : false
+                    })
+                },
+                timepicker: false
+            });
+            jQuery('#EndDate').datetimepicker({
+                lang: 'zh',
+                format: 'Y-m-d',
+                onShow: function (ct) {
+                    this.setOptions({
+                        minDate: jQuery('#StartDate').val() ? jQuery('#StartDate').val() : false
+                    })
+                },
+                timepicker: false
+            });
+            $(".btn_Del").each(function () {
+                var $this = $(this);
+                var eid = $this.attr("eid");
+                $(this).editable({
+                    type: 'text',//文本输入
+                    pk: eid,
+                    name: 'DelPwd',
+                    url: '@Url.Action("DeleteByID")',
+                    validate: function (value) {//删除口令
+                        if ($.trim(value) == "") {
+                            return '不能为空!';
+                        }
+                    },
+                    success: function (response) {
+                        if (response.result == 1) {
+                            alert("删除成功");
+                            RefreshF5();
+                        } else {
+                            alert(response.tips);
+                        }
+                    }
+                })
+            })
+        })
+
+        //导出Excel
+        function Export() {
+            //查询条件
+            var data = "department_f_tid=" + encodeURI($('#f_department_tID').val())
+                + "&workStatus_f_tid=" + encodeURI($('#workStatus_f_tid').val())
+                + "&level_f_tid=" + encodeURI($('#level_f_tid').val())
+                + "&Name=" + encodeURI($('#Name').val())
+                + "&StartDate=" + encodeURI($('#StartDate').val())
+                + "&EndDate=" + encodeURI($('#EndDate').val());
+            //跳转页面(直接打开 Excel)
+            location.href = '/EmpAndFood/employeeInfo/Export?' + data;
+        }
+
+         //下载图片
+        function DownloadImg()
+        {
+            var sDepartmentId = $('#f_department_tID').val();
+            if (sDepartmentId < 0 || sDepartmentId == '')
+            {
+                alert('请选择部门');
+                return;
+            }
+             location.href = '@Url.Action("downloadImg")?sDepartmentId=' + sDepartmentId;
+        }
+
+        //新增
+        function AddHtml() {
+            OpenADDwindow();
+            loadingTips();
+            $.ajax({
+                 type: 'POST',
+                 url: '@Url.Action("GetCreate")',
+                 data: { isNew: false },
+                 dataType: "html",
+                 error: function (data) {
+                     alert("异常");
+                     closeADDwindow();
+                 },
+                 success: function (data) {
+                     if (data != null) {
+                         $(".addtable").html(data);
+                         //ajax请求的html 需要重新绑定下拉框的动作事件
+                         setDropdownChangeValue();
+                     } else {
+                         alert("加载内容失败。");
+                         closeADDwindow();
+                     }
+                 }
+            })
+        }
+        //修改
+        function Update(eid) {
+            OpenADDwindow();
+            loadingTips();
+            $.ajax({
+                   type: 'POST',
+                   url: '@Url.Action("getEdit")',
+                   data: {
+                       id: eid
+                   },
+                   dataType: "html",
+                   error: function (data) {
+                       alert("异常");
+                       closeADDwindow();
+                   },
+                   success: function (data) {
+                       if (data != null) {
+                           $(".addtable").html(data);
+                           //ajax请求的html 需要重新绑定下拉框的动作事件
+                           setDropdownChangeValue();
+                       } else {
+                           alert("加载内容失败。");
+                           closeADDwindow();
+                       }
+                   }
+            })
+        }
+    </script>

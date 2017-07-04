@@ -1,0 +1,204 @@
+﻿@model List<MI.Core.Domain.t_LaundryPwd>
+@{
+    ViewBag.Title = "宿舍管理";
+    int i = 1;
+    IEnumerable<SelectListItem> listItemCommunity = ViewBag.listItemCommunity;
+    IEnumerable<SelectListItem> listItemBui = ViewBag.listItemBui;
+    //当前选择的社区
+    SelectListItem currentComm = listItemCommunity.FirstOrDefault(p => p.Selected);
+    //当前选择的楼栋
+    SelectListItem currentBui = listItemBui.FirstOrDefault(p => p.Selected);
+}
+<div class="addbg">
+    <div class="addtable" style="margin-top:30px">
+    </div><!-- /.addtable-->
+</div><!-- /.addbg-->
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="#">宿舍管理</a></li>
+        <li class="active">洗衣房</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("DormitoryNavTabs", "洗衣房")
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <div class="taiojianli_left">
+                <label style="float:left;height:30px;line-height:30px;padding-left:15px">社区：</label>
+                <div class="dropdown" style="float:left">
+                    @Html.Hidden("onchangeCommunity", currentComm, new { @correspond = "dropdownMenu0" })
+                    <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenu0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        @currentComm.Text
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu0">
+                        @foreach (var item in listItemCommunity)
+                        {
+                            <li><a href="javaScript:changeCommunity()" id="@(item.Value)">@item.Text </a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div id="searchbox">
+                <div class="taiojianli_left">
+                    <div class="btn-group" id="listItemBui" data-toggle="buttons">
+                        @foreach (var item in listItemBui)
+                        {
+                            <label class="btn btn-info @(item.Selected ? " active":"" )" style="position:static" onclick="javascript: document.location.href=('@(Url.Action("Index", new { sCommunity=currentComm.Text, sBuilding=item.Value }))')">
+                                @item.Text
+                            </label>
+                        }
+                    </div>
+                </div><!-- /.taiojianli_left-->
+            </div>
+            <div class="taiojianli_right">
+                <button onclick="UpdateSel('0')" type="button" id="btn-xinzeng" class="btn btn-primary">新增+</button>
+            </div>
+        </div>
+        <div class="oatiaojian container-fluid" style="margin-left:15px;">
+            <div id="searchbox">
+                <form class="form-inline">
+                    <input type="hidden" name="sCommunity" id="sCommunity" value="@currentComm.Value" />
+                    <input type="hidden" name="sBuilding" id="sBuilding" value="@currentBui.Value" />
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <label for="f_Community">房间号密码：</label>
+                            <input type="text" class="form-control" value="@(ViewBag.sNoandwpd)" id="sNoandwpd" name="sNoandwpd">
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <div class="form-group">
+                            <div class="dropdown">
+                                <label for="f_Community">类别：</label>
+                                @Html.Hidden("iRoomtype", "", new { @correspond = "dropdownMenu3" })
+                                <button class="btn btn-default dropdown-toggle form-control" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width:160px;">
+                                    @(ViewBag.iRoomtype == 0 ? "全部" : ViewBag.iRoomtype == 1 ? "晾衣房" : "洗衣房")
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu3" style="margin-left:47px;">
+                                    <li><a href="javaScript:" id="0">全部</a></li>
+                                    <li><a href="javaScript:" id="2">洗衣房</a></li>
+                                    <li><a href="javaScript:" id="1">晾衣房</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div><!-- /.taiojianli_left-->
+                    <div class="taiojianli_left">
+                        <button type="submit" class="btn btn-primary">查 询</button>&nbsp;&nbsp;&nbsp;
+                    </div><!-- /.taiojianli_left-->
+                </form>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">洗衣房</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>社区</th>
+                            <th>类别</th>
+                            <th>楼栋</th>
+                            <th>房间号/密码</th>
+                            <th>备注</th>
+                            <th class="caozuotd">操&nbsp;&nbsp;作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>@item.f_Community </td>
+                                <td>@(item.f_RoomType == 2 ? "洗衣房" : "晾衣房")</td>
+                                <td>@item.f_Building</td>
+                                <td>@item.f_NoAndPwd</td>
+                                <td>@item.f_Remark</td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" onclick="UpdateSel('@item.f_Id')">修改</button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="Delete('@item.f_Id')">删除</button>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="7" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+    </div><!-- /.oacentbox-->
+</div>
+
+<script type="text/javascript">
+    var IndexUrl = "@Url.Action("Index")";
+    function UpdateSel(id) {
+        OpenADDwindow();
+        loadingTips();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Edit")',
+            data: { Id: id },
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data != null) {
+                    $(".addtable").html(data);
+                    setDropdownChangeValue();
+                }
+            }
+        });
+        $("div.addbg").show(200);
+    }
+    //选择社区
+    function changeCommunity() {
+        var sCommunity = $("#onchangeCommunity").val();
+        if (sCommunity == null || $.trim(sCommunity) == "" || $.trim(sCommunity) == "请选择社区") {
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Community")",
+            data: { community: sCommunity },
+            error: function (data) {
+                alert('发生错误');
+            },
+            success: function (data) {
+                if (data != null) {
+                    var str = "";
+                    for (var i = 0; i < data.length; i++) {
+                        str += "<label class=\"btn btn-info\" style=\"position:static\" onclick=\"javascript: document.location.href='" + IndexUrl + "?sCommunity=" + sCommunity + "&sBuilding=" + data[i] + "' \" >" + data[i] + "</label>";
+                    }
+                    $("#listItemBui").html(str);
+                }
+            }
+        });
+    }
+    function Delete(id) {
+        if (confirm("是否确定删除？")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                data: { Id: id },
+                error: function (data) {
+                },
+                success: function (data) {
+                    if (data != null) {
+                        if (data == 1) {
+                            alert("删除成功");
+                            location.href = location.href;
+                        } else {
+                            alert("操作失败");
+                        }
+                    }
+                }
+            });
+        }
+    }
+</script>
+

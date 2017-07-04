@@ -1,0 +1,216 @@
+﻿@model List<MI.Application.Dto.BedLinenDto>
+@{
+    ViewBag.Title = "登记查询";
+    int i = 1;
+}
+<style type="text/css">
+    table.table thead tr th {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .form-inline input.text_width {
+        width: 125px;
+    }
+</style>
+<div class="addbg">
+    <div class="addtable" style="margin-top:30px">
+    </div><!-- /.addtable-->
+</div><!-- /.addbg-->
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">登记查询</a></li>
+        <li class="active">床被送洗</li>
+    </ol>
+    <ul class="nav nav-tabs">
+        @Html.Partial("FeeSearchNavMeuns", "床被送洗")
+    </ul>
+    <div class="oacentbox">
+        <div class="oatiaojian container-fluid">
+            <button type="submit" class="btn btn-primary" id="searchicon"><span class="glyphicon glyphicon-search" aria-hidden="true" style="font-size: 16px;"></span></button>
+            <div id="searchbox">
+                <form class="form-inline"></form>
+            </div>
+            <div class="taiojianli_right">
+                <button onclick="Update('0', '@(DateTime.Now.Day)')" type="button" id="btn-xinzeng" class="btn btn-primary">新增+</button>
+            </div>
+            <br />
+            <div style="color: red; margin-top: 20px;">
+                <span>1、每月1-9号开放登记本月床被送洗，10号至当月最后一日只允许登记下月信息；</span><br />
+                <span>2、新人首次送洗需要增加一套用于换洗的，请在后面登记；</span><br />
+                <span>3、每月11号第一次送新床被和收取床被，請於【10 日】前放置於客廳。每月25号第二次收取床被，請於【24日】前放置於客廳。</span><br />
+                <span>4、为了确保员工床被是否按时收取，请员工在指定期限内告知行政【未按时收取床被的情况】，逾期仍未告知行政的视为当月放弃床被送洗服务。</span><br />
+                <span style="margin-left:20px;">*登记送洗1次的，须在当月15日（含）之前通知行政部【仍有床被未收取】；</span><br />
+                <span style="margin-left:20px;">*登记送洗2次的，第一次送洗须在当月15日（含）之前通知行政部【仍有床被未收取】，第二次送洗须在当月30日（含）之前告知。</span><br />
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">床被送洗</div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">序号</th>
+                            <th rowspan="2">登记年月</th>
+                            <th rowspan="2">登记人</th>
+                            <th rowspan="2">小区</th>
+                            <th rowspan="2">楼栋</th>
+                            <th rowspan="2">房号</th>
+                            <th rowspan="2">床位类型</th>
+                            <th colspan="4">送洗项目</th>
+                            <th rowspan="2">当月送洗次数</th>
+                            <th colspan="3">是否需要加送（新人首次送洗）Add</th>
+                            <th rowspan="2">备注</th>
+                            <th rowspan="2">操作</th>
+                        </tr>
+                        <tr>
+                            <th>床单数量<br />Sheet</th>
+                            <th>被单数量<br />Bedcover</th>
+                            <th>被子数量<br />Comforter</th>
+                            <th>枕头套数量<br />Pillow Case</th>
+                            <th>床单数量<br />Sheet</th>
+                            <th>被子数量<br />Comforter</th>
+                            @*<th>枕头数量<br />Pillow</th>*@
+                            <th>枕头套数量<br />Pillow Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i </td>
+                                <td>@item.RegistrationDate.ToString("yy-MM") </td>
+                                <td>@item.NickName</td>
+                                <td>@item.Community</td>
+                                <td>@item.Building</td>
+                                <td>@item.RoomNo</td>
+                                <td>@item.Hostels</td>
+                                <td>@item.BunkNo</td>
+                                <td>@item.SheetsNo</td>
+                                <td>@item.QuiltNo</td>
+                                <td>@item.PillowcaseNo</td>
+                                <td>@item.Cont </td>
+                                <td>@item.AddBunkNo</td>
+                                <td>@item.AddSheetsNo</td>
+                                @*<td>@item.AddQuiltNo</td>*@
+                                <td>@item.AddPillowcaseNo</td>
+                                <td>@item.Remarks</td>
+                                <td>
+                                    @if (DateTime.Now.Day >= 1 && DateTime.Now.Day <= 9)
+                                    {
+                                        if (item.RegistrationDate.Month == DateTime.Now.Month)
+                                        {
+                                            <button type="button" class="btn btn-info btn-sm" onclick="Update('@item.Id', '@(DateTime.Now.Day)')">修改</button>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (item.RegistrationDate.Month == (DateTime.Now.Month + 1))
+                                        {
+                                            <button type="button" class="btn btn-info btn-sm" onclick="Update('@item.Id', '@(DateTime.Now.Day)')">修改</button>
+                                        }
+                                    }
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="17" align="center">没有数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.panel-default/ table-->
+    </div><!-- /.oacentbox-->
+</div>
+
+<script type="text/javascript">
+    function Update(id, sDay) {
+        if (parseInt(sDay) >= 1 && parseInt(sDay) <= 9) {
+            Updates(id);
+        } else {
+            if (confirm("本月送洗登记已截止，现只允许登记下个月的名单，是否继续")) {
+                Updates(id);
+            } else {
+                $("#btn-xinzeng").unbind("click");
+            }
+        }
+    }
+
+    function Updates(id) {
+        OpenADDwindow();
+        loadingTips();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("BedLinenListEdit")',
+            data: { iId: id },
+            error: function (data) {
+            },
+            success: function (data) {
+                if (data != null) {
+                    if (data.indexOf("该条信息不是您添加") > 0) {
+                        alert(data);
+                        $("#btn-xinzeng").unbind("click");
+                    } else {
+                        $(".addtable").html(data);
+                        setDropdownChangeValue();
+                    }
+                }
+            }
+        });
+        $("div.addbg").show(200);
+    }
+    function Delete(id) {
+        if (confirm("是否确定删除？")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                data: { iId: id },
+                error: function (data) {
+                    //location.href = '@Url.Action("Error", "Login")'
+                },
+                success: function (data) {
+                    if (data != null) {
+                        if (data == "1") {
+                            alert("删除成功");
+                            location.href = location.href;
+                        } else if (data == "500") {
+                            alert("删除异常");
+                        }
+                    }
+                }
+            });
+        }
+    }
+    //导出
+    function Export() {
+        //查询条件
+        var data = "RegistrationStarDate=" + encodeURI($('#RegistrationStarDate').val())
+            + "&RegistrationEndDate=" + encodeURI($('#RegistrationEndDate').val())
+            + "&Name=" + encodeURI($('#Name').val())
+            + "&Community=" + encodeURI($('#Community').val())
+            + "&Building=" + encodeURI($('#Building').val())
+            + "&RoomNo=" + encodeURI($('#RoomNo').val());
+        //跳转页面(直接打开 Excel)
+        location.href = '/Dormitory/BedLinen/Export?' + data;
+    }
+    $(function () {
+        //取消
+        $("#btn-quxiao").click(function () {
+            $("div.addbg").hide();
+        });
+    });
+
+    function StatsBedLinen() {
+        var data = "RegistrationStarDate=" + encodeURI($('#RegistrationStarDate').val())
+            + "&RegistrationEndDate=" + encodeURI($('#RegistrationEndDate').val())
+            + "&Name=" + encodeURI($('#Name').val())
+            + "&Community=" + encodeURI($('#Community').val())
+            + "&Building=" + encodeURI($('#Building').val())
+            + "&RoomNo=" + encodeURI($('#RoomNo').val());
+        window.open('@(Url.Action("NewIndexView"))?' + data, '根据宿舍合并统计', 'width=1500,height=800');
+    }
+</script>

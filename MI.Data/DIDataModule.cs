@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Castle.DynamicProxy;
 using MI.Core;
 using MI.Data.Uow;
 
@@ -12,11 +11,12 @@ namespace MI.Data
         {
             Config config = new Config();
 
+            builder.RegisterType<UnitOfWorkInterceptor>().InstancePerLifetimeScope();
+
             builder.RegisterGeneric(typeof(BaseRepository<>)).As(typeof(IBaseRepository<>)).InstancePerLifetimeScope();
 
             builder.Register<IDbContext>(c => new OADbContext(config.ConnectionString)).InstancePerLifetimeScope();
 
-            builder.RegisterType<UnitOfWorkInterceptor>().As<IInterceptor>().InstancePerLifetimeScope();
 
             builder.RegisterType<EFUnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 

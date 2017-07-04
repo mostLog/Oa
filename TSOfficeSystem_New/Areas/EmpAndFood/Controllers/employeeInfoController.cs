@@ -92,16 +92,7 @@ namespace TSOfficeSystem_New.Areas.EmpAndFood.Controllers
             try
             {
                 //移走
-                if (IEmololyee.RemovalEmployeeInfoById(id) > 0)
-                {
-                    eResult = ErrorEnum.Success;
-                    eTips = eTipsEnum.SuccessfulOperation;
-                }
-                else
-                {
-                    eResult = ErrorEnum.Fail;
-                    eTips = eTipsEnum.FailOperation;
-                }
+                IEmololyee.RemovalEmployeeInfoById(id);
             }
             catch (Exception e)
             {
@@ -110,7 +101,7 @@ namespace TSOfficeSystem_New.Areas.EmpAndFood.Controllers
                 //写入错误日记
                 AOUnity.WriteLog(e);
             }
-            return Json(new ResultModel((int)eResult, eTips.Description()));
+            return Json(1);
         }
 
         /// <summary>
@@ -200,16 +191,7 @@ namespace TSOfficeSystem_New.Areas.EmpAndFood.Controllers
                         return Json(new ResultModel((int)error, eReturn));
                     }
                     //删除
-                    if (IEmololyee.DeleteEmoloyeeByfeid(pk) > 0)
-                    {
-                        error = ErrorEnum.Success;
-                        etienum = eTipsEnum.DeleteSuccess;
-                    }
-                    else
-                    {
-                        error = ErrorEnum.Fail;
-                        etienum = eTipsEnum.FailOperation;
-                    }
+                    IEmololyee.DeleteEmoloyeeByfeid(pk);
                 }
             }
             catch (Exception e)
@@ -219,7 +201,7 @@ namespace TSOfficeSystem_New.Areas.EmpAndFood.Controllers
                 //写入错误日记
                 AOUnity.WriteLog(e);
             }
-            return Json(new ResultModel((int)error, etienum.Description()));
+            return Json(1);
         }
 
         /// <summary>
@@ -310,11 +292,7 @@ namespace TSOfficeSystem_New.Areas.EmpAndFood.Controllers
                         allEmployeeInfoViewModel.EmployeeInfo.f_CreateDate = DateTime.Now.Date;
                         allEmployeeInfoViewModel.EmployeeInfo.f_AccountName = IEmololyee.GetMaxAccountName(allEmployeeInfoViewModel.EmployeeInfo.f_department_tID);
                         //添加
-                        if (IEmololyee.AddEmployeeInfo(allEmployeeInfoViewModel) != 0)
-                        {
-                            eResult = ErrorEnum.Success;
-                            eTips = eTipsEnum.CreateSuccess;
-                        }
+                        IEmololyee.AddEmployeeInfo(allEmployeeInfoViewModel);
                     }
                     catch (Exception e)
                     {
@@ -394,11 +372,7 @@ namespace TSOfficeSystem_New.Areas.EmpAndFood.Controllers
                 {
                     try
                     {
-                        if (IEmololyee.UpdateEmployeeInfo(allEmployeeInfoViewModel) > 0)
-                        {
-                            eResult = ErrorEnum.Success;
-                            eTips = eTipsEnum.EditSuccess;
-                        }
+                        IEmololyee.UpdateEmployeeInfo(allEmployeeInfoViewModel);
                     }
                     catch (Exception e)
                     {

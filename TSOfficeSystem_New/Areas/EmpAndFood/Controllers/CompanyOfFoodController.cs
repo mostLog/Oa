@@ -55,8 +55,8 @@ namespace TSOfficeSystem_New.Areas.EmpAndFood.Controllers
 
         public JsonResult UpdateCompanyOfFood(CompanyOfFood model)
         {
-            int result= _service.UpdateCompanyOfFood(model);
-            return Json(result);
+            _service.UpdateCompanyOfFood(model);
+            return Json(1);
         }
         /// <summary>
         /// 统计信息

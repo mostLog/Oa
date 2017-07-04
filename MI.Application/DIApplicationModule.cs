@@ -14,7 +14,8 @@ namespace MI.Application
             builder.RegisterAssemblyTypes(ThisAssembly)
              .Where(t => t.Name.EndsWith("Service"))
              .AsImplementedInterfaces()
-             .EnableInterfaceInterceptors();
+             .EnableInterfaceInterceptors()
+             ;
 
             builder.RegisterType<Session>().As<ISession>().InstancePerRequest();
 

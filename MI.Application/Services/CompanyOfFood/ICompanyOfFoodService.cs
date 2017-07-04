@@ -1,10 +1,13 @@
-﻿using MI.Application.Dto;
+﻿using Autofac.Extras.DynamicProxy;
+using MI.Application.Dto;
 using MI.Core.Domain;
+using MI.Data.Uow;
 using System;
 using System.Collections.Generic;
 
 namespace MI.Application
 {
+    [Intercept(typeof(UnitOfWorkInterceptor))]
     public interface ICompanyOfFoodService
     {
         /// <summary>

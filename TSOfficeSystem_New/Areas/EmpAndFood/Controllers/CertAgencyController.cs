@@ -88,11 +88,11 @@ namespace TSOfficeSystem_New.Areas.EmpAndFood.Controllers
             model.f_OperatorTime = DateTime.Now;
             if (model.f_Id > 0)
             {
-                result = _CertAgencyService.EditCertAgencyData(model);
+                _CertAgencyService.EditCertAgencyData(model);
             }
             else
             {
-                result = _CertAgencyService.AddCertAgencyData(model);
+                _CertAgencyService.AddCertAgencyData(model);
             }
             if (result > 0)
             {
@@ -110,11 +110,8 @@ namespace TSOfficeSystem_New.Areas.EmpAndFood.Controllers
         public ActionResult Delete(int Id)
         {
             ErrorEnum eMsg = ErrorEnum.Error;
-            int result = _CertAgencyService.DeleteCertAgency(Id);
-            if (result > 0)
-            {
-                eMsg = ErrorEnum.Success;
-            }
+            _CertAgencyService.DeleteCertAgency(Id);
+           
             return Json(eMsg);
         }
 
@@ -169,11 +166,8 @@ namespace TSOfficeSystem_New.Areas.EmpAndFood.Controllers
                         model.f_FileName = strFileName;
                         model.f_DownTips = true;
                         //修改证件办理信息
-                        int result = _CertAgencyService.EditCertAgencyData(model);
-                        if (result > 0)
-                        {
-                            eMsg = ErrorEnum.Success;
-                        }
+                        _CertAgencyService.EditCertAgencyData(model);
+                       
                     }
                 }
                 catch(Exception e)

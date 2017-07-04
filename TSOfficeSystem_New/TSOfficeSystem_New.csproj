@@ -177,40 +177,12 @@
     <Compile Include="App_Start\DataConnectionString.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Areas\Accounting\AccountingAreaRegistration.cs" />
-    <Compile Include="Areas\Assessment\AssessmentAreaRegistration.cs" />
-    <Compile Include="Areas\Dormitory\Controllers\BedLinenController.cs" />
-    <Compile Include="Areas\Dormitory\Controllers\CarRegisterController.cs" />
-    <Compile Include="Areas\Dormitory\Controllers\ChangeRoomController.cs" />
-    <Compile Include="Areas\Dormitory\Controllers\DormitoryController.cs" />
-    <Compile Include="Areas\Dormitory\Controllers\DormitoryMaintenanceController.cs" />
-    <Compile Include="Areas\Dormitory\Controllers\DormitorySummaryController.cs" />
-    <Compile Include="Areas\Dormitory\Controllers\EmpRentController.cs" />
-    <Compile Include="Areas\Dormitory\Controllers\FeeSearchController.cs" />
-    <Compile Include="Areas\Dormitory\Controllers\FlightFeeController.cs" />
-    <Compile Include="Areas\Dormitory\Controllers\GrantController.cs" />
-    <Compile Include="Areas\Dormitory\Controllers\HostelCleanController.cs" />
-    <Compile Include="Areas\Dormitory\Controllers\LatticeDController.cs" />
-    <Compile Include="Areas\Dormitory\Controllers\LaundryPwdController.cs" />
-    <Compile Include="Areas\Dormitory\Controllers\ModifyRecordController.cs" />
-    <Compile Include="Areas\Dormitory\Controllers\OutsideController.cs" />
-    <Compile Include="Areas\Dormitory\Controllers\TariffController.cs" />
-    <Compile Include="Areas\Dormitory\DormitoryAreaRegistration.cs" />
     <Compile Include="Areas\EmpAndFood\Controllers\CertAgencyController.cs" />
     <Compile Include="Areas\EmpAndFood\Controllers\CompanyOfFoodController.cs" />
     <Compile Include="Areas\EmpAndFood\Controllers\employeeInfoController.cs" />
     <Compile Include="Areas\EmpAndFood\Controllers\OrderingAndPersonalInfoController.cs" />
     <Compile Include="Areas\EmpAndFood\Controllers\StatisticsRideController.cs" />
     <Compile Include="Areas\EmpAndFood\EmpAndFoodAreaRegistration.cs" />
-    <Compile Include="Areas\Integrated\Controllers\NoticeController.cs" />
-    <Compile Include="Areas\Integrated\Controllers\CashRegisterController.cs" />
-    <Compile Include="Areas\Integrated\Controllers\ReturnHandoverController.cs" />
-    <Compile Include="Areas\Integrated\Controllers\STypeController.cs" />
-    <Compile Include="Areas\Integrated\Controllers\WorkDistributionController.cs" />
-    <Compile Include="Areas\Integrated\IntegratedAreaRegistration.cs" />
-    <Compile Include="Areas\Tickets\Controllers\ReturnTicketController.cs" />
-    <Compile Include="Areas\Tickets\Controllers\SendACarController.cs" />
-    <Compile Include="Areas\Tickets\TicketsAreaRegistration.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
@@ -225,7 +197,6 @@
   <ItemGroup>
     <Content Include="Areas\EmpAndFood\Views\CompanyOfFood\DormitoryOrderingIndex.js" />
     <Content Include="Areas\EmpAndFood\Views\CompanyOfFood\Index.js" />
-    <Content Include="Areas\Integrated\Views\CashRegister\Index.js" />
     <Content Include="Css\Bootstrap3.3.5\css\bootstrap-theme.css" />
     <Content Include="Css\Bootstrap3.3.5\css\bootstrap-theme.min.css" />
     <Content Include="Css\Bootstrap3.3.5\css\bootstrap.css" />
@@ -244,24 +215,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Accounting\Controllers\" />
-    <Folder Include="Areas\Accounting\Views\Shared\" />
-    <Folder Include="Areas\Assessment\Controllers\" />
-    <Folder Include="Areas\Assessment\Views\Shared\" />
-    <Folder Include="Areas\Dormitory\Views\DormitoryView\" />
-    <Folder Include="Areas\Dormitory\Views\RegisterSearch\" />
     <Folder Include="Infrastructure\User\" />
+    <Folder Include="SubProject\" />
     <Folder Include="Views\Base\" />
     <Folder Include="Views\Scripts\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Dormitory\Content\Loading.css" />
-    <Content Include="Areas\Dormitory\Scripts\Common\Common.js" />
-    <Content Include="Areas\Dormitory\Scripts\Common\JQueryExtension.js" />
-    <Content Include="Areas\Dormitory\Views\EmpRent\Index.js" />
-    <Content Include="Areas\Dormitory\Views\FlightFee\Index.js" />
-    <Content Include="Areas\Dormitory\Views\Grant\Index.js" />
-    <Content Include="Areas\Dormitory\Views\Tariff\Index.js" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
@@ -342,11 +301,7 @@
     <Content Include="Scripts\datetimepicker\jquery.datetimepicker.min.js" />
     <Content Include="Scripts\Drag\drag.js" />
     <Content Include="Scripts\editable\bootstrap-editable.js" />
-    <Content Include="Areas\Assessment\Views\web.config" />
-    <Content Include="Areas\Accounting\Views\web.config" />
     <Content Include="Areas\EmpAndFood\Views\CertAgency\Index.cshtml" />
-    <Content Include="Areas\Dormitory\Views\FeeSearch\PickupList.cshtml" />
-    <Content Include="Areas\Dormitory\Views\FeeSearch\SendCarList.cshtml" />
     <Content Include="Areas\EmpAndFood\Views\CertAgency\Edit.cshtml" />
     <Content Include="Areas\EmpAndFood\Views\CompanyOfFood\DormitoryOrderingIndex.cshtml" />
     <Content Include="Areas\EmpAndFood\Views\CompanyOfFood\GetEmployeeOfFood.cshtml" />
@@ -356,21 +311,9 @@
     <Content Include="Areas\EmpAndFood\Views\employeeInfo\NewEmpRemove.cshtml" />
     <Content Include="Areas\EmpAndFood\Views\employeeInfo\NewIndexView.cshtml" />
     <Content Include="Areas\EmpAndFood\Views\employeeInfo\PersonnelStatistics.cshtml" />
-    <Content Include="Areas\Integrated\Views\Notice\Index.cshtml" />
-    <Content Include="Areas\Integrated\Views\Notice\Edit.cshtml" />
-    <Content Include="Areas\Integrated\Views\CashRegister\Index.cshtml" />
     <Content Include="Areas\EmpAndFood\Views\OrderingAndPersonalInfo\Index.cshtml" />
     <Content Include="Areas\EmpAndFood\Views\OrderingAndPersonalInfo\IndexView.cshtml" />
     <Content Include="Areas\EmpAndFood\Views\OrderingAndPersonalInfo\ModifyPwd.cshtml" />
-    <Content Include="Areas\Dormitory\Views\BedLinen\Index.cshtml" />
-    <Content Include="Areas\Dormitory\Views\BedLinen\Edit.cshtml" />
-    <Content Include="Areas\Dormitory\Views\BedLinen\StatsBedLinen.cshtml" />
-    <Content Include="Areas\Dormitory\Views\DormitorySummary\Index.cshtml" />
-    <Content Include="Areas\Dormitory\Views\DormitorySummary\Edit.cshtml" />
-    <Content Include="Areas\Dormitory\Views\DormitorySummary\ManageCP.cshtml" />
-    <Content Include="Areas\Dormitory\Views\ModifyRecord\HtmlView.cshtml" />
-    <Content Include="Areas\Tickets\Views\ReturnTicket\Index.cshtml" />
-    <Content Include="Areas\Tickets\Views\ReturnTicket\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -530,40 +473,6 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Dormitory\Views\CarRegister\Edit.cshtml" />
-    <Content Include="Areas\Dormitory\Views\CarRegister\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Areas\Dormitory\Views\Dormitory\Edit_sel.cshtml" />
-    <Content Include="Areas\Dormitory\Views\Dormitory\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Areas\Dormitory\Views\ChangeRoom\Edit.cshtml" />
-    <Content Include="Areas\Dormitory\Views\ChangeRoom\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Areas\Dormitory\Views\EmpRent\Index.cshtml" />
-    <Content Include="Areas\Dormitory\Views\FeeSearch\EmpRentListData.cshtml" />
-    <Content Include="Areas\Dormitory\Views\FeeSearch\FlightFeeList.cshtml" />
-    <Content Include="Areas\Dormitory\Views\FeeSearch\RentSubListData.cshtml" />
-    <Content Include="Areas\Dormitory\Views\FeeSearch\RepairFees.cshtml" />
-    <Content Include="Areas\Dormitory\Views\FeeSearch\ReturnTicketList.cshtml" />
-    <Content Include="Areas\Dormitory\Views\FeeSearch\TariffList.cshtml" />
-    <Content Include="Areas\Dormitory\Views\FlightFee\Index.cshtml" />
-    <Content Include="Areas\Dormitory\Views\Grant\Index.cshtml" />
-    <Content Include="Areas\Dormitory\Views\LatticeD\Index.cshtml" />
-    <Content Include="Areas\Dormitory\Views\LaundryPwd\Edit.cshtml" />
-    <Content Include="Areas\Dormitory\Views\LaundryPwd\Index.cshtml" />
-    <Content Include="Areas\Dormitory\Views\ModifyRecord\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Areas\Dormitory\Views\Shared\FeeSearchNavMeuns.cshtml" />
-    <Content Include="Areas\Dormitory\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\Dormitory\Views\Tariff\Index.cshtml" />
-    <Content Include="Areas\Dormitory\Views\web.config" />
-    <Content Include="Areas\Dormitory\Views\_ViewStart.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="ApplicationInsights.config" />
   </ItemGroup>
   <ItemGroup>
@@ -575,22 +484,6 @@
     <Content Include="Areas\EmpAndFood\Views\Shared\emplotyeeInfoNavigation.cshtml" />
     <Content Include="Areas\EmpAndFood\Views\web.config" />
     <Content Include="Areas\EmpAndFood\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Integrated\Views\ReturnHandover\Add.cshtml" />
-    <Content Include="Areas\Integrated\Views\ReturnHandover\AddWorkItem.cshtml" />
-    <Content Include="Areas\Integrated\Views\ReturnHandover\Edit.cshtml" />
-    <Content Include="Areas\Integrated\Views\ReturnHandover\Index.cshtml" />
-    <Content Include="Areas\Integrated\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\Integrated\Views\SType\Edit.cshtml" />
-    <Content Include="Areas\Integrated\Views\SType\Index.cshtml" />
-    <Content Include="Areas\Integrated\Views\web.config" />
-    <Content Include="Areas\Integrated\Views\WorkDistribution\Edit.cshtml" />
-    <Content Include="Areas\Integrated\Views\WorkDistribution\Index.cshtml" />
-    <Content Include="Areas\Integrated\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Tickets\Views\SendACar\PickupList.cshtml" />
-    <Content Include="Areas\Tickets\Views\SendACar\SendACarList.cshtml" />
-    <Content Include="Areas\Tickets\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\Tickets\Views\web.config" />
-    <Content Include="Areas\Tickets\Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\DormitoryNavTabs.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\Left.cshtml" />
@@ -599,18 +492,6 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Areas\Dormitory\Views\FeeSearch\CertAgencyList.cshtml" />
-    <Content Include="Areas\Dormitory\Views\DormitoryMaintenance\Index.cshtml" />
-    <Content Include="Areas\Dormitory\Views\DormitoryMaintenance\PrintListView.cshtml" />
-    <Content Include="Areas\Dormitory\Views\DormitoryMaintenance\Edit.cshtml" />
-    <Content Include="Areas\Dormitory\Views\Outside\Index.cshtml" />
-    <Content Include="Areas\Dormitory\Views\Outside\Edit.cshtml" />
-    <Content Include="Areas\Dormitory\Views\HostelClean\Index.cshtml" />
-    <Content Include="Areas\Dormitory\Views\HostelClean\Edit.cshtml" />
-    <Content Include="Areas\Dormitory\Views\HostelClean\PrintListView.cshtml" />
-    <Content Include="Areas\Dormitory\Views\FeeSearch\BedLinenList.cshtml" />
-    <Content Include="Areas\Dormitory\Views\FeeSearch\BedLinenListEdit.cshtml" />
-    <Content Include="Areas\Dormitory\Views\FeeSearch\HostelCleanList.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

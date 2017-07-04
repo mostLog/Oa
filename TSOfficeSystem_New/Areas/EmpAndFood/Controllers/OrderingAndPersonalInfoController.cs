@@ -86,11 +86,7 @@ namespace TSOfficeSystem_New.Areas.EmpAndFood.Controllers
                 try
                 {
                     //判断更新是否成功
-                    if (_EmployeeService.UpdateEmployeeInfo(model, true) > 0)
-                    {
-                        eMsg = ErrorEnum.Success;
-                        eTips = eTipsEnum.EditSuccess;
-                    }
+                    _EmployeeService.UpdateEmployeeInfo(model, true);
                 }
                 catch(Exception e)
                 {
@@ -143,16 +139,8 @@ namespace TSOfficeSystem_New.Areas.EmpAndFood.Controllers
                     if (list != null && list.f_pwd == model.oldPwd)
                     {
                         //修改当前登录用户的密码
-                        int result = _EmployeeService.EditEmployeePwd(model);
-                        if (result > 0)
-                        {
-                            eMsg = ErrorEnum.Success;
-                            eTips = eTipsEnum.EditSuccess;
-                        }
-                        else
-                        {
-                            eTips = eTipsEnum.oldPwdError;
-                        }
+                        _EmployeeService.EditEmployeePwd(model);
+                       
                     }
                 }
                 else

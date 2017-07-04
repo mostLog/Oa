@@ -10,14 +10,14 @@ namespace MI.Application
 {
     public class DormitoryService : IDormitoryService
     {
-        private readonly IBaseRepository<t_Dormitory> _Dormitory;
+        private readonly IBaseRepository<Dormitory> _Dormitory;
         private readonly IBaseRepository<Tariff> _Tariff;
-        private readonly IBaseRepository<t_HostelClean> _HostelClean;
+        private readonly IBaseRepository<HostelClean> _HostelClean;
         private readonly IBaseRepository<DormitoryMaintenance> _DormitoryMaintenance;
         private readonly IBaseRepository<Employee> _Employee;
-        private readonly IBaseRepository<t_LaundryPwd> _LaundryPwd;
+        private readonly IBaseRepository<LaundryPwd> _LaundryPwd;
         private readonly IBaseRepository<SType> _SType;
-        public DormitoryService(IBaseRepository<t_Dormitory> Dormitory, IBaseRepository<Tariff> Tariff, IBaseRepository<t_HostelClean> HostelClean, IBaseRepository<DormitoryMaintenance> DormitoryMaintenance, IBaseRepository<Employee> Employee, IBaseRepository<t_LaundryPwd> LaundryPwd, IBaseRepository<SType> SType)
+        public DormitoryService(IBaseRepository<Dormitory> Dormitory, IBaseRepository<Tariff> Tariff, IBaseRepository<HostelClean> HostelClean, IBaseRepository<DormitoryMaintenance> DormitoryMaintenance, IBaseRepository<Employee> Employee, IBaseRepository<LaundryPwd> LaundryPwd, IBaseRepository<SType> SType)
         {
             _Dormitory = Dormitory;
             _Tariff = Tariff;
@@ -31,13 +31,13 @@ namespace MI.Application
         /// 查询宿舍的方法
         /// </summary>
         /// <returns></returns>
-        public IList<t_Dormitory> GetConditionByWhere(int pageIndex, int pageSize, out int count)
+        public IList<Dormitory> GetConditionByWhere(int pageIndex, int pageSize, out int count)
         {
             var linq = _Dormitory.GetAll().OrderBy(u => u.f_Community).ThenBy(u => u.f_Building).ThenBy(u => u.f_RoomNo);
             count = linq.Count();
             ValidatePagingWhere(count, ref pageIndex, pageSize);
-            List<t_Dormitory> oDolist = linq.OrderByDescending(u => u.f_DormitoryId).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
-            List<t_LaundryPwd> oPwdList = _LaundryPwd.GetAll().ToList();
+            List<Dormitory> oDolist = linq.OrderByDescending(u => u.f_DormitoryId).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            List<LaundryPwd> oPwdList = _LaundryPwd.GetAll().ToList();
             foreach (var item in oDolist)
             {
                 int fcount = 0;
@@ -70,13 +70,13 @@ namespace MI.Application
         /// <param name="pageSize"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        public List<t_Dormitory> GetConditionByWhere(Func<t_Dormitory, bool> predicate, int pageIndex, int pageSize, out int count)
+        public List<Dormitory> GetConditionByWhere(Func<Dormitory, bool> predicate, int pageIndex, int pageSize, out int count)
         {
             var linq = _Dormitory.GetAll().Where(predicate).OrderBy(u => u.f_Community).ThenBy(u => u.f_Building).ThenBy(u => ConvertRoomNoNumber(u.f_RoomNo));
             count = linq.Count();
             ValidatePagingWhere(count, ref pageIndex, pageSize);
-            List<t_Dormitory> oDolist = linq.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
-            List<t_LaundryPwd> oPwdList = _LaundryPwd.GetAll().ToList();
+            List<Dormitory> oDolist = linq.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            List<LaundryPwd> oPwdList = _LaundryPwd.GetAll().ToList();
             foreach (var item in oDolist)
             {
                 int fcount = 0;
@@ -138,7 +138,7 @@ namespace MI.Application
         /// 小白-2017-6-13
         /// </summary>
         /// <param name="id"></param>
-        public t_Dormitory GetDormitoryById(int id)
+        public Dormitory GetDormitoryById(int id)
         {
             return _Dormitory.GetEntityById(id);
         }
@@ -182,7 +182,7 @@ namespace MI.Application
         /// 修改
         /// </summary>
         /// <param name="model">model实体</param>
-        public void EditDormitoryOneData(t_Dormitory model)
+        public void EditDormitoryOneData(Dormitory model)
         {
             _Dormitory.Update(model);
         }
@@ -193,7 +193,7 @@ namespace MI.Application
         /// <param name="building">楼栋</param>
         /// <param name="roomno">房间号</param>
         /// <returns></returns>
-        public t_Dormitory GetTariffbyRoomNo(string community, string building, string roomno)
+        public Dormitory GetTariffbyRoomNo(string community, string building, string roomno)
         {
             return _Dormitory.GetAll().FirstOrDefault(u => u.f_Community == community && u.f_Building == building && u.f_RoomNo == roomno);
         }
@@ -201,7 +201,7 @@ namespace MI.Application
         /// 新增
         /// </summary>
         /// <param name="model">model实体</param>
-        public void AddDormitoryOneData(t_Dormitory model)
+        public void AddDormitoryOneData(Dormitory model)
         {
             _Dormitory.Insert(model);
         }
@@ -212,7 +212,7 @@ namespace MI.Application
         public void DeleteDormitory(int id)
         {
             int stateError = 0;
-            t_Dormitory model = GetDormitoryById(id);
+            Dormitory model = GetDormitoryById(id);
             if (_Tariff.GetAll().Where(p => p.f_DormitoryId == id).Count() > 0 || _HostelClean.GetAll().Where(p => p.f_DormitoryId == id).Count() > 0 ||
                 _DormitoryMaintenance.GetAll().Where(p => p.f_DormitoryId == id).Count() > 0 || _Employee.GetAll().Where(p => p.f_dormitoryId == id).Count() > 0)
             {
@@ -229,10 +229,10 @@ namespace MI.Application
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public List<dynamic> GetConditionByWhereExportData(Func<t_Dormitory, bool> predicate)
+        public List<dynamic> GetConditionByWhereExportData(Func<Dormitory, bool> predicate)
         {
-            IEnumerable<t_Dormitory> dormitory1 = _Dormitory.GetAll().Where(predicate).OrderBy(u => u.f_Community).ThenBy(u => u.f_Building).ThenBy(u => u.f_RoomNo);
-            List<t_LaundryPwd> rAndPwd = _LaundryPwd.GetAll().ToList();
+            IEnumerable<Dormitory> dormitory1 = _Dormitory.GetAll().Where(predicate).OrderBy(u => u.f_Community).ThenBy(u => u.f_Building).ThenBy(u => u.f_RoomNo);
+            List<LaundryPwd> rAndPwd = _LaundryPwd.GetAll().ToList();
             IEnumerable<dynamic> dormitory = from p in dormitory1.ToList()
                                              select new
                                              {
@@ -266,8 +266,8 @@ namespace MI.Application
         /// <returns></returns>
         public List<dynamic> GetDormitoryAllExportData()
         {
-            IEnumerable<t_Dormitory> dormitory1 = _Dormitory.GetAll().OrderBy(u => u.f_Community).ThenBy(u => u.f_Building).ThenBy(u => u.f_RoomNo);
-            List<t_LaundryPwd> rAndPwd = _LaundryPwd.GetAll().ToList();
+            IEnumerable<Dormitory> dormitory1 = _Dormitory.GetAll().OrderBy(u => u.f_Community).ThenBy(u => u.f_Building).ThenBy(u => u.f_RoomNo);
+            List<LaundryPwd> rAndPwd = _LaundryPwd.GetAll().ToList();
             IEnumerable<dynamic> dormitory = from p in dormitory1.ToList()
                                              select new
                                              {

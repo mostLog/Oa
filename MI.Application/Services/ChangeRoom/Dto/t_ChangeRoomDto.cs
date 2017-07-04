@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MI.Application.ChangeRoomService.Dto
 {
-    public class t_ChangeRoomDto
+    public class ChangeRoomDto
     {
         public int f_Id { get; set; }
         public int f_eid { get; set; }
@@ -23,7 +23,7 @@ namespace MI.Application.ChangeRoomService.Dto
         public Nullable<System.DateTime> f_operatorTime { get; set; }
         public Nullable<System.DateTime> f_EffectiveMonths { get; set; }
         public virtual Employee t_employeeInfo { get; set; }
-        public virtual t_Dormitory t_dormitory { get; set; }
-        public virtual t_Dormitory t_dormitory1 { get; set; }
+        public virtual Dormitory Dormitory { get; set; }
+        public virtual Dormitory Dormitory1 { get; set; }
     }
 }

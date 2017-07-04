@@ -20,7 +20,7 @@ namespace MI.Application.Dto
         /// </summary>
         /// <param name="cartype"></param>
         /// <returns></returns>
-        IList<t_ChangeRoom> GetChangeRoomAllData(int pageIndex, int pageSize, out int count);
+        IList<ChangeRoom> GetChangeRoomAllData(int pageIndex, int pageSize, out int count);
 
 
         /// <summary>
@@ -28,23 +28,23 @@ namespace MI.Application.Dto
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        IList<t_ChangeRoom> GetConditionByWhere(Expression<Func<t_ChangeRoom, bool>> predicate, int pageIndex, int pageSize, out int count);
+        IList<ChangeRoom> GetConditionByWhere(Expression<Func<ChangeRoom, bool>> predicate, int pageIndex, int pageSize, out int count);
         /// <summary>
         /// 根据id获取一条数据
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns>
-        t_ChangeRoom GetChangeRoomById(int id);
+        ChangeRoom GetChangeRoomById(int id);
         /// <summary>
         /// 新增
         /// </summary>
         /// <param name="model">model实体</param>
-        void AddChangeRoomOneData(t_ChangeRoom model);
+        void AddChangeRoomOneData(ChangeRoom model);
         /// <summary>
         /// 修改
         /// </summary>
         /// <param name="model">model实体</param>
-        void EditChangeRoomOneData(t_ChangeRoom model);
+        void EditChangeRoomOneData(ChangeRoom model);
         /// <summary>
         /// 根据id删除一条数据
         /// </summary>

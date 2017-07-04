@@ -12,13 +12,13 @@ namespace MI.Application.Dto
     /// </summary>
     public class ChangeRoomService:IChangeRoomService
     {
-        private readonly IBaseRepository<t_ChangeRoom> _ChangeRoom;
-        public ChangeRoomService(IBaseRepository<t_ChangeRoom> ChangeRoom)
+        private readonly IBaseRepository<ChangeRoom> _ChangeRoom;
+        public ChangeRoomService(IBaseRepository<ChangeRoom> ChangeRoom)
         {
             _ChangeRoom = ChangeRoom;
         }
 
-        public IList<t_ChangeRoom> GetChangeRoomAllData(int pageIndex, int pageSize, out int count)
+        public IList<ChangeRoom> GetChangeRoomAllData(int pageIndex, int pageSize, out int count)
         {
             var linq = _ChangeRoom.GetAll().OrderByDescending(u => u.f_Id);
             count = linq.Count();
@@ -34,7 +34,7 @@ namespace MI.Application.Dto
         /// <param name="pageSize"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        public IList<t_ChangeRoom> GetConditionByWhere(Expression<Func<t_ChangeRoom, bool>> predicate, int pageIndex, int pageSize, out int count)
+        public IList<ChangeRoom> GetConditionByWhere(Expression<Func<ChangeRoom, bool>> predicate, int pageIndex, int pageSize, out int count)
         {
 
             var linq = _ChangeRoom.GetAll().Where(predicate).OrderByDescending(u => u.f_Id);
@@ -60,7 +60,7 @@ namespace MI.Application.Dto
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public t_ChangeRoom GetChangeRoomById(int id)
+        public ChangeRoom GetChangeRoomById(int id)
         {
             return _ChangeRoom.GetEntityById(id);
         }
@@ -68,7 +68,7 @@ namespace MI.Application.Dto
         /// 新增
         /// </summary>
         /// <param name="model">model实体</param>
-        public void AddChangeRoomOneData(t_ChangeRoom model)
+        public void AddChangeRoomOneData(ChangeRoom model)
         {
             _ChangeRoom.Insert(model);
         }
@@ -76,7 +76,7 @@ namespace MI.Application.Dto
         /// 修改
         /// </summary>
         /// <param name="model">model实体</param>
-        public void EditChangeRoomOneData(t_ChangeRoom model)
+        public void EditChangeRoomOneData(ChangeRoom model)
         {
             _ChangeRoom.Update(model);
         }
@@ -86,7 +86,7 @@ namespace MI.Application.Dto
         /// <param name="id">id</param>
         public void DeleteChangeRoom(int id)
         {
-            t_ChangeRoom model = GetChangeRoomById(id);
+            ChangeRoom model = GetChangeRoomById(id);
             if (model != null)
                 _ChangeRoom.Delete(model);
         }

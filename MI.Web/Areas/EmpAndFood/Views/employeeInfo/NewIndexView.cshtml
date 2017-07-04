@@ -70,11 +70,11 @@
                                     <td>@(item.STypeWorkLocation?.f_value)</td>
                                     <td>@(item.f_rideWorkTime?.ToString("yyyy-MM-dd") ?? "") @(item.f_rideOffWorkTime?.ToString("HH:mm") ?? "")</td>
                                     <td>
-                                        @(item.t_Dormitory?.f_Community)
+                                        @(item.Dormitory?.f_Community)
                                         <br />
-                                        @(item.t_Dormitory?.f_Building)
+                                        @(item.Dormitory?.f_Building)
                                         <br />
-                                        @(item.t_Dormitory?.f_RoomNo)
+                                        @(item.Dormitory?.f_RoomNo)
                                     </td>
                                     <td>
                                         @foreach (var one in lstLDM.Where(p => LDMInfo.Contains(p.f_tID)))

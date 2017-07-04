@@ -16,9 +16,9 @@ namespace MI.Application
     /// </summary>
     public class HostelCleanService:IHostelCleanService
     {
-        private readonly IBaseRepository<t_HostelClean> _hostelClear;
-        private readonly IBaseRepository<t_Dormitory> _dormitory;
-        public HostelCleanService(IBaseRepository<t_HostelClean> hostelClear, IBaseRepository<t_Dormitory> dormitory) {
+        private readonly IBaseRepository<HostelClean> _hostelClear;
+        private readonly IBaseRepository<Dormitory> _dormitory;
+        public HostelCleanService(IBaseRepository<HostelClean> hostelClear, IBaseRepository<Dormitory> dormitory) {
             _hostelClear = hostelClear;
             _dormitory = dormitory;
         }
@@ -29,7 +29,7 @@ namespace MI.Application
         /// <param name="pageSize"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        public List<t_HostelClean> GetHostelCleanAllData(int pageIndex, int pageSize, out int count)
+        public List<HostelClean> GetHostelCleanAllData(int pageIndex, int pageSize, out int count)
         {
             var linq = _hostelClear.GetAll().OrderBy(u => u.f_Week).ThenBy(u => u.f_Id);
             count = linq.Count();
@@ -55,8 +55,8 @@ namespace MI.Application
         /// <returns></returns>
         public List<dynamic> GetHostelCleanAllDataExportData()
         {
-            IEnumerable<t_HostelClean> hostelclean1 = _hostelClear.GetAll().OrderBy(u => u.f_Week);
-            IEnumerable<t_Dormitory> dormitory = _dormitory.GetAll();
+            IEnumerable<HostelClean> hostelclean1 = _hostelClear.GetAll().OrderBy(u => u.f_Week);
+            IEnumerable<Dormitory> dormitory = _dormitory.GetAll();
             IEnumerable<dynamic> hostelclean = from p in hostelclean1.ToList()
                                                join d in dormitory.ToList() on p.f_DormitoryId equals d.f_DormitoryId
                                                select new
@@ -96,7 +96,7 @@ namespace MI.Application
             }
         }
 
-        public List<t_HostelClean> GetConditionByWhere(Expression<Func<t_HostelClean, bool>> predicate, int pageIndex, int pageSize, out int count)
+        public List<HostelClean> GetConditionByWhere(Expression<Func<HostelClean, bool>> predicate, int pageIndex, int pageSize, out int count)
         {
             var linq = _hostelClear.GetAll().Where(predicate).OrderBy(u => u.f_Week).ThenBy(u => u.f_Id);
             count = linq.Count();
@@ -109,10 +109,10 @@ namespace MI.Application
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public List<dynamic> GetConditionByWhereExportData(Expression<Func<t_HostelClean, bool>> predicate)
+        public List<dynamic> GetConditionByWhereExportData(Expression<Func<HostelClean, bool>> predicate)
         {
-            IEnumerable<t_HostelClean> hostelclean1 = _hostelClear.GetAll().Where(predicate).OrderBy(u => u.f_Week);
-            IEnumerable<t_Dormitory> dormitory = _dormitory.GetAll();
+            IEnumerable<HostelClean> hostelclean1 = _hostelClear.GetAll().Where(predicate).OrderBy(u => u.f_Week);
+            IEnumerable<Dormitory> dormitory = _dormitory.GetAll();
             IEnumerable<dynamic> hostelclean = from p in hostelclean1.ToList()
                                                join d in dormitory.ToList() on p.f_DormitoryId equals d.f_DormitoryId
                                                select new
@@ -133,7 +133,7 @@ namespace MI.Application
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public t_HostelClean GetHostelCleanById(int id)
+        public HostelClean GetHostelCleanById(int id)
         {
             return _hostelClear.GetEntityById(id);
         }
@@ -141,7 +141,7 @@ namespace MI.Application
         /// 新增
         /// </summary>
         /// <param name="model">model实体</param>
-        public void AddHostelCleanOneData(t_HostelClean model)
+        public void AddHostelCleanOneData(HostelClean model)
         {
              _hostelClear.Insert(model);
         }
@@ -149,7 +149,7 @@ namespace MI.Application
         /// 修改
         /// </summary>
         /// <param name="model">model实体</param>
-        public void EditHostelCleanOneData(t_HostelClean model)
+        public void EditHostelCleanOneData(HostelClean model)
         {
             _hostelClear.Update(model);
         }
@@ -159,7 +159,7 @@ namespace MI.Application
         /// <param name="id">id</param>
         public void DeleteHostelClean(int id)
         {
-            t_HostelClean model = GetHostelCleanById(id);
+            HostelClean model = GetHostelCleanById(id);
             if (model != null)
             {
                  _hostelClear.Delete(model);

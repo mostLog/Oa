@@ -693,7 +693,7 @@ public class AOUnity
     /// <returns></returns>
     public static void AddModifyRecord(string oldEntity, string newEntity, ActionItem action, CategoryItem category, string tableName, string userName)
     {
-        t_ModifyRecord record = new t_ModifyRecord
+        ModifyRecord record = new ModifyRecord
         {
             f_ActionStatus = (int)action,
             f_ItemCategory = (int)category,

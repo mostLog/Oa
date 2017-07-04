@@ -127,7 +127,7 @@ namespace MI.Application
         /// 洗衣房数据
         /// </summary>
         /// <returns></returns>
-        List<t_LaundryPwd> GetLaundryPwdAllData();
+        List<LaundryPwd> GetLaundryPwdAllData();
         /// <summary>
         /// 移走新人
         /// </summary>

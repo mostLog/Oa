@@ -6,7 +6,7 @@ namespace MI.Core.Domain
     /// 宿舍打扫类
     /// 创建人：吕秀峰
     /// </summary>
-    public partial class t_HostelClean
+    public partial class HostelClean
     {
         /// <summary>
         /// 自增id
@@ -35,6 +35,6 @@ namespace MI.Core.Domain
         /// <summary>
         /// 宿舍登记
         /// </summary>
-        public virtual t_Dormitory t_dormitory { get; set; }
+        public virtual Dormitory Dormitory { get; set; }
     }
 }

@@ -167,7 +167,7 @@
                         {
                             //订餐
                             int[] orderTypes = item.OrderingEmployees.Select(p => p.f_LDM_tID.Value).ToArray();
-                            <tr @Html.Raw(item.t_Dormitory?.f_Community == null ? " class='danger'" : "")>
+                            <tr @Html.Raw(item.Dormitory?.f_Community == null ? " class='danger'" : "")>
                                 <td>@i</td>
                                 <td>@(item.STypeDepartment?.f_value)</td>
                                 <td>@(item.t_sType?.f_value) </td>
@@ -180,9 +180,9 @@
                                 <td>@item.f_QQNumber</td>
                                 <td>@item.f_TelNoPH</td>
                                 <td>@item.f_TelNoCN</td>
-                                <td>@(item.t_Dormitory?.f_Community) </td>
-                                <td>@(item.t_Dormitory?.f_Building) </td>
-                                <td>@(item.t_Dormitory?.f_RoomNo) </td>
+                                <td>@(item.Dormitory?.f_Community) </td>
+                                <td>@(item.Dormitory?.f_Building) </td>
+                                <td>@(item.Dormitory?.f_RoomNo) </td>
                                 <td>
                                     @foreach (var one in listorderType.Where(p => orderTypes.Contains(p.f_tID)))
                                     {

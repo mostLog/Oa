@@ -68,7 +68,7 @@ namespace MI.Core.Domain
         /// <summary>
         /// 关联外键   宿舍Id(f_DormitoryId) 
         /// </summary>
-        public virtual t_Dormitory t_dormitory { get; set; }
+        public virtual Dormitory Dormitory { get; set; }
         /// <summary>
         /// 关联外键   员工id(f_eid)
         /// </summary>

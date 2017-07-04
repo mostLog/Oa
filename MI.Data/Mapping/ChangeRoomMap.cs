@@ -11,14 +11,14 @@ namespace MI.Data.Mapping
     /// <summary>
     /// 员工换房配置
     /// </summary>
-   public class ChangeRoomMap : EntityTypeConfiguration<t_ChangeRoom>
+   public class ChangeRoomMap : EntityTypeConfiguration<ChangeRoom>
     {
         /// <summary>
         /// 映射获得表数据
         /// </summary>
         public ChangeRoomMap()
         {
-            this.ToTable("t_ChangeRoom");
+            this.ToTable("ChangeRoom");
             this.HasKey(l => l.f_Id);
 
         }

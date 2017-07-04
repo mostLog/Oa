@@ -16,7 +16,7 @@ namespace MI.Data.Mapping
             this.HasMany(c => c.EmployeeLevel).WithRequired(c => c.STypeLevel).HasForeignKey(c => c.f_level_tID);
             this.HasMany(c => c.EmployeeCarType).WithRequired(c=>c.t_sType).HasForeignKey(c=>c.f_CarType);
             this.HasMany(c => c.t_employeeInfo).WithOptional(c => c.t_sType).HasForeignKey(c => c.f_periodType_tID);//班别
-            this.HasMany(c=>c.t_Outside).WithRequired(c=>c.t_sType).HasForeignKey(c=>c.f_DeptId);//关联部门
+            this.HasMany(c=>c.Outside).WithRequired(c=>c.t_sType).HasForeignKey(c=>c.f_DeptId);//关联部门
             this.HasMany(c => c.CompanyOfFoods).WithRequired(c => c.SType).HasForeignKey(c=>c.f_type_tID);//
         }
     }

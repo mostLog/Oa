@@ -28,18 +28,18 @@ namespace MI.Application
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        void AddCoupleRegister(t_CoupleRegister model);
+        void AddCoupleRegister(CoupleRegister model);
         /// <summary>
         /// 检测员工ID是否正常，是否存在重复
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        string CheckCoupleRegister(t_CoupleRegister model);
+        string CheckCoupleRegister(CoupleRegister model);
         /// <summary>
         /// 获取情侣关系登记
         /// </summary>
         /// <returns></returns>
-        List<t_CoupleRegister> GetCoupleRegister();
+        List<CoupleRegister> GetCoupleRegister();
 
         /// <summary>
         /// 获取情侣关系登记（分页）
@@ -50,7 +50,7 @@ namespace MI.Application
         /// 修改情侣关系登记
         /// </summary>
         /// <param name="model"></param>
-        void UpdateCoupleRegister(t_CoupleRegister model);
+        void UpdateCoupleRegister(CoupleRegister model);
         /// <summary>
         /// 删除情侣关系登记
         /// </summary>

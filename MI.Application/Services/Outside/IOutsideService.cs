@@ -20,29 +20,29 @@ namespace MI.Application
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        List<t_Outside> GetConditionByWhere(Expression<Func<t_Outside, bool>> predicate, int pageIndex, int pageSize, out int count);
+        List<Outside> GetConditionByWhere(Expression<Func<Outside, bool>> predicate, int pageIndex, int pageSize, out int count);
         /// <summary>
         /// 查询所有
         /// </summary>
         /// <param name="cartype"></param>
         /// <returns></returns>
-        List<t_Outside> GetOutsideAllData(int pageIndex, int pageSize, out int count);
+        List<Outside> GetOutsideAllData(int pageIndex, int pageSize, out int count);
         /// <summary>
         /// 根据id获取一条数据
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns>
-        t_Outside GetOutsideById(int id);
+        Outside GetOutsideById(int id);
         /// <summary>
         /// 新增
         /// </summary>
         /// <param name="model">model实体</param>
-        void AddOutsideOneData(t_Outside model);
+        void AddOutsideOneData(Outside model);
         /// <summary>
         /// 修改
         /// </summary>
         /// <param name="model">model实体</param>
-        void EditOutsideOneData(t_Outside model);
+        void EditOutsideOneData(Outside model);
         /// <summary>
         /// 根据id删除一条数据
         /// </summary>

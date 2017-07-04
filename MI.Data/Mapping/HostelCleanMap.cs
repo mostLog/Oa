@@ -9,11 +9,11 @@ namespace MI.Data.Mapping
     /// <summary>
     /// 宿舍打扫配置
     /// </summary>
-    public class HostelCleanMap:EntityTypeConfiguration<t_HostelClean>
+    public class HostelCleanMap:EntityTypeConfiguration<HostelClean>
     {
         public HostelCleanMap()
         {
-            this.ToTable("t_HostelClean");
+            this.ToTable("HostelClean");
             this.HasKey(c => c.f_Id);
         }
     }

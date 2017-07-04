@@ -59,6 +59,6 @@ namespace MI.Core.Domain
         /// <summary>
         /// 宿舍登记
         /// </summary>
-        public virtual t_Dormitory t_dormitory { get; set; }
+        public virtual Dormitory Dormitory { get; set; }
     }
 }

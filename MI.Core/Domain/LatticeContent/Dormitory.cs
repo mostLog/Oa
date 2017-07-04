@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace MI.Core.Domain
 {
-    public class t_Dormitory
+    public class Dormitory
     {
         /// <summary>
         /// 宿舍登记表id
@@ -97,9 +97,9 @@ namespace MI.Core.Domain
         /// </summary>       
         public virtual ICollection<Employee> t_employeeInfo { get; set; }
 
-        public virtual ICollection<t_ChangeRoom> t_ChangeRoom { get; set; }
-        public virtual ICollection<t_ChangeRoom> t_ChangeRoom1 { get; set; }
-        public virtual ICollection<t_Outside> t_Outside { get; set; }
-        public virtual ICollection<t_HostelClean> t_HostelClean { get; set; }
+        public virtual ICollection<ChangeRoom> ChangeRoom { get; set; }
+        public virtual ICollection<ChangeRoom> ChangeRoom1 { get; set; }
+        public virtual ICollection<Outside> Outside { get; set; }
+        public virtual ICollection<HostelClean> HostelClean { get; set; }
     }
 }

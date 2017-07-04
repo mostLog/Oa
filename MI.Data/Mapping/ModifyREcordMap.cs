@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace MI.Data.Mapping
 {
-   public class ModifyREcordMap : EntityTypeConfiguration<t_ModifyRecord>
+   public class ModifyREcordMap : EntityTypeConfiguration<ModifyRecord>
     {
         public ModifyREcordMap()
         {
-            this.ToTable("t_ModifyRecord");
+            this.ToTable("ModifyRecord");
             this.HasKey(m=>m.f_Id);
 
         }

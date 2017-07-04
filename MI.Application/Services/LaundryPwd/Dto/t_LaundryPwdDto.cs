@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MI.Application.Dto
 {
-   public class t_LaundryPwdDto
+   public class LaundryPwdDto
     {
         public int f_Id { get; set; }
         public string f_Community { get; set; }

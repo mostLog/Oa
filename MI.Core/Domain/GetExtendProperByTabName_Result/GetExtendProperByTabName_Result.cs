@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MI.Core.Domain.GetExtendProperByTabName_Result
+namespace MI.Core.Domain
 {
     public partial class GetExtendProperByTabName_Result
     {

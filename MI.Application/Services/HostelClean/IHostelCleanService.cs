@@ -20,7 +20,7 @@ namespace MI.Application
         /// </summary>
         /// <param name="cartype"></param>
         /// <returns></returns>
-        List<t_HostelClean> GetHostelCleanAllData(int pageIndex, int pageSize, out int count);
+        List<HostelClean> GetHostelCleanAllData(int pageIndex, int pageSize, out int count);
 
         /// <summary>
         /// 查询所有 导出EXCEL
@@ -32,31 +32,31 @@ namespace MI.Application
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        List<t_HostelClean> GetConditionByWhere(Expression<Func<t_HostelClean, bool>> predicate, int pageIndex, int pageSize, out int count);
+        List<HostelClean> GetConditionByWhere(Expression<Func<HostelClean, bool>> predicate, int pageIndex, int pageSize, out int count);
 
         /// <summary>
         /// 根据条件查询 导出EXCEL
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        List<dynamic> GetConditionByWhereExportData(Expression<Func<t_HostelClean, bool>> predicate);
+        List<dynamic> GetConditionByWhereExportData(Expression<Func<HostelClean, bool>> predicate);
 
         /// <summary>
         /// 根据id获取一条数据
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns>
-        t_HostelClean GetHostelCleanById(int id);
+        HostelClean GetHostelCleanById(int id);
         /// <summary>
         /// 新增
         /// </summary>
         /// <param name="model">model实体</param>
-        void AddHostelCleanOneData(t_HostelClean model);
+        void AddHostelCleanOneData(HostelClean model);
         /// <summary>
         /// 修改
         /// </summary>
         /// <param name="model">model实体</param>
-        void EditHostelCleanOneData(t_HostelClean model);
+        void EditHostelCleanOneData(HostelClean model);
         /// <summary>
         /// 根据id删除一条数据
         /// </summary>

@@ -22,12 +22,12 @@ namespace MI.Application
         //字典表服务
         private readonly ISTypeService _stypeService;
         //换房
-        private readonly IBaseRepository<t_ChangeRoom> _changeRoomRepository;
+        private readonly IBaseRepository<ChangeRoom> _changeRoomRepository;
 
         private readonly ISession _session;
         public EmpRentService(
             IBaseRepository<EmpRent> repository, 
-            IBaseRepository<t_ChangeRoom> changeRoomRepository,
+            IBaseRepository<ChangeRoom> changeRoomRepository,
             ISTypeService stypeService,
             ISession session
             ):base(repository)
@@ -78,11 +78,11 @@ namespace MI.Application
                 //中文名,护照名,昵称
                 .WhereIf(!string.IsNullOrWhiteSpace(input.Name), m => m.t_employeeInfo != null && (m.t_employeeInfo.f_chineseName.Contains(input.Name.Trim())) || m.t_employeeInfo.f_nickname.Contains(input.Name.Trim()) || m.t_employeeInfo.f_passportName.Contains(input.Name.Trim()))
                 //房间号
-                .WhereIf(!string.IsNullOrWhiteSpace(input.RoomNo), m => m.t_dormitory != null && m.t_dormitory.f_RoomNo.ToUpper().Contains(input.RoomNo.ToUpper()))
+                .WhereIf(!string.IsNullOrWhiteSpace(input.RoomNo), m => m.Dormitory != null && m.Dormitory.f_RoomNo.ToUpper().Contains(input.RoomNo.ToUpper()))
                 //是否缴费
                 .WhereIf(input.IsPayment != 2, m => m.f_IsPayment == (input.IsPayment == 1 ? true : false))
                 //楼栋
-                .WhereIf(!string.IsNullOrWhiteSpace(input.Building), m => m.t_dormitory != null && m.t_dormitory.f_Building.ToUpper().Contains(input.Building))
+                .WhereIf(!string.IsNullOrWhiteSpace(input.Building), m => m.Dormitory != null && m.Dormitory.f_Building.ToUpper().Contains(input.Building))
                 //缴费日期
                 .WhereIf(input.PaymentStartDate != null , m => m.f_PaymentDate != null && m.f_PaymentDate >= input.PaymentStartDate)
                 .WhereIf(input.PaymentEndDate!=null, m => m.f_PaymentDate != null && m.f_PaymentDate <= input.PaymentEndDate)
@@ -98,7 +98,7 @@ namespace MI.Application
                 dto.Id = m.f_Id;
                 dto.EmployeeName = m.t_employeeInfo?.f_chineseName ?? string.Empty;
                 dto.DeptName = m.t_employeeInfo?.STypeDepartment?.f_value ?? string.Empty;
-                dto.DormitoryName = m.t_dormitory?.f_Community ?? string.Empty + "/" + m.t_dormitory?.f_Building ?? string.Empty + "/" + m.t_dormitory?.f_RoomNo ?? string.Empty;
+                dto.DormitoryName = m.Dormitory?.f_Community ?? string.Empty + "/" + m.Dormitory?.f_Building ?? string.Empty + "/" + m.Dormitory?.f_RoomNo ?? string.Empty;
                 dto.Rent = m.f_Rent;
                 dto.Grant = m.f_Grant;
                 dto.Amount = m.f_Amount;
@@ -183,7 +183,7 @@ namespace MI.Application
                 {
                     continue;
                 }
-                t_ChangeRoom tChangeRoom = _changeRoomRepository
+                ChangeRoom tChangeRoom = _changeRoomRepository
                     .GetAll()
                     .OrderByDescending(p => p.f_FilingDate)
                     .FirstOrDefault(p => p.f_eid == item.f_eid && p.f_NewRoomId != item.f_DormitoryId && p.f_Progress == "已换房");

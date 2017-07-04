@@ -14,11 +14,11 @@ namespace MI.Application
         /// <summary>
         /// 宿舍登记表
         /// </summary>
-        private readonly IBaseRepository<t_Dormitory> _repository;
+        private readonly IBaseRepository<Dormitory> _repository;
         /// <summary>
         /// 宿舍格子表
         /// </summary>
-        private readonly IBaseRepository<t_LatticeContent> _repcontent;
+        private readonly IBaseRepository<LatticeContent> _repcontent;
         /// <summary>
         /// 类型表
         /// </summary>
@@ -29,7 +29,7 @@ namespace MI.Application
         private readonly IBaseRepository<Employee> _repEmployee;
         private readonly IDbContext _IDc;
 
-        public LatticeContentService(IBaseRepository<t_Dormitory> employeeRepository, IBaseRepository<t_LatticeContent> emplatticeRepository, IBaseRepository<SType> repSType, IBaseRepository<Employee> repEmployee, IDbContext IDc)
+        public LatticeContentService(IBaseRepository<Dormitory> employeeRepository, IBaseRepository<LatticeContent> emplatticeRepository, IBaseRepository<SType> repSType, IBaseRepository<Employee> repEmployee, IDbContext IDc)
         {
             _repository = employeeRepository;
             _repcontent = emplatticeRepository;
@@ -67,7 +67,7 @@ namespace MI.Application
         /// <param name="sTid">楼栋名字</param>
         /// <param name="sTid2">社区名字</param>
         /// <returns></returns>
-        public List<MI.Application.ContentServerce.Dto.t_LatticeContentDto> GetFloorDongCommunityID(string sFloorDongName, string sCommunityName)
+        public List<MI.Application.ContentServerce.Dto.LatticeContentDto> GetFloorDongCommunityID(string sFloorDongName, string sCommunityName)
         {
             var floorDongID = _repSType.GetAll().FirstOrDefault(p => p.f_value == sFloorDongName && p.f_type == (int)sTypeEnum.楼栋类型);
             var communityID = _repSType.GetAll().FirstOrDefault(p => p.f_value == sCommunityName && p.f_type == (int)sTypeEnum.社区类型);
@@ -84,7 +84,7 @@ namespace MI.Application
         /// <param name="floorDongID">楼栋id</param>
         /// <param name="communityID">社区id</param>
         /// <returns></returns>
-        public List<t_LatticeContentDto> GetFloorDongCommunityData(int floorDongID, int communityID)
+        public List<LatticeContentDto> GetFloorDongCommunityData(int floorDongID, int communityID)
         {
 
             var linqFloorDongCommunityData = from lc in _repcontent.GetAll().Where(p => p.f_tID == floorDongID && p.f_tID2 == communityID)
@@ -92,7 +92,7 @@ namespace MI.Application
                                              join d in _repository.GetAll() on lc.f_dormitoryId equals d.f_DormitoryId into dy
                                              from dormitory in dy.DefaultIfEmpty()
                                              orderby lc.f_floor descending, lc.f_room ascending
-                                             select new t_LatticeContentDto
+                                             select new LatticeContentDto
                                              {
                                                  f_LId = lc.f_LId,
                                                  f_tID = lc.f_tID.Value,
@@ -113,7 +113,7 @@ namespace MI.Application
                                              };
             var f = linqFloorDongCommunityData.ToList().Select(p =>
             {
-                t_LatticeContentDto l = p;
+                LatticeContentDto l = p;
                 if (!string.IsNullOrEmpty(l.department))
                 {
                     int i = int.Parse(l.department);
@@ -209,7 +209,7 @@ namespace MI.Application
         public int SetUnlock(int iLid, bool bVal, out string sClassName)
         {
             sClassName = string.Empty;
-            t_LatticeContent oldLatticeContent =_repcontent.GetEntityById(iLid);
+            LatticeContent oldLatticeContent =_repcontent.GetEntityById(iLid);
             if (oldLatticeContent != null)
             {
                 if (bVal) //解锁   

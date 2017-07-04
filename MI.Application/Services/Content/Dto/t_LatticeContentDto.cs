@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MI.Application.ContentServerce.Dto
 {
-    public class t_LatticeContentDto
+    public class LatticeContentDto
     {
         /// <summary>
         /// ID

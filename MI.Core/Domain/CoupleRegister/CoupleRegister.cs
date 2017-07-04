@@ -11,7 +11,7 @@ namespace MI.Core.Domain
     /// 创建人：吕秀峰
     /// 创建时间：2017-06-27
     /// </summary>
-    public partial class t_CoupleRegister
+    public partial class CoupleRegister
     {
         /// <summary>
         /// 主键id

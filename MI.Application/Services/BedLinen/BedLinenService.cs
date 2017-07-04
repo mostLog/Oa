@@ -16,12 +16,12 @@ namespace MI.Application.BedLinenService
         private readonly IBaseRepository<Employee> _employee;
         private readonly IBaseRepository<SType> _stype;
         private readonly ISTypeService _stypeservice;
-        public readonly IBaseRepository<t_Dormitory> _Dormitory;
+        public readonly IBaseRepository<Dormitory> _Dormitory;
         public BedLinenService(IBaseRepository<BedLinen> repository,
             IBaseRepository<Employee> employee,
             ISTypeService stypeservice,
             IBaseRepository<SType> stype,
-            IBaseRepository<t_Dormitory> Dormitory) : base(repository)
+            IBaseRepository<Dormitory> Dormitory) : base(repository)
         {
             _repository = repository;
             _employee = employee;
@@ -107,9 +107,9 @@ namespace MI.Application.BedLinenService
                                                   Eid = a.f_eid,
                                                   NickName = b.f_nickname,
                                                   RegistrationDate = a.f_RegistrationDate,
-                                                  Community = b.t_Dormitory.f_Community,
-                                                  Building = b.t_Dormitory.f_Building,
-                                                  RoomNo = b.t_Dormitory.f_RoomNo,
+                                                  Community = b.Dormitory.f_Community,
+                                                  Building = b.Dormitory.f_Building,
+                                                  RoomNo = b.Dormitory.f_RoomNo,
                                                   Hostels = stype,
                                                   BunkNo = a.f_BunkNo,
                                                   SheetsNo = a.f_SheetsNo,
@@ -151,10 +151,10 @@ namespace MI.Application.BedLinenService
                                      (string.IsNullOrEmpty(queryModel.Name) || (b.f_nickname.Contains(queryModel.Name)) ||
                                       b.f_chineseName.Contains(queryModel.Name)) &&
                                      (string.IsNullOrEmpty(queryModel.Building) ||
-                                      b.t_Dormitory.f_Building.Contains(queryModel.Building)) &&
+                                      b.Dormitory.f_Building.Contains(queryModel.Building)) &&
                                      (string.IsNullOrEmpty(queryModel.Community) ||
-                                      b.t_Dormitory.f_Community.Contains(queryModel.Community)) &&
-                                     (string.IsNullOrEmpty(queryModel.RoomNo) || b.t_Dormitory.f_RoomNo.Contains(queryModel.RoomNo))
+                                      b.Dormitory.f_Community.Contains(queryModel.Community)) &&
+                                     (string.IsNullOrEmpty(queryModel.RoomNo) || b.Dormitory.f_RoomNo.Contains(queryModel.RoomNo))
                                         )
                                 select new BedLinenViewModel
                                 {
@@ -162,9 +162,9 @@ namespace MI.Application.BedLinenService
                                     Eid = a.f_eid,
                                     NickName = b.f_nickname,
                                     RegistrationDate = a.f_RegistrationDate,
-                                    Community = b.t_Dormitory.f_Community,
-                                    Building = b.t_Dormitory.f_Building,
-                                    RoomNo = b.t_Dormitory.f_RoomNo,
+                                    Community = b.Dormitory.f_Community,
+                                    Building = b.Dormitory.f_Building,
+                                    RoomNo = b.Dormitory.f_RoomNo,
                                     Hostels = c.f_value,
                                     BunkNo = a.f_BunkNo,
                                     SheetsNo = a.f_SheetsNo,
@@ -190,9 +190,9 @@ namespace MI.Application.BedLinenService
                                     Eid = a.f_eid,
                                     NickName = b.f_nickname,
                                     RegistrationDate = a.f_RegistrationDate,
-                                    Community = b.t_Dormitory.f_Community,
-                                    Building = b.t_Dormitory.f_Building,
-                                    RoomNo = b.t_Dormitory.f_RoomNo,
+                                    Community = b.Dormitory.f_Community,
+                                    Building = b.Dormitory.f_Building,
+                                    RoomNo = b.Dormitory.f_RoomNo,
                                     Hostels = c.f_value,
                                     BunkNo = a.f_BunkNo,
                                     SheetsNo = a.f_SheetsNo,
@@ -306,12 +306,12 @@ namespace MI.Application.BedLinenService
                                      (string.IsNullOrEmpty(queryModel.Name) || (b.f_nickname.Contains(queryModel.Name)) ||
                                       b.f_chineseName.Contains(queryModel.Name)) &&
                                      (string.IsNullOrEmpty(queryModel.Building) ||
-                                      b.t_Dormitory.f_Building.Contains(queryModel.Building)) &&
+                                      b.Dormitory.f_Building.Contains(queryModel.Building)) &&
                                      (string.IsNullOrEmpty(queryModel.Community) ||
-                                      b.t_Dormitory.f_Community.Contains(queryModel.Community)) &&
-                                     (string.IsNullOrEmpty(queryModel.RoomNo) || b.t_Dormitory.f_RoomNo.Contains(queryModel.RoomNo))
+                                      b.Dormitory.f_Community.Contains(queryModel.Community)) &&
+                                     (string.IsNullOrEmpty(queryModel.RoomNo) || b.Dormitory.f_RoomNo.Contains(queryModel.RoomNo))
                                         )
-                                group a by new { b.t_Dormitory.f_Community, b.t_Dormitory.f_Building, b.t_Dormitory.f_RoomNo, a.f_Cont, a.f_tID,d.f_value } into c
+                                group a by new { b.Dormitory.f_Community, b.Dormitory.f_Building, b.Dormitory.f_RoomNo, a.f_Cont, a.f_tID,d.f_value } into c
                                 select new BedLinenViewModel
                                 {
                                     Community = c.Key.f_Community,
@@ -336,7 +336,7 @@ namespace MI.Application.BedLinenService
                 bedlinenList = (from a in _repository.GetAll()
                                 join b in _employee.GetAll() on a.f_eid equals b.f_eid
                                 join d in _stype.GetAll() on a.f_tID equals d.f_tID
-                                group a by new { b.t_Dormitory.f_Community, b.t_Dormitory.f_Building, b.t_Dormitory.f_RoomNo, a.f_Cont, a.f_tID,d.f_value } into c
+                                group a by new { b.Dormitory.f_Community, b.Dormitory.f_Building, b.Dormitory.f_RoomNo, a.f_Cont, a.f_tID,d.f_value } into c
                                 select new BedLinenViewModel
                                 {
                                     Community = c.Key.f_Community,

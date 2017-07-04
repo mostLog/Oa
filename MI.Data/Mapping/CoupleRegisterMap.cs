@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace MI.Data.Mapping
 {
-    public class CoupleRegisterMap: EntityTypeConfiguration<t_CoupleRegister>
+    public class CoupleRegisterMap: EntityTypeConfiguration<CoupleRegister>
     {
         public CoupleRegisterMap()
         {
-            this.ToTable("t_CoupleRegister");
+            this.ToTable("CoupleRegister");
             this.HasKey(c=>c.f_cId);
         }
     }

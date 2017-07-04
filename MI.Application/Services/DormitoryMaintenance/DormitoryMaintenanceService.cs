@@ -116,7 +116,7 @@ namespace MI.Application
             {
                 foreach (var emp in listEmp)
                 {
-                    _regservice.DoRegistTip(model, emp.f_eid, "t_DormitoryMaintenance", "维修查询");
+                    _regservice.DoRegistTip(model, emp.f_eid, "DormitoryMaintenance", "维修查询");
                 }
             }
             DormitoryMaintenance dm = new DormitoryMaintenance();
@@ -134,7 +134,7 @@ namespace MI.Application
             {
                 foreach (var emp in listEmp)
                 {
-                    _regservice.DoRegistTip(model, emp.f_eid, "t_DormitoryMaintenance", "维修查询");
+                    _regservice.DoRegistTip(model, emp.f_eid, "DormitoryMaintenance", "维修查询");
                 }
             }
             _repository.Insert(model);

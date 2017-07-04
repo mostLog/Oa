@@ -8,7 +8,7 @@
     List<SType> sTypeItem = ViewBag.sTypeItem;
     int sNumber = 1;
     //晾衣房
-    List<t_LaundryPwd> LaundryPwdList = ViewBag.LaundryPwdList;
+    List<LaundryPwd> LaundryPwdList = ViewBag.LaundryPwdList;
 }
 <!doctype html>
 <html>
@@ -42,9 +42,9 @@
                                     <tr>
                                         <td>宿舍地址</td>
                                         <td colspan="2">
-                                            <pre>社区:@(item.t_Dormitory?.f_Community ?? "")       楼栋: @(item.t_Dormitory?.f_Building ?? "")       房间号:@(item.t_Dormitory?.f_RoomNo ?? "")</pre>
+                                            <pre>社区:@(item.Dormitory?.f_Community ?? "")       楼栋: @(item.Dormitory?.f_Building ?? "")       房间号:@(item.Dormitory?.f_RoomNo ?? "")</pre>
                                             @{
-                                                SType sType = sTypeItem.FirstOrDefault(p => p.f_type == (int)sTypeEnum.社区类型 && p.f_value.Equals(item.t_Dormitory?.f_Community ?? ""));
+                                                SType sType = sTypeItem.FirstOrDefault(p => p.f_type == (int)sTypeEnum.社区类型 && p.f_value.Equals(item.Dormitory?.f_Community ?? ""));
                                                 int dormitoryTypeId = sType == null ? 0 : sType.f_tID;
                                             }
                                             @if (!string.IsNullOrWhiteSpace(sTypeItem.FirstOrDefault(p => p.f_type == (int)sTypeEnum.上车地点配置 && p.f_value == dormitoryTypeId.ToString())?.f_Remark ?? ""))
@@ -63,13 +63,13 @@
                                         <td>洗衣房／晾衣房</td>
                                         <td colspan="2">
                                             @{
-                                                t_LaundryPwd LaundryPwdModel = new t_LaundryPwd();
-                                                if (!string.IsNullOrWhiteSpace(item.t_Dormitory?.f_LaundryAndPwd))
+                                                LaundryPwd LaundryPwdModel = new LaundryPwd();
+                                                if (!string.IsNullOrWhiteSpace(item.Dormitory?.f_LaundryAndPwd))
                                                 {
-                                                    LaundryPwdModel = LaundryPwdList.Where(p => p.f_Id == int.Parse(item.t_Dormitory?.f_LaundryAndPwd)).FirstOrDefault();
+                                                    LaundryPwdModel = LaundryPwdList.Where(p => p.f_Id == int.Parse(item.Dormitory?.f_LaundryAndPwd)).FirstOrDefault();
                                                 }
                                             }
-                                            <pre>洗衣房:@(LaundryPwdModel?.f_NoAndPwd??"")        晾衣房:@(item.t_Dormitory?.f_ClothesAndPwd ?? "")</pre>
+                                            <pre>洗衣房:@(LaundryPwdModel?.f_NoAndPwd??"")        晾衣房:@(item.Dormitory?.f_ClothesAndPwd ?? "")</pre>
                                         </td>
                                     </tr>
                                     <tr>
@@ -144,24 +144,24 @@
                                     @{
                                         string[] sCommunityItem = { "ROSEWOOD", "ROYALPLAM", "CEDAR", "VERAWOOD" };
                                     }
-                                    @if (!string.IsNullOrWhiteSpace(item.t_Dormitory?.f_Community) && sCommunityItem.Contains(item.t_Dormitory?.f_Community.Replace(" ", "").ToUpper()))
+                                    @if (!string.IsNullOrWhiteSpace(item.Dormitory?.f_Community) && sCommunityItem.Contains(item.Dormitory?.f_Community.Replace(" ", "").ToUpper()))
                                     {
                                         <tr>
                                             <td>宿舍订餐</td>
                                             <td colspan="2">
-                                                @if (item.t_Dormitory.f_Community.Replace(" ", "").ToUpper() == "Rosewood".Replace(" ", "").ToUpper())
+                                                @if (item.Dormitory.f_Community.Replace(" ", "").ToUpper() == "Rosewood".Replace(" ", "").ToUpper())
                                                 {
                                                     @Html.Raw("(1)员工便当领取处：EMERALD - 105房<br/>(2)指定领取时间：【午餐】11：30 AM 【晚餐】05：30 PM 【宵夜】11：00 PM");
                                                 }
-                                                @if (item.t_Dormitory.f_Community.Replace(" ", "").ToUpper() == "Royal Plam".Replace(" ", "").ToUpper())
+                                                @if (item.Dormitory.f_Community.Replace(" ", "").ToUpper() == "Royal Plam".Replace(" ", "").ToUpper())
                                                 {
                                                     @Html.Raw("(1)员工便当领取处：RAILAY - 106房<br/>(2)指定领取时间：【午餐】11：30 AM 【晚餐】05：30 PM 【宵夜】11：00 PM");
                                                 }
-                                                @if (item.t_Dormitory.f_Community.Replace(" ", "").ToUpper() == "Cedar".Replace(" ", "").ToUpper())
+                                                @if (item.Dormitory.f_Community.Replace(" ", "").ToUpper() == "Cedar".Replace(" ", "").ToUpper())
                                                 {
                                                     @Html.Raw("(1)员工便当领取处：CHAMOMILE-107房<br/>(2)指定领取时间：【午餐】11：30 AM 【晚餐】05：30 PM 【宵夜】11：00 PM");
                                                 }
-                                                @if (item.t_Dormitory.f_Community.Replace(" ", "").ToUpper() == "Verawood".Replace(" ", "").ToUpper())
+                                                @if (item.Dormitory.f_Community.Replace(" ", "").ToUpper() == "Verawood".Replace(" ", "").ToUpper())
                                                 {
                                                     @Html.Raw("(1)员工便当领取处：AQUA-110房<br/>(2)指定领取时间：【午餐】11：30 AM 【晚餐】05：30 PM 【宵夜】11：00 PM");
                                                 }

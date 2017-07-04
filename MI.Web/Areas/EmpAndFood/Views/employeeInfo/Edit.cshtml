@@ -291,9 +291,9 @@
                     <td colspan="3">
                         @Html.Hidden("EmployeeInfo.f_DormitoryId", Model.f_dormitoryId)
                         <div class="dropdown" style="float:left">
-                            @Html.Hidden("onchangeCommunity", Model.t_Dormitory?.f_Community, new { @correspond = "dropdownMenuCom" })
+                            @Html.Hidden("onchangeCommunity", Model.Dormitory?.f_Community, new { @correspond = "dropdownMenuCom" })
                             <button class="btn btn-default dropdown-toggle" style="width:auto;min-width:130px;" type="button" id="dropdownMenuCom" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                @(Model.t_Dormitory?.f_Community ?? "请选择社区")
+                                @(Model.Dormitory?.f_Community ?? "请选择社区")
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuCom">
@@ -305,9 +305,9 @@
                             </ul>
                         </div>
                         <div class="dropdown" style="float:left;margin-left:8px">
-                            @Html.Hidden("onchangeBuilding", Model.t_Dormitory?.f_Building, new { @correspond = "dropdownMenuBui" })
+                            @Html.Hidden("onchangeBuilding", Model.Dormitory?.f_Building, new { @correspond = "dropdownMenuBui" })
                             <button class="btn btn-default dropdown-toggle" style="width:auto;min-width:130px;" type="button" id="dropdownMenuBui" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                @(Model.t_Dormitory?.f_Building ?? "请先选择社区")
+                                @(Model.Dormitory?.f_Building ?? "请先选择社区")
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" id="DropdownBuilding" aria-labelledby="dropdownMenuBui">
@@ -322,9 +322,9 @@
                             </ul>
                         </div>
                         <div class="dropdown" style="float:left;margin-left:8px">
-                            @Html.Hidden("onchangeRoomNo", Model.t_Dormitory?.f_RoomNo, new { @correspond = "dropdownMenuRoomNo" })
+                            @Html.Hidden("onchangeRoomNo", Model.Dormitory?.f_RoomNo, new { @correspond = "dropdownMenuRoomNo" })
                             <button class="btn btn-default dropdown-toggle" style="width:130px" type="button" id="dropdownMenuRoomNo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                @(Model.t_Dormitory?.f_RoomNo ?? "请先选择楼栋")
+                                @(Model.Dormitory?.f_RoomNo ?? "请先选择楼栋")
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" id="DropdownRoomNo" aria-labelledby="dropdownMenuRoomNo">

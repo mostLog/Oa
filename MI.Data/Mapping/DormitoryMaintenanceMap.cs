@@ -10,7 +10,7 @@ namespace MI.Data.Mapping
     {
         public DormitoryMaintenanceMap()
         {
-            this.ToTable("t_DormitoryMaintenance");
+            this.ToTable("DormitoryMaintenance");
             this.HasKey(c => c.f_Id);
         }
     }

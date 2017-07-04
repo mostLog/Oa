@@ -11,7 +11,7 @@ namespace MI.Core.Domain
     /// 创建人：吕秀峰
     /// 创建时间：2017-06
     /// </summary>
-    public class t_LaundryPwd
+    public class LaundryPwd
     {
         /// <summary>
         /// 自增id

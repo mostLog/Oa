@@ -65,7 +65,7 @@ namespace MI.Web.Areas.EmpAndFood.Controllers
             ViewBag.TpassportURL = ToBase64String(model?.f_PassportURL, true);
             ViewBag.TentrystampURL = ToBase64String(model?.f_EntrystampURL, true, true);
             ViewBag.TidCardURL = ToBase64String(model?.f_IDCardURL, true, false, true);
-            ViewBag.LaundryPwd = _EmployeeService.GetLaundryPwd(int.Parse(model.t_Dormitory?.f_LaundryAndPwd ?? "0"));
+            ViewBag.LaundryPwd = _EmployeeService.GetLaundryPwd(int.Parse(model.Dormitory?.f_LaundryAndPwd ?? "0"));
             return View("IndexView",model);
         }
 

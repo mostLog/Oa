@@ -7,17 +7,22 @@ using System.Threading.Tasks;
 namespace MI.Core.Domain
 {
     /// <summary>
-    /// 员工换房类
-    /// 填写人：吕秀峰
+    /// 员工外租类
+    /// 创建人：吕秀峰
+    /// 创建时间：2017-06-23
     /// </summary>
-    public partial class t_ChangeRoom
+    public partial class Outside
     {
         /// <summary>
         /// 自增id
         /// </summary>
         public int f_Id { get; set; }
         /// <summary>
-        /// 员工id(人事信息表外键)
+        /// 部门id
+        /// </summary>
+        public int f_DeptId { get; set; }
+        /// <summary>
+        /// 员工id
         /// </summary>
         public int f_eid { get; set; }
         /// <summary>
@@ -25,17 +30,29 @@ namespace MI.Core.Domain
         /// </summary>
         public System.DateTime f_FilingDate { get; set; }
         /// <summary>
-        /// 原房间id
+        /// 批准干部id
         /// </summary>
-        public Nullable<int> f_OldRoomID { get; set; }
+        public int f_LeadId { get; set; }
         /// <summary>
-        /// 新房间id
+        /// 原宿舍id
         /// </summary>
-        public Nullable<int> f_NewRoomId { get; set; }
+        public Nullable<int> f_DormitoryId { get; set; }
         /// <summary>
-        /// 备注
+        /// 社区大楼名
         /// </summary>
-        public string f_Remarks { get; set; }
+        public string f_CommunityName { get; set; }
+        /// <summary>
+        /// 外宿地址
+        /// </summary>
+        public string f_OutsideAddress { get; set; }
+        /// <summary>
+        ///房号
+        /// </summary>
+        public string f_RoomNo { get; set; }
+        /// <summary>
+        /// 原因
+        /// </summary>
+        public string f_Reason { get; set; }
         /// <summary>
         /// 处理进度
         /// </summary>
@@ -45,28 +62,21 @@ namespace MI.Core.Domain
         /// </summary>
         public string f_Registrant { get; set; }
         /// <summary>
-        /// 补房租
+        /// 房东联系方式
         /// </summary>
-        public decimal f_SewRent { get; set; }
+        public string f_LandladyTel { get; set; }
         /// <summary>
-        /// 承租日期
-        /// </summary>
-        public System.DateTime f_RentDate { get; set; }
-        /// <summary>
-        /// 操作人
+        ///操作人
         /// </summary>
         public string f_operator { get; set; }
         /// <summary>
         /// 操作时间
         /// </summary>
         public Nullable<System.DateTime> f_operatorTime { get; set; }
-        /// <summary>
-        /// 生效月份
-        /// </summary>
-        public Nullable<System.DateTime> f_EffectiveMonths { get; set; }
-        public virtual Employee t_employeeInfo { get; set; }
-        public virtual t_Dormitory t_dormitory { get; set; }
-        public virtual t_Dormitory t_dormitory1 { get; set; }
 
+        public virtual Dormitory Dormitory { get; set; }
+        public virtual SType t_sType { get; set; }
+        public virtual Employee t_employeeInfo { get; set; }
+        public virtual Employee t_employeeInfo1 { get; set; }
     }
 }

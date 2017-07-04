@@ -84,14 +84,14 @@
                     <tbody>
                         @foreach (var item in Model)
                         { 
-                            <tr @Html.Raw(item.t_Dormitory?.f_Community == null ? " class='danger'" : "")>
+                            <tr @Html.Raw(item.Dormitory?.f_Community == null ? " class='danger'" : "")>
                                 <td>@i </td>
                                 <td>@(item.STypeDepartment?.f_value)</td>
                                 <td>@(item.f_chineseName + (!string.IsNullOrWhiteSpace(item.f_nickname) ? "(" + item.f_nickname + ")" : ""))</td>
                                 <td>@(item.f_rideWorkTime?.ToString("HH:mm"))</td>
                                 <td>@(item.f_rideOffWorkTime?.ToString("HH:mm"))</td>
                                 <td>@(item.STypeWorkLocation?.f_value) </td>
-                                <td>@Html.Raw((item.t_Dormitory?.f_Community) ?? "<font style='color:red'>外宿</font>") </td>
+                                <td>@Html.Raw((item.Dormitory?.f_Community) ?? "<font style='color:red'>外宿</font>") </td>
                             </tr>
                             i++;
                         }

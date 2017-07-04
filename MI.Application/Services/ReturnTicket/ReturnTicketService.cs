@@ -117,9 +117,9 @@ namespace MI.Application
                                                  性别Sex = p.t_employeeInfo?.f_sex == 1 ? "M" : "F",
                                                  國籍 = p.t_employeeInfo?.f_international ?? "",
                                                  昵稱 = p.t_employeeInfo?.f_nickname ?? "New Employee",
-                                                 社區Community = p.t_employeeInfo?.t_Dormitory?.f_Community,
-                                                 樓棟Building = p.t_employeeInfo?.t_Dormitory?.f_Building,
-                                                 房號Room = p.t_employeeInfo?.t_Dormitory?.f_RoomNo,
+                                                 社區Community = p.t_employeeInfo?.Dormitory?.f_Community,
+                                                 樓棟Building = p.t_employeeInfo?.Dormitory?.f_Building,
+                                                 房號Room = p.t_employeeInfo?.Dormitory?.f_RoomNo,
                                                  日期Date = p.f_ToDate?.ToString("yyyy-MM-dd") ?? "",
                                                  航空Flight = lstFlight.FirstOrDefault(u => u.f_tID == p.f_ToAirlineType_Id)?.f_value ?? "",
                                                  航廈Terminal = lstFlight.FirstOrDefault(u => u.f_tID == p.f_ToAirlineType_Id)?.f_Remark ?? "",
@@ -155,9 +155,9 @@ namespace MI.Application
                                                  性别Sex = p.t_employeeInfo?.f_sex == 1 ? "M" : "F",
                                                  國籍 = p.t_employeeInfo?.f_international ?? "",
                                                  昵稱 = p.t_employeeInfo?.f_nickname ?? "New Employee",
-                                                 社區Community = p.t_employeeInfo?.t_Dormitory?.f_Community,
-                                                 樓棟Building = p.t_employeeInfo?.t_Dormitory?.f_Building,
-                                                 房號Room = p.t_employeeInfo?.t_Dormitory?.f_RoomNo,
+                                                 社區Community = p.t_employeeInfo?.Dormitory?.f_Community,
+                                                 樓棟Building = p.t_employeeInfo?.Dormitory?.f_Building,
+                                                 房號Room = p.t_employeeInfo?.Dormitory?.f_RoomNo,
                                                  日期Date = p.f_FromDate?.ToString("yyyy-MM-dd") ?? "",
                                                  航空Flight = lstFlight.FirstOrDefault(u => u.f_tID == p.f_FromAirlineType_Id)?.f_value ?? "",
                                                  航廈Terminal = lstFlight.FirstOrDefault(u => u.f_tID == p.f_FromAirlineType_Id)?.f_Remark ?? "",
@@ -302,7 +302,7 @@ namespace MI.Application
         /// <returns></returns>
         public void AddModifyRecord(string oldEntity, string newEntity, ActionItem action, CategoryItem category, string tableName)
         {
-            t_ModifyRecord record = new t_ModifyRecord
+            ModifyRecord record = new ModifyRecord
             {
                 f_ActionStatus = (int)action,
                 f_ItemCategory = (int)category,
@@ -402,7 +402,7 @@ namespace MI.Application
         {
             var linq = from u in _repository.GetAll().ToList()
                        where u.f_ToDate != null && u.f_eId == iEid
-                       orderby u.f_ToDate, u.f_ToFlight ?? "".Split('~').Last(), u.f_ToTerminal, u.t_employeeInfo?.t_Dormitory?.f_Community
+                       orderby u.f_ToDate, u.f_ToFlight ?? "".Split('~').Last(), u.f_ToTerminal, u.t_employeeInfo?.Dormitory?.f_Community
                        select u;
             iCount = linq.Count();
             ValidatePagingWhere(iCount, ref iPageIndex, iPageSize);
@@ -421,7 +421,7 @@ namespace MI.Application
         {
             var linq = from u in _repository.GetAll().ToList()
                        where u.f_ToDate != null && (u.f_eId != null && u.t_employeeInfo.f_department_tID == iDeptid)
-                       orderby u.f_ToDate, u.f_ToFlight ?? "".Split('~').Last(), u.f_ToTerminal, u.t_employeeInfo?.t_Dormitory?.f_Community
+                       orderby u.f_ToDate, u.f_ToFlight ?? "".Split('~').Last(), u.f_ToTerminal, u.t_employeeInfo?.Dormitory?.f_Community
                        select u;
 
             iCount = linq.Count();
@@ -448,7 +448,7 @@ namespace MI.Application
         /// <returns>返回一个ReturnTicket集合</returns>
         public List<ReturnTicket> GetPickupByEid(int iEid, int iPageIndex, int iPageSize, out int iCount)
         {
-            var linq = _repository.GetAll().Where(u => (u.f_FromDate != null) && (u.f_eId != null && u.f_eId == iEid)).ToList().OrderBy(u => u.f_FromDate).ThenBy(u => u.f_FromFlight ?? "".Split('~').Last()).ThenBy(u => u.f_FromTerminal).ThenBy(u => u.t_employeeInfo?.t_Dormitory?.f_Community);
+            var linq = _repository.GetAll().Where(u => (u.f_FromDate != null) && (u.f_eId != null && u.f_eId == iEid)).ToList().OrderBy(u => u.f_FromDate).ThenBy(u => u.f_FromFlight ?? "".Split('~').Last()).ThenBy(u => u.f_FromTerminal).ThenBy(u => u.t_employeeInfo?.Dormitory?.f_Community);
 
             iCount = linq.Count();
             ValidatePagingWhere(iCount, ref iPageIndex, iPageSize);
@@ -465,7 +465,7 @@ namespace MI.Application
         /// <returns>返回一个ReturnTicket集合</returns>
         public List<ReturnTicket> GetPickupByDeptid(int iDeptid, int iPageIndex, int iPageSize, out int iCount)
         {
-            var linq = _repository.GetAll().Where(u => (u.f_FromDate != null) && (u.f_eId != null && u.t_employeeInfo.f_department_tID == iDeptid)).ToList().OrderBy(u => u.f_FromDate).ThenBy(u => u.f_FromFlight ?? "".Split('~').Last()).ThenBy(u => u.f_FromTerminal).ThenBy(u => u.t_employeeInfo?.t_Dormitory?.f_Community);
+            var linq = _repository.GetAll().Where(u => (u.f_FromDate != null) && (u.f_eId != null && u.t_employeeInfo.f_department_tID == iDeptid)).ToList().OrderBy(u => u.f_FromDate).ThenBy(u => u.f_FromFlight ?? "".Split('~').Last()).ThenBy(u => u.f_FromTerminal).ThenBy(u => u.t_employeeInfo?.Dormitory?.f_Community);
             iCount = linq.Count();
             linq = linq.OrderBy(u =>
             {

@@ -16,10 +16,10 @@ namespace MI.Data.Mapping
             this.HasMany(c => c.ReturnHandover).WithRequired(c => c.t_employeeInfo).HasForeignKey(c => c.f_eid);
             this.HasMany(c => c.OrderingEmployees).WithRequired(c => c.t_Employee).HasForeignKey(c => c.f_eID);
             this.HasMany(c => c.NewOrderingEmoloyees).WithRequired(c => c.t_employeeInfo).HasForeignKey(c => c.f_eID);
-            this.HasMany(c => c.t_ChangeRoom).WithRequired(c => c.t_employeeInfo).HasForeignKey(c => c.f_eid);
+            this.HasMany(c => c.ChangeRoom).WithRequired(c => c.t_employeeInfo).HasForeignKey(c => c.f_eid);
             this.HasMany(c => c.FlightFee).WithRequired(c => c.t_employeeInfo).HasForeignKey(c => c.f_eid);
-            this.HasMany(c=>c.t_Outside).WithRequired(c=>c.t_employeeInfo).HasForeignKey(c=>c.f_eid);
-            this.HasMany(c => c.t_Outside1).WithRequired(c => c.t_employeeInfo1).HasForeignKey(c => c.f_LeadId);
+            this.HasMany(c=>c.Outside).WithRequired(c=>c.t_employeeInfo).HasForeignKey(c=>c.f_eid);
+            this.HasMany(c => c.Outside1).WithRequired(c => c.t_employeeInfo1).HasForeignKey(c => c.f_LeadId);
         }
     }
 }

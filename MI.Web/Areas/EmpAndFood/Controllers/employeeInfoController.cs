@@ -326,8 +326,8 @@ namespace MI.Web.Areas.EmpAndFood.Controllers
             ViewBag.JLlevel = IEmololyee.GetSectorName(u => u.f_type == (int)sTypeEnum.金流客服权限控制).OrderBy(u => u.f_tID).ToList();//金流客服权限
             ViewBag.CurrentEmp = IEmololyee.GetEmployeeById(m_Eid);
             var model = IEmololyee.GetEmployeeById(id);
-            ViewBag.listStrBuilding = IDormitory.GetTariffbyCommunity(model.t_Dormitory?.f_Community ?? "");
-            ViewBag.listStrRoom = IDormitory.GetTariffbyBuilding(model.t_Dormitory?.f_Community ?? "", model.t_Dormitory?.f_Building ?? "");
+            ViewBag.listStrBuilding = IDormitory.GetTariffbyCommunity(model.Dormitory?.f_Community ?? "");
+            ViewBag.listStrRoom = IDormitory.GetTariffbyBuilding(model.Dormitory?.f_Community ?? "", model.Dormitory?.f_Building ?? "");
             ViewBag.isNew = model?.f_IsNewEmp;
             if (model?.f_IsNewEmp ?? false)
             {

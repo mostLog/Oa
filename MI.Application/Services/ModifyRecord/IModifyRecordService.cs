@@ -18,15 +18,15 @@ namespace MI.Application
         /// 新增
         /// </summary>
         /// <param name="model">model实体</param>
-        void AddModifyRecordData(t_ModifyRecord model);
+        void AddModifyRecordData(ModifyRecord model);
         /// <summary>
         /// 查询所有
         /// </summary>
         /// <param name="iPageIndex">页码</param>
         /// <param name="iPageSize">每页多少条数据</param>
         /// <param name="iCount">总数</param>
-        /// <returns>返回t_ModifyRecord集合</returns>
-        List<t_ModifyRecord> GetModifyRecordAllData(int iPageIndex, int iPageSize, out int iCount);
+        /// <returns>返回ModifyRecord集合</returns>
+        List<ModifyRecord> GetModifyRecordAllData(int iPageIndex, int iPageSize, out int iCount);
 
         /// <summary>
         /// 根据条件返回列表
@@ -35,8 +35,8 @@ namespace MI.Application
         /// <param name="iPageIndex">页码</param>
         /// <param name="iPageSize">每页多少数据</param>
         /// <param name="iCount">总数</param>
-        /// <returns>返回t_ModifyRecord集合</returns>
-        List<t_ModifyRecord> GetModifyRecordByWhere(Func<t_ModifyRecord, bool> predicate, int iPageIndex, int iPageSize, out int iCount);
+        /// <returns>返回ModifyRecord集合</returns>
+        List<ModifyRecord> GetModifyRecordByWhere(Func<ModifyRecord, bool> predicate, int iPageIndex, int iPageSize, out int iCount);
 
         /// <summary>
         /// 恢复数据

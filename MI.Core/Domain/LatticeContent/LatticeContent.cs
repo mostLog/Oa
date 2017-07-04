@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace MI.Core.Domain
 {
     //宿舍格子表
-    public class t_LatticeContent
+    public class LatticeContent
     { 
         /// <summary>
        /// ID

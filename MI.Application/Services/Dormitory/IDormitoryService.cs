@@ -9,13 +9,13 @@ namespace MI.Application
 {
    public interface IDormitoryService
     {
-        IList<t_Dormitory> GetConditionByWhere(int pageIndex, int pageSize, out int o_Count);
+        IList<Dormitory> GetConditionByWhere(int pageIndex, int pageSize, out int o_Count);
         /// <summary>
         /// 根据条件查询
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        List<t_Dormitory> GetConditionByWhere(Func<t_Dormitory, bool> predicate, int pageIndex, int pageSize, out int count);
+        List<Dormitory> GetConditionByWhere(Func<Dormitory, bool> predicate, int pageIndex, int pageSize, out int count);
         /// <summary>
         /// 通过id获取楼栋信息
         /// 
@@ -23,7 +23,7 @@ namespace MI.Application
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        t_Dormitory GetDormitoryById(int id);
+        Dormitory GetDormitoryById(int id);
         /// <summary>
         /// 分组查询所有社区
         /// </summary>
@@ -50,7 +50,7 @@ namespace MI.Application
         /// 修改
         /// </summary>
         /// <param name="model">model实体</param>
-        void EditDormitoryOneData(t_Dormitory model);
+        void EditDormitoryOneData(Dormitory model);
         /// <summary>
         /// 根据社区,楼栋,房间号查询房间id
         /// </summary>
@@ -58,12 +58,12 @@ namespace MI.Application
         /// <param name="building">楼栋</param>
         /// <param name="roomno">房间号</param>
         /// <returns></returns>
-        t_Dormitory GetTariffbyRoomNo(string community, string building, string roomno);
+        Dormitory GetTariffbyRoomNo(string community, string building, string roomno);
         /// <summary>
         /// 新增
         /// </summary>
         /// <param name="model">model实体</param>
-        void AddDormitoryOneData(t_Dormitory model);
+        void AddDormitoryOneData(Dormitory model);
         /// <summary>
         /// 根据id删除一条数据
         /// </summary>
@@ -75,7 +75,7 @@ namespace MI.Application
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        List<dynamic> GetConditionByWhereExportData(Func<t_Dormitory, bool> predicate);
+        List<dynamic> GetConditionByWhereExportData(Func<Dormitory, bool> predicate);
 
         /// <summary>
         /// 查询所有(EXCEL)

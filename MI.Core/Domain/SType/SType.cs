@@ -49,6 +49,6 @@ namespace MI.Core.Domain
         /// 公司用餐统计表
         /// </summary>
         public virtual ICollection<CompanyOfFood> CompanyOfFoods { get; set; }
-        public virtual ICollection<t_Outside> t_Outside { get; set; }
+        public virtual ICollection<Outside> Outside { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace MI.Application
         /// <summary>
         /// 洗衣房
         /// </summary>
-        private readonly IBaseRepository<t_LaundryPwd> _laundryPwd;
+        private readonly IBaseRepository<LaundryPwd> _laundryPwd;
         /// <summary>
         /// 类型表
         /// </summary>
@@ -39,7 +39,7 @@ namespace MI.Application
         /// <summary>
         /// 员工宿舍表
         /// </summary>
-        private readonly IBaseRepository<t_Dormitory> _dormitory;
+        private readonly IBaseRepository<Dormitory> _dormitory;
         /// <summary>
         /// 员工订餐表
         /// </summary>
@@ -79,8 +79,8 @@ public INewOrderingEmployeesService _newOrderingEmployeesService = null;
         /// </summary>
         public readonly IOrderingEmployeesService _IOederingService;
         public readonly IBaseRepository<EmpRent> _empRent;
-        public readonly IBaseRepository<t_ChangeRoom> _changeRoom;
-        public readonly IBaseRepository<t_Outside> _outside;
+        public readonly IBaseRepository<ChangeRoom> _changeRoom;
+        public readonly IBaseRepository<Outside> _outside;
         public readonly IBaseRepository<FlightFee> _flightfee;
         public readonly IBaseRepository<ReturnHandover> _returnhandover;
         /// <summary>
@@ -90,14 +90,14 @@ public INewOrderingEmployeesService _newOrderingEmployeesService = null;
             IBaseRepository<Employee> employeeRepository,
             IBaseRepository<SType> empStype,
             IBaseRepository<EmployeeDto> empLoueeDto,
-            IBaseRepository<t_Dormitory> dormitory,
+            IBaseRepository<Dormitory> dormitory,
             IBaseRepository<OrderingEmployees> orderemp,
             INewOrderingEmployeesService ineworderingserver,
             IOrderingEmployeesService ioederingService,
             IBaseRepository<ReturnTicket> returnticket,
             IBaseRepository<AllEmployeeInfoViewModel> allemoleoyeeinfo,
             IBaseRepository<NewEmployee> newEmployee,
-            IBaseRepository<t_LaundryPwd> laundrypwd,
+            IBaseRepository<LaundryPwd> laundrypwd,
              IOrderingEmployeesService orderingEmployeesService,
              IReturnTicketService tTReturnTicketService,
             IBaseRepository<WorkDistribution> workdistribution,
@@ -105,8 +105,8 @@ public INewOrderingEmployeesService _newOrderingEmployeesService = null;
             IBaseRepository<NewOrderingEmployees> neworderingemployees,
             IBaseRepository<Grant> grant,
             IBaseRepository<EmpRent> emprent,
-            IBaseRepository<t_ChangeRoom> changeroom,
-            IBaseRepository<t_Outside> outside,
+            IBaseRepository<ChangeRoom> changeroom,
+            IBaseRepository<Outside> outside,
             IBaseRepository<FlightFee> flightfee,
             IBaseRepository<ReturnHandover> returnhandover)
         {
@@ -193,7 +193,7 @@ public INewOrderingEmployeesService _newOrderingEmployeesService = null;
             (bStartDate || (employeedto.StartDate <= p.f_CreateDate)) &&
             (bEndDate || (p.f_CreateDate <= employeedto.EndDate)) &&
             (bTelNoPH || ((p.f_TelNoPH ?? "").Contains(employeedto.TelNoPH))) &&
-            (bBuildingOrRoomNo || (p.t_Dormitory.f_Building ?? "").Contains(employeedto.BuildingOrRoomNo) || (p.t_Dormitory.f_RoomNo ?? "").Contains(employeedto.BuildingOrRoomNo)) &&
+            (bBuildingOrRoomNo || (p.Dormitory.f_Building ?? "").Contains(employeedto.BuildingOrRoomNo) || (p.Dormitory.f_RoomNo ?? "").Contains(employeedto.BuildingOrRoomNo)) &&
             (bName || (p.f_chineseName.Contains(employeedto.Name) ||
                       p.f_passportAlis.ToUpper().Contains(employeedto.Name) ||
                       (p.f_nickname ?? "").Contains(employeedto.Name) ||
@@ -403,17 +403,17 @@ public INewOrderingEmployeesService _newOrderingEmployeesService = null;
             {
                 _empRent.Delete(employeedata.EmpRents);
             }
-            if (employeedata.t_ChangeRoom.Any())
+            if (employeedata.ChangeRoom.Any())
             {
-                _changeRoom.Delete(employeedata.t_ChangeRoom);
+                _changeRoom.Delete(employeedata.ChangeRoom);
             }
-            if (employeedata.t_Outside.Any())
+            if (employeedata.Outside.Any())
             {
-                _outside.Delete(employeedata.t_Outside);
+                _outside.Delete(employeedata.Outside);
             }
-            if (employeedata.t_Outside1.Any())
+            if (employeedata.Outside1.Any())
             {
-                _outside.Delete(employeedata.t_Outside1);
+                _outside.Delete(employeedata.Outside1);
             }
             if (employeedata.WorkDistribution.Any())
             {
@@ -451,7 +451,7 @@ public INewOrderingEmployeesService _newOrderingEmployeesService = null;
                 allEmployeeInfoViewModel.EmployeeInfo.f_workStatus_tID != vLiZhiID &&
                 allEmployeeInfoViewModel.LDM_tID != null)
             {
-                t_Dormitory mDormitory = _dormitory.GetEntityById(allEmployeeInfoViewModel.EmployeeInfo.f_dormitoryId.Value);
+                Dormitory mDormitory = _dormitory.GetEntityById(allEmployeeInfoViewModel.EmployeeInfo.f_dormitoryId.Value);
                 int iIndex = 0;
                 //新人订餐与员工订餐区分处理
                 if (allEmployeeInfoViewModel.IsnewEmployeeInfo)
@@ -603,7 +603,7 @@ public INewOrderingEmployeesService _newOrderingEmployeesService = null;
                         }
                         else if (sName == "f_dormitoryId")
                         {
-                            t_Dormitory oDormitory = _dormitory.GetEntityById(oModel.f_dormitoryId ?? 0);
+                            Dormitory oDormitory = _dormitory.GetEntityById(oModel.f_dormitoryId ?? 0);
                             oJson.Add("宿舍", (oDormitory?.f_Community ?? "") + "/ " + (oDormitory?.f_Building ?? "") + "/ " + (oDormitory?.f_RoomNo ?? ""));
                             oJson.Add(sProperty, oModel.f_dormitoryId);
                         }
@@ -807,9 +807,9 @@ public INewOrderingEmployeesService _newOrderingEmployeesService = null;
                 QQ号码 = p.f_QQNumber ?? "",
                 菲线电话 = p.f_TelNoPH ?? "",
                 国内电话 = p.f_TelNoCN ?? "",
-                社区 = p.t_Dormitory?.f_Community ?? "",
-                楼栋 = p.t_Dormitory?.f_Building ?? "",
-                房号 = p.t_Dormitory?.f_RoomNo ?? "",
+                社区 = p.Dormitory?.f_Community ?? "",
+                楼栋 = p.Dormitory?.f_Building ?? "",
+                房号 = p.Dormitory?.f_RoomNo ?? "",
                 在职状态 = p.STypeWorkStatus?.f_value ?? "",
                 上班地点 = p.STypeWorkLocation?.f_value ?? "",
                 上班搭车时间 = p.f_rideWorkTime?.ToString("HH:mm") ?? "",
@@ -920,7 +920,7 @@ public INewOrderingEmployeesService _newOrderingEmployeesService = null;
             List<SType> oSTypeList = _repSType.GetAll().Where(p => p.f_type == (int)sTypeEnum.订餐类型).ToList();
             int[] iLDMInfo = oModel.OrderingEmployees?.Select(p => p.f_LDM_tID.Value).ToArray();
             string sLstLDM = iLDMInfo!=null?oSTypeList.Where(u => iLDMInfo.Contains(u.f_tID)).Aggregate("", (current, itme) => current + (itme.f_value + ",")):"";
-            t_Dormitory oDormitory = _dormitory.GetEntityById(oModel.f_dormitoryId ?? 0);
+            Dormitory oDormitory = _dormitory.GetEntityById(oModel.f_dormitoryId ?? 0);
             JObject json = new JObject();
 
             string periodValue = _repSType.GetAll().Where(p => p.f_type == (int)sTypeEnum.班次类型 && p.f_tID == oModel.f_periodType_tID).ToList().FirstOrDefault()?.f_value ?? "";
@@ -989,7 +989,7 @@ public INewOrderingEmployeesService _newOrderingEmployeesService = null;
         /// <returns>json数据</returns>
         public JObject GetEmpJsonObjectData(Employee oModel)
         {
-            t_Dormitory oDormitory = _dormitory.GetEntityById(oModel.f_dormitoryId ?? 0);
+            Dormitory oDormitory = _dormitory.GetEntityById(oModel.f_dormitoryId ?? 0);
             string periodValue = _repSType.GetAll().Where(p => p.f_type == (int)sTypeEnum.班次类型 && p.f_tID == oModel.f_periodType_tID).ToList().FirstOrDefault()?.f_value ?? "";
             string deptValue = _repSType.GetAll().Where(p => p.f_type == (int)sTypeEnum.部门类型 && p.f_tID == oModel.f_department_tID).ToList().FirstOrDefault()?.f_value ?? "";
             string workStatus = _repSType.GetAll().Where(p => p.f_type == (int)sTypeEnum.上班状态类型 && p.f_tID == oModel.f_workStatus_tID).ToList().FirstOrDefault()?.f_value ?? "";
@@ -1097,7 +1097,7 @@ public INewOrderingEmployeesService _newOrderingEmployeesService = null;
         /// 查询所有
         /// </summary>
         /// <returns>返回LaundryPwd集合</returns>
-        public List<t_LaundryPwd> GetLaundryPwdAllData()
+        public List<LaundryPwd> GetLaundryPwdAllData()
         {
             return _laundryPwd.GetAll().OrderByDescending(u => u.f_Id).ToList();
         }
@@ -1250,7 +1250,7 @@ public INewOrderingEmployeesService _newOrderingEmployeesService = null;
                 航班抵达日期 = p.NewEmployee?.f_flightArrivalTime == null ? "" : p.NewEmployee?.f_flightArrivalTime.Value.ToString("yyyy-MM-dd") + p.NewEmployee?.f_flightArrivalTime.Value.ToString("HH:mm"),
                 报到地址 = p.STypeWorkLocation?.f_value ?? "暂无",
                 报到日期 = ((p.f_rideWorkTime != null && "1990-01-01" != p.f_rideWorkTime.Value.ToString("yyyy-MM-dd")) ? p.f_rideWorkTime.Value.ToString("yyyy-MM-dd") : "") + " " + ((p.f_rideOffWorkTime != null && "1990-01-01" != p.f_rideWorkTime.Value.ToString("yyyy-MM-dd")) ? p.f_rideOffWorkTime.Value.ToString("HH:mm") : ""),
-                社区楼栋房号 = p.t_Dormitory?.f_Community + "/ " + p.t_Dormitory?.f_Building + "/ " + p.t_Dormitory?.f_RoomNo,
+                社区楼栋房号 = p.Dormitory?.f_Community + "/ " + p.Dormitory?.f_Building + "/ " + p.Dormitory?.f_RoomNo,
                 新人餐 = p.f_OldReservation,
                 借款金额 = p.NewEmployee?.f_LoanAmount,
                 储值卡 = p.NewEmployee?.f_GiftCard,
@@ -1306,12 +1306,12 @@ public INewOrderingEmployeesService _newOrderingEmployeesService = null;
                 //上班
                 var lisResult = _employeeRepository.GetAll().Where(p => p.f_rideWorkTime != null && p.f_dormitoryId != null && p.STypeWorkLocation != null &&
                 (p.STypeWorkStatus.f_value.Contains("在职") || p.STypeWorkStatus.f_value.Contains("返乡") || p.STypeWorkStatus.f_value.Contains("在職") || p.STypeWorkStatus.f_value.Contains("返鄉"))
-                && p.f_IsNewEmp == false && sCommunityStr.Contains(p.t_Dormitory.f_Community) && sWorkLocationStr.Contains(p.STypeWorkLocation.f_value)).ToList()
+                && p.f_IsNewEmp == false && sCommunityStr.Contains(p.Dormitory.f_Community) && sWorkLocationStr.Contains(p.STypeWorkLocation.f_value)).ToList()
                     .GroupBy(p => p.f_rideWorkTime?.ToShortTimeString()).Select(p => TResult(p, 1, sCommunityStr, sWorkLocationStr)).OrderBy(u => u.RideTime).ToList();
                 //下班
                 lisResult.AddRange(_employeeRepository.GetAll().Where(p => p.f_rideOffWorkTime != null && p.f_dormitoryId != null && p.STypeWorkLocation != null &&
                 (p.STypeWorkStatus.f_value.Contains("在职") || p.STypeWorkStatus.f_value.Contains("返乡") || p.STypeWorkStatus.f_value.Contains("在職") || p.STypeWorkStatus.f_value.Contains("返鄉"))
-                && p.f_IsNewEmp == false && sCommunityStr.Contains(p.t_Dormitory.f_Community) && sWorkLocationStr.Contains(p.STypeWorkLocation.f_value)).ToList()
+                && p.f_IsNewEmp == false && sCommunityStr.Contains(p.Dormitory.f_Community) && sWorkLocationStr.Contains(p.STypeWorkLocation.f_value)).ToList()
                     .GroupBy(p => p.f_rideOffWorkTime?.ToShortTimeString()).Select(p => TResult(p, 2, sCommunityStr, sWorkLocationStr)).OrderBy(u => u.RideTime).ToList());
 
                 return lisResult;
@@ -1322,12 +1322,12 @@ public INewOrderingEmployeesService _newOrderingEmployeesService = null;
                 //上班
                 var lisResult = _employeeRepository.GetAll().Where(p => p.f_rideWorkTime != null && p.f_dormitoryId != null && p.STypeWorkLocation != null &&
                 (p.STypeWorkStatus.f_value.Contains("在职") || p.STypeWorkStatus.f_value.Contains("在職"))
-                && p.f_IsNewEmp == false && sCommunityStr.Contains(p.t_Dormitory.f_Community) && sWorkLocationStr.Contains(p.STypeWorkLocation.f_value)).ToList()
+                && p.f_IsNewEmp == false && sCommunityStr.Contains(p.Dormitory.f_Community) && sWorkLocationStr.Contains(p.STypeWorkLocation.f_value)).ToList()
                     .GroupBy(p => p.f_rideWorkTime?.ToShortTimeString()).Select(p => TResult(p, 1, sCommunityStr, sWorkLocationStr)).OrderBy(u => u.RideTime).ToList();
                 //下班
                 lisResult.AddRange(_employeeRepository.GetAll().Where(p => p.f_rideOffWorkTime != null && p.f_dormitoryId != null && p.STypeWorkLocation != null &&
                 (p.STypeWorkStatus.f_value.Contains("在职") || p.STypeWorkStatus.f_value.Contains("在職"))
-                && p.f_IsNewEmp == false && sCommunityStr.Contains(p.t_Dormitory.f_Community) && sWorkLocationStr.Contains(p.STypeWorkLocation.f_value)).ToList()
+                && p.f_IsNewEmp == false && sCommunityStr.Contains(p.Dormitory.f_Community) && sWorkLocationStr.Contains(p.STypeWorkLocation.f_value)).ToList()
                     .GroupBy(p => p.f_rideOffWorkTime?.ToShortTimeString()).Select(p => TResult(p, 2, sCommunityStr, sWorkLocationStr)).OrderBy(u => u.RideTime).ToList());
                 return lisResult;
             }
@@ -1349,7 +1349,7 @@ public INewOrderingEmployeesService _newOrderingEmployeesService = null;
             //通过循环统计人数
             for (int i = 0; i < sCommunityStr.Count; i++)
             {
-                traffic.Community[i] = groupData.Count(c => c.t_Dormitory.f_Community.Trim() == sCommunityStr[i].Trim());
+                traffic.Community[i] = groupData.Count(c => c.Dormitory.f_Community.Trim() == sCommunityStr[i].Trim());
             }
             for (int i = 0; i < sWorkLocationStr.Count; i++)
             {
@@ -1395,7 +1395,7 @@ public INewOrderingEmployeesService _newOrderingEmployeesService = null;
             (bStartDate || (employeedto.StartDate <= p.f_CreateDate)) &&
             (bEndDate || (p.f_CreateDate <= employeedto.EndDate)) &&
             (bTelNoPH || ((p.f_TelNoPH ?? "").Contains(employeedto.TelNoPH))) &&
-            (bBuildingOrRoomNo || (p.t_Dormitory.f_Building ?? "").Contains(employeedto.BuildingOrRoomNo) || (p.t_Dormitory.f_RoomNo ?? "").Contains(employeedto.BuildingOrRoomNo)) &&
+            (bBuildingOrRoomNo || (p.Dormitory.f_Building ?? "").Contains(employeedto.BuildingOrRoomNo) || (p.Dormitory.f_RoomNo ?? "").Contains(employeedto.BuildingOrRoomNo)) &&
             (bName || (p.f_chineseName.Contains(employeedto.Name) ||
                       p.f_passportAlis.ToUpper().Contains(employeedto.Name) ||
                       (p.f_nickname ?? "").Contains(employeedto.Name) ||

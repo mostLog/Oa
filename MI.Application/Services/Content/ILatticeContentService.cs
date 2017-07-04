@@ -28,14 +28,14 @@ namespace MI.Application
         /// <param name="sTid">楼栋名字</param>
         /// <param name="sTid2">社区名字</param>
         /// <returns></returns>
-        List<MI.Application.ContentServerce.Dto.t_LatticeContentDto> GetFloorDongCommunityID(string sFloorDongName, string sCommunityName);
+        List<MI.Application.ContentServerce.Dto.LatticeContentDto> GetFloorDongCommunityID(string sFloorDongName, string sCommunityName);
         /// <summary>
         /// 获取楼栋社区数据
         /// </summary>
         /// <param name="sTid">楼栋id</param>
         /// <param name="sTid2">社区</param>
         /// <returns></returns>
-        List<MI.Application.ContentServerce.Dto.t_LatticeContentDto> GetFloorDongCommunityData(int sTid, int sTid2);
+        List<MI.Application.ContentServerce.Dto.LatticeContentDto> GetFloorDongCommunityData(int sTid, int sTid2);
         /// <summary>
         /// 获取部门
         /// </summary>

@@ -72,7 +72,7 @@
                                 {
                                     <td>@(Community[i])人数</td>
                                     <td>
-                                        @(Model.Where(u => u.STypeWorkStatus.f_value.Contains("在职") && u.t_Dormitory?.f_Community == Community[i]).ToList().Count())
+                                        @(Model.Where(u => u.STypeWorkStatus.f_value.Contains("在职") && u.Dormitory?.f_Community == Community[i]).ToList().Count())
                                     </td>
                                 }
                                 else

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MI.Application.ContentServerce.Dto
 {
-    public class t_DormitoryDto
+    public class DormitoryDto
     {
         /// <summary>
         /// id

@@ -173,7 +173,7 @@
                                 </td>
                                 <td>@(item.STypeWorkLocation?.f_value)</td>
                                 <td>@(item.f_rideWorkTime?.ToString("yyyy-MM-dd") ?? "") &nbsp; @(item.f_rideOffWorkTime?.ToString("HH:mm") ?? "")</td>
-                                <td>@(item.t_Dormitory?.f_Community + "/ " + @item.t_Dormitory?.f_Building + "/ " + @item.t_Dormitory?.f_RoomNo)</td>
+                                <td>@(item.Dormitory?.f_Community + "/ " + @item.Dormitory?.f_Building + "/ " + @item.Dormitory?.f_RoomNo)</td>
                                 <td>
                                     @{
                                         var orderers = item.NewOrderingEmoloyees.GroupBy(p => new { p.f_LDM_tID }).OrderBy(p => p.Key.f_LDM_tID).ToList();

@@ -8,11 +8,11 @@ namespace MI.Application
 {
     public class DormitorySummaryService:IDormitorySummaryService
     {
-        private readonly IBaseRepository<t_Dormitory> _Dormitory;
+        private readonly IBaseRepository<Dormitory> _Dormitory;
         private readonly IBaseRepository<Employee> _Employee;
         private readonly IBaseRepository<SType> _SType;
-        private readonly IBaseRepository<t_CoupleRegister> _coupleRegister;
-        public DormitorySummaryService(IBaseRepository<t_Dormitory> Dormitory, IBaseRepository<Employee> Employee, IBaseRepository<SType> SType, IBaseRepository<t_CoupleRegister> coupleRegister)
+        private readonly IBaseRepository<CoupleRegister> _coupleRegister;
+        public DormitorySummaryService(IBaseRepository<Dormitory> Dormitory, IBaseRepository<Employee> Employee, IBaseRepository<SType> SType, IBaseRepository<CoupleRegister> coupleRegister)
         {
             _Dormitory = Dormitory;
             _Employee = Employee;
@@ -48,12 +48,12 @@ namespace MI.Application
             return getDormitorySummary(sCommunity, sBuilding);
         }
 
-        public void AddCoupleRegister(t_CoupleRegister model)
+        public void AddCoupleRegister(CoupleRegister model)
         {
             _coupleRegister.Insert(model);
         }
 
-        public string CheckCoupleRegister(t_CoupleRegister model)
+        public string CheckCoupleRegister(CoupleRegister model)
         {
             if (model.f_eId1 == 0 || model.f_eId2 == 0)
             {
@@ -85,7 +85,7 @@ namespace MI.Application
             return "OK";
         }
 
-        public List<t_CoupleRegister> GetCoupleRegister()
+        public List<CoupleRegister> GetCoupleRegister()
         {
             return (from cp in _coupleRegister.GetAll()
                     join e in _Employee.GetAll() on
@@ -103,7 +103,7 @@ namespace MI.Application
         public void DeleteCoupleNotServ()
         {
 
-            List<t_CoupleRegister> oList = (from cp in _coupleRegister.GetAll()
+            List<CoupleRegister> oList = (from cp in _coupleRegister.GetAll()
                                             join e in _Employee.GetAll() on
                                                 cp.f_eId1 equals e.f_eid
                                             join e2 in _Employee.GetAll() on
@@ -167,10 +167,10 @@ namespace MI.Application
             return linq2.Skip((iPageIndex - 1) * iPageSize).Take(iPageSize).ToList();
         }
 
-        public void UpdateCoupleRegister(t_CoupleRegister model)
+        public void UpdateCoupleRegister(CoupleRegister model)
         {
             if (!_coupleRegister.GetAll().Any(p => p.f_cId == model.f_cId)) return;
-            t_CoupleRegister old = _coupleRegister.GetEntityById(model.f_cId);
+            CoupleRegister old = _coupleRegister.GetEntityById(model.f_cId);
             if (old.f_eId1 == model.f_eId1 && old.f_eId2 == model.f_eId2)
             {
                 return;
@@ -186,11 +186,11 @@ namespace MI.Application
             {
                 return;
             }
-            t_CoupleRegister model = _coupleRegister.GetEntityById(iCid);
+            CoupleRegister model = _coupleRegister.GetEntityById(iCid);
             _coupleRegister.Delete(model);
         }
         //私有方法
-        private void Update(t_CoupleRegister model)
+        private void Update(CoupleRegister model)
         {
            _coupleRegister.Update(model);
         }

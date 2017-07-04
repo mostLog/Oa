@@ -1,5 +1,4 @@
-﻿using MI.Core.Domain.GetExtendProperByTabName_Result;
-using MI.Data.Mapping;
+﻿using MI.Core.Domain;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;

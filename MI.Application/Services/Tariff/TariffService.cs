@@ -75,9 +75,9 @@ namespace MI.Application
             var tariffList = _repository.GetAll();
             tariffList = tariffList
                 .OrderBy(m => m.f_Id)
-                .WhereIf(!string.IsNullOrWhiteSpace(input.Community), m => m.t_dormitory.f_Community.Contains(input.Community))
-                .WhereIf(!string.IsNullOrWhiteSpace(input.Building), m => m.t_dormitory.f_Building.Contains(input.Building))
-                .WhereIf(!string.IsNullOrWhiteSpace(input.RoomNo), m => m.t_dormitory.f_RoomNo.Contains(input.RoomNo))
+                .WhereIf(!string.IsNullOrWhiteSpace(input.Community), m => m.Dormitory.f_Community.Contains(input.Community))
+                .WhereIf(!string.IsNullOrWhiteSpace(input.Building), m => m.Dormitory.f_Building.Contains(input.Building))
+                .WhereIf(!string.IsNullOrWhiteSpace(input.RoomNo), m => m.Dormitory.f_RoomNo.Contains(input.RoomNo))
                 .WhereIf(input.TariffStartDate != null, m =>m.f_TariffDate!=null&& m.f_TariffDate >= input.TariffStartDate.Value)
                 .WhereIf(input.TariffEndDate != null, m => m.f_TariffDate != null && m.f_TariffDate <= input.TariffEndDate.Value)
                 .WhereIf(input.IsPayment != 2, m => m.f_IsPayment == (input.IsPayment == 1 ? true : false));
@@ -90,9 +90,9 @@ namespace MI.Application
                     return new TariffListDto()
                     {
                         Id = m.f_Id,
-                        Community = m.t_dormitory?.f_Community ?? string.Empty,
-                        Building = m.t_dormitory?.f_Building ?? string.Empty,
-                        RoomNo = m.t_dormitory?.f_RoomNo ?? string.Empty,
+                        Community = m.Dormitory?.f_Community ?? string.Empty,
+                        Building = m.Dormitory?.f_Building ?? string.Empty,
+                        RoomNo = m.Dormitory?.f_RoomNo ?? string.Empty,
                         TariffStandard = m.f_TariffStandard,
                         RealBill = m.f_RealBill,
                         Overruns = m.f_Overruns,

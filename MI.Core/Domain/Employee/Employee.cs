@@ -221,7 +221,7 @@ namespace MI.Core.Domain
         /// <summary>
         ///外键关联  f_dormitoryId
         /// </summary>
-        public virtual t_Dormitory t_Dormitory { get; set; }
+        public virtual Dormitory Dormitory { get; set; }
         /// <summary>
         /// 关联表Grant  对应员工id
         /// </summary>
@@ -258,8 +258,8 @@ namespace MI.Core.Domain
         public virtual ICollection<FlightFee> FlightFee { get; set; }
 
     
-        public virtual ICollection<t_ChangeRoom> t_ChangeRoom { get; set; }
-        public virtual ICollection<t_Outside> t_Outside { get; set; }
-        public virtual ICollection<t_Outside> t_Outside1 { get; set; }
+        public virtual ICollection<ChangeRoom> ChangeRoom { get; set; }
+        public virtual ICollection<Outside> Outside { get; set; }
+        public virtual ICollection<Outside> Outside1 { get; set; }
     }
 }

@@ -11,8 +11,8 @@ namespace MI.Application
 {
     public class OutsideService:IOutsideService
     {
-        public readonly IBaseRepository<t_Outside> _outside;
-        public OutsideService(IBaseRepository<t_Outside> outside) {
+        public readonly IBaseRepository<Outside> _outside;
+        public OutsideService(IBaseRepository<Outside> outside) {
             _outside = outside;
         }
         /// <summary>
@@ -22,7 +22,7 @@ namespace MI.Application
         /// <param name="pageSize"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        public List<t_Outside> GetOutsideAllData(int pageIndex, int pageSize, out int count)
+        public List<Outside> GetOutsideAllData(int pageIndex, int pageSize, out int count)
         {
             var linq = _outside.GetAll().OrderByDescending(u => u.f_Id);
             count = linq.Count();
@@ -37,7 +37,7 @@ namespace MI.Application
         /// <param name="pageSize"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        public List<t_Outside> GetConditionByWhere(Expression<Func<t_Outside, bool>> predicate, int pageIndex, int pageSize, out int count)
+        public List<Outside> GetConditionByWhere(Expression<Func<Outside, bool>> predicate, int pageIndex, int pageSize, out int count)
         {
             var linq = _outside.GetAll().Where(predicate).OrderByDescending(u => u.f_Id);
             count = linq.Count();
@@ -62,7 +62,7 @@ namespace MI.Application
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public t_Outside GetOutsideById(int id)
+        public Outside GetOutsideById(int id)
         {
             return _outside.GetEntityById(id);
         }
@@ -70,7 +70,7 @@ namespace MI.Application
         /// 新增
         /// </summary>
         /// <param name="model">model实体</param>
-        public void AddOutsideOneData(t_Outside model)
+        public void AddOutsideOneData(Outside model)
         {
            _outside.Insert(model);
             
@@ -79,7 +79,7 @@ namespace MI.Application
         /// 修改
         /// </summary>
         /// <param name="model">model实体</param>
-        public void EditOutsideOneData(t_Outside model)
+        public void EditOutsideOneData(Outside model)
         {
             _outside.Update(model);
         }
@@ -89,7 +89,7 @@ namespace MI.Application
         /// <param name="id">id</param>
         public void DeleteOutside(int id)
         {
-            t_Outside model = GetOutsideById(id);
+            Outside model = GetOutsideById(id);
             if (model != null)
             {
                 _outside.Delete(model);

@@ -13,7 +13,7 @@ namespace MI.Application
 {
     public class ModifyRecordService:IModifyRecordService
     {
-        private readonly IBaseRepository<t_ModifyRecord> _repository; 
+        private readonly IBaseRepository<ModifyRecord> _repository; 
         private readonly IBaseRepository<WorkDistribution> _workDistribution;
         private readonly IBaseRepository<Employee> _employee; 
             private readonly IBaseRepository<Notice> _notice; 
@@ -22,7 +22,7 @@ namespace MI.Application
         private readonly IBaseRepository<EmpRent> _empRent;
         private readonly IBaseRepository<SType> _SType;
         private readonly IBaseRepository<NewEmployee> _newEmployee;
-        public ModifyRecordService(IBaseRepository<t_ModifyRecord> repository, 
+        public ModifyRecordService(IBaseRepository<ModifyRecord> repository, 
             IBaseRepository<WorkDistribution> workDistribution,
             IBaseRepository<Employee> employee,
             IBaseRepository<Notice> notice,
@@ -48,7 +48,7 @@ namespace MI.Application
         /// 新增
         /// </summary>
         /// <param name="model">model实体</param>
-        public void AddModifyRecordData(t_ModifyRecord model)
+        public void AddModifyRecordData(ModifyRecord model)
         {
             _repository.Insert(model);
         }
@@ -64,8 +64,8 @@ namespace MI.Application
         /// <param name="iPageIndex">页码</param>
         /// <param name="iPageSize">每页多少条数据</param>
         /// <param name="iCount">总数</param>
-        /// <returns>返回t_ModifyRecord集合</returns>
-        public List<t_ModifyRecord> GetModifyRecordAllData(int iPageIndex, int iPageSize, out int iCount)
+        /// <returns>返回ModifyRecord集合</returns>
+        public List<ModifyRecord> GetModifyRecordAllData(int iPageIndex, int iPageSize, out int iCount)
         {
             var linq = _repository.GetAll().OrderByDescending(u => u.f_Id);
             iCount = linq.Count();
@@ -79,8 +79,8 @@ namespace MI.Application
         /// <param name="iPageIndex">页码</param>
         /// <param name="iPageSize">每页多少数据</param>
         /// <param name="iCount">总数</param>
-        /// <returns>返回t_ModifyRecord集合</returns>
-        public List<t_ModifyRecord> GetModifyRecordByWhere(Func<t_ModifyRecord, bool> predicate, int iPageIndex, int iPageSize, out int iCount)
+        /// <returns>返回ModifyRecord集合</returns>
+        public List<ModifyRecord> GetModifyRecordByWhere(Func<ModifyRecord, bool> predicate, int iPageIndex, int iPageSize, out int iCount)
         {
             var linq = _repository.GetAll().Where(predicate).OrderByDescending(u => u.f_Id);
             iCount = linq.Count();
@@ -93,7 +93,7 @@ namespace MI.Application
         public ErrorEnum Recovery(int iId)
         {
             ErrorEnum error = ErrorEnum.Success;
-            t_ModifyRecord data = _repository.GetEntityById(iId);
+            ModifyRecord data = _repository.GetEntityById(iId);
             Newtonsoft.Json.Linq.JObject json;
             if (data.f_TableName == "工作交接")//t_WorkDistribution
             {

@@ -11,7 +11,7 @@ namespace MI.Core.Domain
     /// 创建人：吕秀峰
     /// 创建时间：2017-06
     /// </summary>
-    public partial class t_ModifyRecord 
+    public partial class ModifyRecord 
     {
         /// <summary>
         /// 自增id

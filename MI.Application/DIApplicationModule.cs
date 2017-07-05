@@ -11,11 +11,11 @@ namespace MI.Application
     {
         protected override void Load(ContainerBuilder builder)
         {
+            //注册服务层
             builder.RegisterAssemblyTypes(ThisAssembly)
              .Where(t => t.Name.EndsWith("Service"))
-             .AsImplementedInterfaces()
              .EnableInterfaceInterceptors()
-             ;
+             .AsImplementedInterfaces();
 
             builder.RegisterType<Session>().As<ISession>().InstancePerRequest();
 

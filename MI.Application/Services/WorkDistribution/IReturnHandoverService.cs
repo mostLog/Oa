@@ -1,11 +1,13 @@
 ﻿using MI.Application.Dto;
 using MI.Core.Common;
 using MI.Core.Domain;
+using MI.Data.Uow;
 using System;
 using System.Collections.Generic;
 
 namespace MI.Application
 {
+    [UnitOfWork]
     public interface IReturnHandoverService
     {
         /// <summary>

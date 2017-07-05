@@ -23,12 +23,15 @@ namespace MI.Web.Controllers
         /// </summary>
         protected string GenerateAjaxJs()
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            //
-            var types = assembly
-                .GetTypes()
-                .Where(t => t.BaseType != null && t.GetCustomAttribute(typeof(AjaxFuncAttribute)) != null).ToList();
+            List<System.Type> types = new List<System.Type>();
+            Assembly[] assemblys= { Assembly.GetExecutingAssembly(),Assembly.Load("MI.Web.EmpAndFood") };
 
+            foreach (var assembly in assemblys)
+            {
+                types.AddRange(assembly
+                .GetTypes()
+                .Where(t => t.BaseType != null && t.GetCustomAttribute(typeof(AjaxFuncAttribute)) != null).ToList());
+            }
             StringBuilder builder = new StringBuilder();
             foreach (var type in types)
             {

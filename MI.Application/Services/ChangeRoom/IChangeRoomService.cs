@@ -1,14 +1,13 @@
 ﻿
+using MI.Core.Domain;
+using MI.Data.Uow;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Linq.Expressions;
-using MI.Core.Domain;
 
 namespace MI.Application.Dto
 {
+    [UnitOfWork]
     /// <summary>
     /// 作者： shawn 
     /// 创始时间：2017-06-15

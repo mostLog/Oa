@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MI.Application.Dto;
 using MI.Core.Domain;
-using MI.Application.Dto;
+using MI.Data.Uow;
+using System;
+using System.Collections.Generic;
 
 namespace MI.Application
 {
+    [UnitOfWork]
     /// <summary>
     /// 车辆管理接口
     /// </summary>

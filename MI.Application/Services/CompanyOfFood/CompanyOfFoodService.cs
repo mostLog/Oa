@@ -371,7 +371,6 @@ namespace MI.Application
 
         public void UpdateCompanyOfFood(CompanyOfFood model)
         {
-            model = null;
             _companyOfFoodRepository.Update(model);
         }
     }

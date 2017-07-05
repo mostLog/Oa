@@ -1,4 +1,5 @@
 ﻿using MI.Core.Domain;
+using MI.Data.Uow;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace MI.Application
 {
+    [UnitOfWork]
     public interface IRegistTipService
     {
         /// <summary>

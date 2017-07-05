@@ -5,6 +5,7 @@ using MI.Application.OASession.Dto;
 using MI.Core.Domain;
 using MI.Core.Extension;
 using MI.Data;
+using MI.Data.Uow;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ using System.Linq.Expressions;
 
 namespace MI.Application
 {
+    [UnitOfWork]
     /// <summary>
     /// 员工租房服务
     /// </summary>

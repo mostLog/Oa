@@ -1,11 +1,13 @@
 ﻿using MI.Application.Dto;
 using MI.Core.Domain;
+using MI.Data.Uow;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace MI.Application
 {
+    [UnitOfWork]
     public interface ITariffService:IBaseService<Tariff>
     {
         IList<Tariff> GetEmpRent();

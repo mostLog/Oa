@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MI.Core.Domain;
+using MI.Data.Uow;
 
 namespace MI.Application
 {
+    [UnitOfWork]
    public interface IDormitoryService
     {
         IList<Dormitory> GetConditionByWhere(int pageIndex, int pageSize, out int o_Count);

@@ -11,10 +11,9 @@ namespace MI.Data.Uow
         }
         public void Intercept(IInvocation invocation)
         {
-            _unitOfWork.Begin(new UnitOfWorkOptions());
+            _unitOfWork.Begin(new UnitOfWorkOptions() { IsTransactional=true});
             invocation.Proceed();
             _unitOfWork.Complete();
-
         }
     }
 }

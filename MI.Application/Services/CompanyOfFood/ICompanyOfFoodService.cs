@@ -1,5 +1,4 @@
-﻿using Autofac.Extras.DynamicProxy;
-using MI.Application.Dto;
+﻿using MI.Application.Dto;
 using MI.Core.Domain;
 using MI.Data.Uow;
 using System;
@@ -7,13 +6,14 @@ using System.Collections.Generic;
 
 namespace MI.Application
 {
-    [Intercept(typeof(UnitOfWorkInterceptor))]
+    [UnitOfWork]
     public interface ICompanyOfFoodService
     {
         /// <summary>
         /// 获取公司用餐统计信息
         /// </summary>
         /// <returns></returns>
+        [NoUnitOfWorkAttribute]
         IList<CompanyOfFood> GetCompanyOfFoods();
         /// <summary>
         /// 公司用餐信息统计

@@ -103,6 +103,8 @@
     <Compile Include="OADbContext.cs" />
     <Compile Include="Uow\EfUnitOfWork.cs" />
     <Compile Include="Uow\IUnitOfWork.cs" />
+    <Compile Include="Uow\NoUnitOfWorkAttribute.cs" />
+    <Compile Include="Uow\UnitOfWorkAttribute.cs" />
     <Compile Include="Uow\UnitOfWorkBase.cs" />
     <Compile Include="Uow\UnitOfWorkInterceptor.cs" />
     <Compile Include="Uow\UnitOfWorkOptions.cs" />

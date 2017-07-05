@@ -1,9 +1,11 @@
 ﻿using MI.Application.Dto;
 using MI.Core.Domain;
+using MI.Data.Uow;
 using System.Collections.Generic;
 
 namespace MI.Application
 {
+    [UnitOfWork]
     public interface ICashRegisterService:IBaseService<CashRegister>
     {
         /// <summary>

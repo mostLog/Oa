@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Integration.Mvc;
 using MI.Application.Mappers;
+using MI.Web.Common.html;
 using System.IO;
 using System.Reflection;
 using System.Web;
@@ -22,30 +23,27 @@ namespace MI.Web
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
+
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new CustomRazorViewEngine());
             //清理临时文件夹数据
             //ClearTempFold();
         }
         protected void Application_End()
-       {
+        {
 
         }
-
         protected void AutofacInit()
         {
             var builder = new ContainerBuilder();
-
             builder.RegisterAssemblyModules(Assembly.Load("MI.Core"),Assembly.Load("MI.Data"),Assembly.Load("MI.Application"));
-
-            
-
             //注册Controller
-            builder.RegisterControllers(typeof(MvcApplication).Assembly);
+            builder.RegisterControllers(
+                typeof(MvcApplication).Assembly,
+                Assembly.Load("MI.Web.EmpAndFood"));
 
             var container = builder.Build();
-            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
-           
-
-            
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(container)); 
         }
         protected void ClearTempFold()
         {

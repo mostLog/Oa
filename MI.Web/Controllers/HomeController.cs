@@ -1,5 +1,6 @@
 ﻿using MI.Application;
 using MI.Application.OASession;
+using MI.Web.Common;
 using System;
 using System.Linq;
 using System.Web.Mvc;

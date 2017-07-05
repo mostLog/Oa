@@ -198,7 +198,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\" />
     <Folder Include="Infrastructure\User\" />
-    <Folder Include="SubProject\" />
     <Folder Include="Views\Base\" />
     <Folder Include="Views\Scripts\" />
   </ItemGroup>
